@@ -306,6 +306,181 @@
         background: #20ba5a;
         transform: translateY(-2px);
     }
+
+ /* Feedback Floating Button */
+    .feedback-float {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 1000;
+    }
+    
+    .feedback-btn {
+        background: #1565c0;
+        color: white;
+        border: none;
+        padding: 15px 25px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(21, 101, 192, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+    }
+    
+    .feedback-btn:hover {
+        background: #0d47a1;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(21, 101, 192, 0.4);
+    }
+    
+    /* Feedback Modal */
+    .feedback-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 2000;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+    
+    .feedback-modal.active {
+        display: flex;
+    }
+    
+    .feedback-content {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        max-width: 500px;
+        width: 100%;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+    
+    .feedback-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .feedback-header h3 {
+        color: #1565c0;
+        font-size: 20px;
+        margin: 0;
+    }
+    
+    .close-btn {
+        background: none;
+        border: none;
+        font-size: 24px;
+        color: #999;
+        cursor: pointer;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+    }
+    
+    .close-btn:hover {
+        color: #333;
+    }
+    
+    .feedback-form textarea {
+        width: 100%;
+        min-height: 120px;
+        padding: 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 14px;
+        resize: vertical;
+        margin-bottom: 15px;
+    }
+    
+    .feedback-form textarea:focus {
+        outline: none;
+        border-color: #1565c0;
+    }
+    
+    .feedback-form button {
+        width: 100%;
+        padding: 15px;
+        background: #1565c0;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .feedback-form button:hover {
+        background: #0d47a1;
+    }
+    
+    /* Footer Feedback Section */
+    .feedback-footer {
+        background: white;
+        padding: 40px 20px;
+        margin-top: 50px;
+        border-top: 2px solid #e3f2fd;
+        text-align: center;
+    }
+    
+    .feedback-footer h3 {
+        color: #1565c0;
+        margin-bottom: 10px;
+        font-size: 22px;
+    }
+    
+    .feedback-footer p {
+        color: #666;
+        margin-bottom: 20px;
+    }
+    
+    .feedback-footer textarea {
+        max-width: 600px;
+        width: 100%;
+        min-height: 100px;
+        padding: 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 14px;
+        resize: vertical;
+        margin-bottom: 15px;
+    }
+    
+    .feedback-footer textarea:focus {
+        outline: none;
+        border-color: #1565c0;
+    }
+    
+    .feedback-footer button {
+        background: #1565c0;
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .feedback-footer button:hover {
+        background: #0d47a1;
+        transform: translateY(-2px);
+    }  
     
     @media (max-width: 768px) {
         .logo {
@@ -4991,6 +5166,38 @@
     </div>
 </div>
 
+<!-- Footer Feedback Section -->
+        <div class="feedback-footer">
+            <h3>💡 Help Us Improve This Website</h3>
+            <p>Your feedback helps us make OOHPhilippines.ph better for everyone</p>
+            <textarea id="footerFeedback" placeholder="Share your suggestions, report issues, or tell us what you'd like to see..."></textarea>
+            <button onclick="submitFooterFeedback()">Send Feedback</button>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Feedback Button -->
+<div class="feedback-float">
+    <button class="feedback-btn" onclick="openFeedbackModal()">
+        💬 Feedback
+    </button>
+</div>
+
+<!-- Feedback Modal -->
+<div class="feedback-modal" id="feedbackModal">
+    <div class="feedback-content">
+        <div class="feedback-header">
+            <h3>💡 Help Us Improve</h3>
+            <button class="close-btn" onclick="closeFeedbackModal()">×</button>
+        </div>
+        <form class="feedback-form">
+            <textarea id="modalFeedback" placeholder="Share your thoughts, suggestions, or report any issues..."></textarea>
+            <button type="button" onclick="submitModalFeedback()">Send Feedback</button>
+        </form>
+    </div>
+</div>
+   
+
 <script>
 // Page Navigation
 function showPage(pageName) {
@@ -5074,6 +5281,61 @@ locationFilter.addEventListener('change', filterCards);
 facingFilter.addEventListener('change', filterCards);
 typeFilter.addEventListener('change', filterCards);
 </script>
+
+// Feedback Functions
+function openFeedbackModal() {
+    document.getElementById('feedbackModal').classList.add('active');
+}
+
+function closeFeedbackModal() {
+    document.getElementById('feedbackModal').classList.remove('active');
+    document.getElementById('modalFeedback').value = '';
+}
+
+function submitModalFeedback() {
+    const feedback = document.getElementById('modalFeedback').value.trim();
+    if (!feedback) {
+        alert('Please enter your feedback before submitting.');
+        return;
+    }
+    
+    const subject = 'Website Feedback - OOHPhilippines.ph';
+    const body = `Feedback:\n\n${feedback}\n\n---\nSubmitted from: ${window.location.href}`;
+    const mailtoLink = `mailto:darylabueva@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    
+    window.location.href = mailtoLink;
+    
+    setTimeout(() => {
+        closeFeedbackModal();
+        alert('Thank you for your feedback!');
+    }, 500);
+}
+
+function submitFooterFeedback() {
+    const feedback = document.getElementById('footerFeedback').value.trim();
+    if (!feedback) {
+        alert('Please enter your feedback before submitting.');
+        return;
+    }
+    
+    const subject = 'Website Feedback - OOHPhilippines.ph';
+    const body = `Feedback:\n\n${feedback}\n\n---\nSubmitted from: ${window.location.href}`;
+    const mailtoLink = `mailto:darylabueva@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    
+    window.location.href = mailtoLink;
+    
+    setTimeout(() => {
+        document.getElementById('footerFeedback').value = '';
+        alert('Thank you for your feedback!');
+    }, 500);
+}
+
+// Close modal when clicking outside
+document.getElementById('feedbackModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeFeedbackModal();
+    }
+});   
 
 </body>
 
