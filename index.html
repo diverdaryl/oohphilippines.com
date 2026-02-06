@@ -329,218 +329,6 @@
         transform: translateY(-2px);
     }
 
-    /* Advertiser Inquiries Page */
-    .inquiries-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-        width: 100%;
-    }
-
-    .inquiries-header {
-        text-align: center;
-        margin-bottom: 40px;
-    }
-
-    .inquiries-header h1 {
-        color: #1565c0;
-        font-size: 36px;
-        margin-bottom: 10px;
-    }
-
-    .inquiries-header p {
-        color: #666;
-        font-size: 18px;
-    }
-
-    .two-column-layout {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 30px;
-        margin-bottom: 50px;
-    }
-
-    /* Submit Form Styles */
-    .submit-inquiry-section {
-        background: white;
-        border-radius: 15px;
-        padding: 30px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-
-    .submit-inquiry-section h2 {
-        color: #1565c0;
-        margin-bottom: 20px;
-        font-size: 24px;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    .form-group label {
-        display: block;
-        color: #202124;
-        font-weight: 600;
-        margin-bottom: 8px;
-        font-size: 14px;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-        width: 100%;
-        padding: 12px 15px;
-        border: 2px solid #e0e0e0;
-        border-radius: 8px;
-        font-family: 'Segoe UI', sans-serif;
-        font-size: 14px;
-        transition: border-color 0.3s;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-        outline: none;
-        border-color: #1565c0;
-    }
-
-    .form-group textarea {
-        min-height: 100px;
-        resize: vertical;
-    }
-
-    .submit-btn {
-        width: 100%;
-        padding: 16px;
-        background: #1565c0;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 16px;
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-
-    .submit-btn:hover {
-        background: #0d47a1;
-        transform: translateY(-2px);
-    }
-
-    .submit-btn:disabled {
-        background: #ccc;
-        cursor: not-allowed;
-        transform: none;
-    }
-
-    /* Inquiries Display Section */
-    .inquiries-display-section {
-        background: white;
-        border-radius: 15px;
-        padding: 30px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        max-height: 700px;
-        overflow-y: auto;
-    }
-
-    .inquiries-display-section h2 {
-        color: #1565c0;
-        margin-bottom: 20px;
-        font-size: 24px;
-        position: sticky;
-        top: 0;
-        background: white;
-        padding-bottom: 10px;
-        z-index: 10;
-    }
-
-    .inquiry-card {
-        background: #f8f9fa;
-        border-radius: 10px;
-        padding: 20px;
-        margin-bottom: 15px;
-        border-left: 4px solid #1565c0;
-    }
-
-    .inquiry-card h3 {
-        color: #202124;
-        font-size: 18px;
-        margin-bottom: 10px;
-    }
-
-    .inquiry-meta {
-        display: flex;
-        gap: 15px;
-        margin-bottom: 10px;
-        flex-wrap: wrap;
-    }
-
-    .inquiry-meta span {
-        color: #666;
-        font-size: 13px;
-        background: white;
-        padding: 4px 10px;
-        border-radius: 5px;
-    }
-
-    .inquiry-description {
-        color: #455a64;
-        line-height: 1.6;
-        margin-bottom: 15px;
-    }
-
-    .inquiry-contact {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    .contact-btn {
-        padding: 8px 16px;
-        background: #1565c0;
-        color: white;
-        text-decoration: none;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: 600;
-        transition: all 0.3s;
-    }
-
-    .contact-btn:hover {
-        background: #0d47a1;
-    }
-
-    .loading-spinner {
-        text-align: center;
-        padding: 40px;
-        color: #666;
-    }
-
-    .no-inquiries {
-        text-align: center;
-        padding: 40px;
-        color: #999;
-    }
-
-    .success-message {
-        background: #4caf50;
-        color: white;
-        padding: 15px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        display: none;
-    }
-
-    .error-message {
-        background: #f44336;
-        color: white;
-        padding: 15px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        display: none;
-    }
-
     /* Promos Page Styles */
     .promos-container {
         max-width: 1200px;
@@ -759,11 +547,203 @@
         font-size: 16px;
         transition: all 0.3s;
         box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        border: none;
+        cursor: pointer;
     }
 
     .add-promo-btn:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    /* About Us Page Styles */
+    .about-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        width: 100%;
+    }
+
+    .about-section {
+        background: white;
+        border-radius: 15px;
+        padding: 40px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .about-section h1 {
+        color: #1565c0;
+        font-size: 36px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .about-section h2 {
+        color: #1565c0;
+        font-size: 24px;
+        margin-top: 30px;
+        margin-bottom: 15px;
+    }
+
+    .about-section h3 {
+        color: #1976d2;
+        font-size: 20px;
+        margin-top: 25px;
+        margin-bottom: 12px;
+    }
+
+    .about-section p {
+        color: #455a64;
+        font-size: 16px;
+        line-height: 1.8;
+        margin-bottom: 15px;
+    }
+
+    .about-section ul {
+        color: #455a64;
+        font-size: 16px;
+        line-height: 1.8;
+        margin-left: 20px;
+        margin-bottom: 15px;
+    }
+
+    .about-section li {
+        margin-bottom: 10px;
+    }
+
+    .intro-text {
+        font-size: 18px;
+        color: #1976d2;
+        font-weight: 500;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .contact-info-box {
+        background: #f8f9fa;
+        border-left: 4px solid #1565c0;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+
+    .contact-info-box p {
+        margin-bottom: 10px;
+    }
+
+    .contact-info-box a {
+        color: #1565c0;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .contact-info-box a:hover {
+        text-decoration: underline;
+    }
+
+    .articles-preview {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 25px;
+        margin-top: 20px;
+    }
+
+    .articles-preview h4 {
+        color: #1565c0;
+        margin-bottom: 15px;
+        font-size: 18px;
+    }
+
+    /* Form Styles */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        color: #202124;
+        font-weight: 600;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 14px;
+        transition: border-color 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #1565c0;
+    }
+
+    .form-group textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 16px;
+        background: #1565c0;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .submit-btn:hover {
+        background: #0d47a1;
+        transform: translateY(-2px);
+    }
+
+    .submit-btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .success-message {
+        background: #4caf50;
+        color: white;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        display: none;
+    }
+
+    .error-message {
+        background: #f44336;
+        color: white;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        display: none;
+    }
+
+    .loading-spinner {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+    }
+
+    .no-inquiries {
+        text-align: center;
+        padding: 40px;
+        color: #999;
     }
 
     /* Feedback Floating Button */
@@ -886,16 +866,6 @@
         background: #0d47a1;
     }
     
-    @media (max-width: 968px) {
-        .two-column-layout {
-            grid-template-columns: 1fr;
-        }
-
-        .inquiries-display-section {
-            max-height: none;
-        }
-    }
-
     @media (max-width: 768px) {
         .logo {
             font-size: 36px;
@@ -931,7 +901,6 @@
             justify-content: center;
         }
 
-        .inquiries-header h1,
         .promos-header h1 {
             font-size: 28px;
         }
@@ -951,6 +920,18 @@
         .promo-btn {
             min-width: 100%;
         }
+
+        .about-section {
+            padding: 25px;
+        }
+
+        .about-section h1 {
+            font-size: 28px;
+        }
+
+        .about-section h2 {
+            font-size: 20px;
+        }
     }
 </style>
 </head>
@@ -963,6 +944,7 @@
         <button class="nav-link" onclick="showPage('inventory')">View Inventory</button>
         <button class="nav-link" onclick="showPage('promos')">🎉 Promos</button>
         <button class="nav-link" onclick="showPage('inquiries')">Looking For Sites?</button>
+        <button class="nav-link" onclick="showPage('about')">About Us</button>
         <a href="mailto:info@oohphilippines.com?subject=Billboard Operator - Site Upload Request" class="nav-link primary">Upload your Sites Here</a>
     </div>
 </div>
@@ -1026,7 +1008,9 @@
                 </select>
                 <button class="clear-btn" onclick="clearFilters()">Clear All</button>
             </div>
-        </div>      
+        </div>
+
+        
 
 <!-- Billboard Card Example (only showing first one, rest would follow same pattern) -->
         <div class="billboard-card">
@@ -6824,7 +6808,7 @@
                 <h2>Site: EDSA A243</h2>
                 <div class="spec-grid">
                     <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> LED</div>
+                    <div class="spec-item"><strong>Type</strong> Static</div>
                     <div class="spec-item"><strong>Facing</strong> Northbound</div>
                     <div class="spec-item"><strong>Illumination</strong> Yes</div>
                 </div>
@@ -6872,7 +6856,7 @@
                 <h2>Site: EDSA A245</h2>
                 <div class="spec-grid">
                     <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
+                    <div class="spec-item"><strong>Type</strong> LED</div>
                     <div class="spec-item"><strong>Facing</strong> Southbound</div>
                     <div class="spec-item"><strong>Illumination</strong> Yes</div>
                 </div>
@@ -7234,7 +7218,7 @@
                 <h2>Site: EDSA A260</h2>
                 <div class="spec-grid">
                     <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> LED</div>
+                    <div class="spec-item"><strong>Type</strong> Static</div>
                     <div class="spec-item"><strong>Facing</strong> Southbound</div>
                     <div class="spec-item"><strong>Illumination</strong> Yes</div>
                 </div>
@@ -7258,7 +7242,7 @@
                 <h2>Site: EDSA A261</h2>
                 <div class="spec-grid">
                     <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> LED</div>
+                    <div class="spec-item"><strong>Type</strong> Static</div>
                     <div class="spec-item"><strong>Facing</strong> Southbound</div>
                     <div class="spec-item"><strong>Illumination</strong> Yes</div>
                 </div>
@@ -7297,7 +7281,7 @@
         </div>
    </div>
 </div>
-   
+
 <!-- Promos Page -->
 <div id="promosPage" class="page">
     <div class="promos-container">
@@ -7358,7 +7342,7 @@
             </div>
         </div>
 
-        <!-- Promo Card 2 - Example -->
+        <!-- Promo Card 2 -->
         <div class="promo-card">
             <div class="promo-badge">HOT DEAL</div>
             <div class="promo-header">
@@ -7398,7 +7382,7 @@
             </div>
         </div>
 
-        <!-- Promo Card 3 - Example -->
+        <!-- Promo Card 3 -->
         <div class="promo-card">
             <div class="promo-badge">FLASH SALE</div>
             <div class="promo-header">
@@ -7438,11 +7422,10 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 
-<!-- Advertiser Inquiries Page -->
+<!-- Inquiries Page -->
 <div id="inquiriesPage" class="page">
     <div class="promos-container">
         <div class="promos-header">
@@ -7467,10 +7450,10 @@
                     <div class="promo-title">Fill out the form below to connect with billboard operators</div>
                 </div>
                 <div class="promo-body">
-                    <div class="success-message" id="successMessage" style="background: #4caf50; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none;">
+                    <div class="success-message" id="successMessage">
                         ✓ Your inquiry has been submitted successfully! Operators will contact you directly.
                     </div>
-                    <div class="error-message" id="errorMessage" style="background: #f44336; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none;">
+                    <div class="error-message" id="errorMessage">
                         ✗ Something went wrong. Please try again or email us directly.
                     </div>
                     
@@ -7556,7 +7539,7 @@
             <!-- Inquiries will be loaded here dynamically -->
         </div>
 
-        <!-- Sample Static Inquiries (will be replaced when Google Sheets is configured) -->
+        <!-- Sample Static Inquiries -->
         <div class="static-inquiries">
             <!-- Sample Inquiry 1 -->
             <div class="promo-card">
@@ -7660,7 +7643,65 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
 
+<!-- About Us Page -->
+<div id="aboutPage" class="page">
+    <div class="about-container">
+        <div class="about-section">
+            <h1>About OOHPhilippines.com</h1>
+            <p class="intro-text">Your one-stop hub for everything Out-of-Home advertising in the Philippines.</p>
+            
+            <p>This platform is built by an industry insider with 30+ years in OOH. From billboards to transit ads, from media owners to suppliers, the founder has worked with almost everyone in the field. That deep network and real-world know-how power this site.</p>
+
+            <h2>Why We Built This</h2>
+            <p>The OOH space is big, fast, and often hard to navigate. Finding the right media owner, supplier, or service can take time. We created OOHPhilippines.com to make it simple, quick, and reliable to connect the dots.</p>
+
+            <h2>Who This Is For</h2>
+            <ul>
+                <li>Advertisers looking for the right sites and partners</li>
+                <li>Media practitioners searching for placements and updates</li>
+                <li>OOH suppliers offering printing, fabrication, LED, and tech</li>
+                <li>Brands and agencies who want smarter OOH moves</li>
+            </ul>
+
+            <h2>What You'll Find Here</h2>
+            <ul>
+                <li>Easy directory of OOH media owners and suppliers</li>
+                <li>Connections that matter, backed by real relationships</li>
+                <li>Articles on trends, tools, and tech in OOH</li>
+                <li>Insights from decades of street-level experience</li>
+            </ul>
+
+            <h2>Our Goal</h2>
+            <p>To help the OOH industry move faster, work smarter, and grow stronger. No guesswork, no dead ends, just real leads and real value.</p>
+            
+            <p style="font-weight: 600; color: #1565c0; margin-top: 30px;">If you are in OOH, or planning to be, you are in the right place.</p>
+
+            <h2>Contact Us</h2>
+            <div class="contact-info-box">
+                <p><strong>Email:</strong> <a href="mailto:info@oohphilippines.com">info@oohphilippines.com</a></p>
+                <p><strong>Viber:</strong> <a href="viber://chat?number=639178316041">+63 917 831 6041</a></p>
+                <p><strong>WhatsApp:</strong> <a href="https://wa.me/639178316041" target="_blank">+63 917 831 6041</a></p>
+            </div>
+
+            <h2>OOH Industry Articles & Insights</h2>
+            <p>Stay updated with the latest trends, technology, and insights from the Out-of-Home advertising industry.</p>
+            
+            <div class="articles-preview">
+                <h4>📰 Coming Soon</h4>
+                <p style="color: #666; font-size: 14px;">We're preparing valuable content about:</p>
+                <ul style="margin-top: 10px; font-size: 14px;">
+                    <li>Digital billboard technology trends</li>
+                    <li>OOH campaign best practices</li>
+                    <li>Industry news and updates</li>
+                    <li>Case studies from successful campaigns</li>
+                    <li>Tips for advertisers and media buyers</li>
+                </ul>
+                <p style="margin-top: 15px; font-size: 14px; color: #666;">Check back soon for our first articles, or <a href="mailto:info@oohphilippines.com?subject=Subscribe to OOH Articles" style="color: #1565c0; font-weight: 600;">subscribe</a> to be notified when we publish.</p>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -7687,34 +7728,29 @@
 
 <script>
 // ===== GOOGLE SHEETS CONFIGURATION =====
-// IMPORTANT: Replace this with your actual Google Apps Script Web App URL after deployment
 const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
-
-// For Promos - you can use the same URL or a different one
-const PROMOS_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
 
 // ===== PAGE NAVIGATION =====
 function showPage(pageName) {
-    // Hide all pages
     document.getElementById('homePage').classList.remove('active');
     document.getElementById('inventoryPage').classList.remove('active');
     document.getElementById('promosPage').classList.remove('active');
     document.getElementById('inquiriesPage').classList.remove('active');
+    document.getElementById('aboutPage').classList.remove('active');
     
-    // Show selected page
     if (pageName === 'home') {
         document.getElementById('homePage').classList.add('active');
     } else if (pageName === 'inventory') {
         document.getElementById('inventoryPage').classList.add('active');
     } else if (pageName === 'promos') {
         document.getElementById('promosPage').classList.add('active');
-        loadPromos(); // Load promos when page is shown
     } else if (pageName === 'inquiries') {
         document.getElementById('inquiriesPage').classList.add('active');
-        loadInquiries(); // Load inquiries when page is shown
+        loadInquiries();
+    } else if (pageName === 'about') {
+        document.getElementById('aboutPage').classList.add('active');
     }
     
-    // Scroll to top
     window.scrollTo(0, 0);
 }
 
@@ -7735,7 +7771,6 @@ function goToInventory(area) {
     filterCards();
 }
 
-// Allow Enter key on home search
 document.getElementById('mainSearch').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
         searchFromHome();
@@ -7786,23 +7821,18 @@ locationFilter.addEventListener('change', filterCards);
 facingFilter.addEventListener('change', filterCards);
 typeFilter.addEventListener('change', filterCards);
 
-// ===== ADVERTISER INQUIRIES FUNCTIONALITY =====
-
-// Toggle inquiry form visibility
+// ===== INQUIRIES FUNCTIONALITY =====
 function toggleInquiryForm() {
     const formSection = document.getElementById('inquiryFormSection');
     if (formSection.style.display === 'none') {
         formSection.style.display = 'block';
-        // Scroll to form
         formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else {
         formSection.style.display = 'none';
-        // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 }
 
-// Submit Inquiry Form
 document.getElementById('inquiryForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
@@ -7810,15 +7840,12 @@ document.getElementById('inquiryForm').addEventListener('submit', async function
     const successMsg = document.getElementById('successMessage');
     const errorMsg = document.getElementById('errorMessage');
     
-    // Hide messages
     successMsg.style.display = 'none';
     errorMsg.style.display = 'none';
     
-    // Disable button
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting...';
     
-    // Collect form data
     const formData = {
         timestamp: new Date().toISOString(),
         companyName: document.getElementById('companyName').value,
@@ -7832,9 +7859,7 @@ document.getElementById('inquiryForm').addEventListener('submit', async function
         status: 'Pending'
     };
     
-    // Check if Google Script URL is configured
     if (GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
-        // Simulate submission with mailto
         const subject = 'New Billboard Inquiry - ' + formData.companyName;
         const body = `New inquiry received:
 
@@ -7852,7 +7877,6 @@ ${formData.details}`;
         const mailtoLink = `mailto:info@oohphilippines.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         window.location.href = mailtoLink;
         
-        // Show success message
         successMsg.style.display = 'block';
         document.getElementById('inquiryForm').reset();
         
@@ -7876,13 +7900,9 @@ ${formData.details}`;
             body: JSON.stringify(formData)
         });
         
-        // Show success message
         successMsg.style.display = 'block';
-        
-        // Reset form
         document.getElementById('inquiryForm').reset();
         
-        // Reload inquiries and hide form after 2 seconds
         setTimeout(() => {
             loadInquiries();
             successMsg.style.display = 'none';
@@ -7899,52 +7919,46 @@ ${formData.details}`;
     }
 });
 
-// Load Inquiries from Google Sheets
-async function loadInquiries() {
+function loadInquiries() {
     const inquiriesList = document.getElementById('inquiriesList');
     const staticInquiries = document.querySelector('.static-inquiries');
     
-    // Check if Google Script URL is configured
     if (GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
-        // Keep static inquiries visible
         return;
     }
     
-    // Hide static inquiries
     if (staticInquiries) {
         staticInquiries.style.display = 'none';
     }
     
     inquiriesList.innerHTML = '<div class="loading-spinner">Loading inquiries...</div>';
     
-    try {
-        const response = await fetch(GOOGLE_SCRIPT_URL + '?action=getInquiries');
-        const data = await response.json();
-        
-        if (data.inquiries && data.inquiries.length > 0) {
-            // Filter only approved inquiries
-            const approvedInquiries = data.inquiries.filter(inq => inq.status === 'Approved');
-            
-            if (approvedInquiries.length === 0) {
-                inquiriesList.innerHTML = '<div class="no-inquiries" style="text-align: center; padding: 40px; color: #999;"><p style="font-size: 18px;">No active inquiries yet. Be the first to post!</p></div>';
-                return;
+    fetch(GOOGLE_SCRIPT_URL + '?action=getInquiries')
+        .then(response => response.json())
+        .then(data => {
+            if (data.inquiries && data.inquiries.length > 0) {
+                const approvedInquiries = data.inquiries.filter(inq => inq.status === 'Approved');
+                
+                if (approvedInquiries.length === 0) {
+                    inquiriesList.innerHTML = '<div class="no-inquiries"><p style="font-size: 18px;">No active inquiries yet. Be the first to post!</p></div>';
+                    return;
+                }
+                
+                inquiriesList.innerHTML = approvedInquiries.map(inquiry => createInquiryCard(inquiry)).join('');
+            } else {
+                inquiriesList.innerHTML = '<div class="no-inquiries"><p style="font-size: 18px;">No inquiries yet. Be the first to post!</p></div>';
             }
-            
-            inquiriesList.innerHTML = approvedInquiries.map(inquiry => createInquiryCard(inquiry)).join('');
-        } else {
-            inquiriesList.innerHTML = '<div class="no-inquiries" style="text-align: center; padding: 40px; color: #999;"><p style="font-size: 18px;">No inquiries yet. Be the first to post!</p></div>';
-        }
-    } catch (error) {
-        console.error('Error loading inquiries:', error);
-        inquiriesList.innerHTML = `
-            <div style="background: #f44336; color: white; padding: 15px; border-radius: 8px; max-width: 600px; margin: 20px auto; text-align: center;">
-                Unable to load inquiries. Please refresh the page or try again later.
-            </div>
-        `;
-    }
+        })
+        .catch(error => {
+            console.error('Error loading inquiries:', error);
+            inquiriesList.innerHTML = `
+                <div style="background: #f44336; color: white; padding: 15px; border-radius: 8px; max-width: 600px; margin: 20px auto; text-align: center;">
+                    Unable to load inquiries. Please refresh the page or try again later.
+                </div>
+            `;
+        });
 }
 
-// Create inquiry card HTML
 function createInquiryCard(inquiry) {
     const date = new Date(inquiry.timestamp);
     const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
@@ -7985,152 +7999,10 @@ function createInquiryCard(inquiry) {
     `;
 }
 
-// Helper function to escape HTML to prevent XSS
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
-}
-
-// ===== PROMOS FUNCTIONALITY =====
-
-// Load Promos from Google Sheets
-async function loadPromos() {
-    const promosContainer = document.querySelector('.promos-container');
-    const addPromoSection = promosContainer.querySelector('.add-promo-section');
-    
-    // Check if Google Script URL is configured
-    if (PROMOS_SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
-        // Show static example promos if not configured
-        return; // Keep the hardcoded examples visible
-    }
-    
-    // Remove existing dynamic promos (keep add-promo section)
-    const existingPromos = promosContainer.querySelectorAll('.promo-card');
-    existingPromos.forEach(card => card.remove());
-    
-    // Add loading indicator after add-promo section
-    const loadingDiv = document.createElement('div');
-    loadingDiv.className = 'loading-spinner';
-    loadingDiv.textContent = 'Loading promotions...';
-    loadingDiv.id = 'promosLoading';
-    addPromoSection.insertAdjacentElement('afterend', loadingDiv);
-    
-    try {
-        const response = await fetch(PROMOS_SCRIPT_URL + '?action=getPromos');
-        const data = await response.json();
-        
-        // Remove loading indicator
-        const loader = document.getElementById('promosLoading');
-        if (loader) loader.remove();
-        
-        if (data.promos && data.promos.length > 0) {
-            // Create promo cards from Google Sheets data
-            data.promos.forEach(promo => {
-                const promoCard = createPromoCard(promo);
-                promosContainer.appendChild(promoCard);
-            });
-        } else {
-            // No active promos
-            const noPromosDiv = document.createElement('div');
-            noPromosDiv.className = 'no-inquiries';
-            noPromosDiv.innerHTML = '<p style="font-size: 18px; color: #666;">No active promotions at the moment. Check back soon!</p>';
-            promosContainer.appendChild(noPromosDiv);
-        }
-    } catch (error) {
-        console.error('Error loading promos:', error);
-        
-        // Remove loading indicator
-        const loader = document.getElementById('promosLoading');
-        if (loader) loader.remove();
-        
-        // Show error message
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'error-message';
-        errorDiv.style.display = 'block';
-        errorDiv.style.maxWidth = '600px';
-        errorDiv.style.margin = '20px auto';
-        errorDiv.textContent = 'Unable to load promotions. Please refresh the page or try again later.';
-        promosContainer.appendChild(errorDiv);
-    }
-}
-
-// Create a promo card element from promo data
-function createPromoCard(promo) {
-    const card = document.createElement('div');
-    card.className = 'promo-card';
-    
-    // Build features list HTML
-    let featuresHTML = '';
-    if (promo.features && promo.features.length > 0) {
-        const featuresList = promo.features.map(feature => 
-            `<li>${escapeHtml(feature)}</li>`
-        ).join('');
-        
-        featuresHTML = `
-            <div class="promo-features">
-                <h3>Package Includes:</h3>
-                <ul>${featuresList}</ul>
-            </div>
-        `;
-    }
-    
-    // Build contact buttons HTML
-    let contactHTML = '';
-    const buttons = [];
-    
-    if (promo.email) {
-        buttons.push(`
-            <a href="mailto:${escapeHtml(promo.email)}?subject=Inquiry: ${escapeHtml(promo.operatorName)} - ${escapeHtml(promo.promoTitle)}" 
-               class="promo-btn promo-btn-primary">
-                📧 Get This Deal
-            </a>
-        `);
-    }
-    
-    if (promo.phone) {
-        const cleanPhone = promo.phone.replace(/\s/g, '');
-        buttons.push(`
-            <a href="tel:${escapeHtml(cleanPhone)}" class="promo-btn promo-btn-secondary">
-                📱 Call Now
-            </a>
-        `);
-    }
-    
-    if (promo.website) {
-        buttons.push(`
-            <a href="${escapeHtml(promo.website)}" target="_blank" class="promo-btn promo-btn-secondary">
-                🌐 Visit Website
-            </a>
-        `);
-    }
-    
-    contactHTML = `<div class="promo-contact">${buttons.join('')}</div>`;
-    
-    // Build the complete card HTML
-    card.innerHTML = `
-        <div class="promo-badge">${escapeHtml(promo.badge || 'SPECIAL OFFER')}</div>
-        <div class="promo-header">
-            <div class="promo-operator">${escapeHtml(promo.operatorName)}</div>
-            <div class="promo-title">${escapeHtml(promo.promoTitle)}</div>
-            ${promo.validUntil ? `<div class="promo-validity">⏰ Valid until ${escapeHtml(promo.validUntil)}</div>` : ''}
-        </div>
-        <div class="promo-body">
-            ${promo.description ? `<div class="promo-description">${escapeHtml(promo.description)}</div>` : ''}
-            
-            ${promo.discountAmount ? `
-                <div class="promo-discount">
-                    <div class="discount-amount">${escapeHtml(promo.discountAmount)}</div>
-                    ${promo.discountText ? `<div class="discount-text">${escapeHtml(promo.discountText)}</div>` : ''}
-                </div>
-            ` : ''}
-            
-            ${featuresHTML}
-            ${contactHTML}
-        </div>
-    `;
-    
-    return card;
 }
 
 // ===== FEEDBACK FUNCTIONS =====
@@ -8162,7 +8034,6 @@ function submitModalFeedback() {
     }, 500);
 }
 
-// Close modal when clicking outside
 document.getElementById('feedbackModal').addEventListener('click', function(e) {
     if (e.target === this) {
         closeFeedbackModal();
@@ -8170,9 +8041,7 @@ document.getElementById('feedbackModal').addEventListener('click', function(e) {
 });
 
 // ===== INITIALIZE =====
-// Load inquiries on page load if on inquiries page
 document.addEventListener('DOMContentLoaded', function() {
-    // You can add any initialization code here
     console.log('OOHPhilippines.com loaded successfully!');
 });
 </script>
