@@ -67,7 +67,7 @@
         background: #0d47a1;
     }
     
-    /* Home Page Styles */
+    /* Page System */
     .page {
         display: none;
     }
@@ -78,6 +78,7 @@
         align-items: center;
     }
     
+    /* Hero/Home Styles */
     .hero-container {
         max-width: 800px;
         width: 100%;
@@ -188,7 +189,7 @@
         transform: translateY(-2px);
     }
     
-    /* Inventory Page Styles */
+    /* Inventory Styles */
     .inventory-container {
         max-width: 1200px;
         margin: 0 auto;
@@ -287,258 +288,58 @@
     .spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; color: #5f6368; font-size: 14px; }
     .spec-item strong { color: #202124; display: block; margin-bottom: 2px; }
     .button-group { display: flex; flex-direction: column; gap: 10px; }
-    .btn-contact {
-        display: block; width: 100%; padding: 16px; background: #202124;
-        color: white; text-align: center; text-decoration: none;
-        border-radius: 8px; font-weight: bold; font-size: 16px;
+    
+    .btn-contact, .btn-viber, .btn-website, .btn-whatsapp {
+        display: block;
+        width: 100%;
+        padding: 16px;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 16px;
         transition: all 0.3s;
     }
+    
+    .btn-contact {
+        background: #202124;
+        color: white;
+    }
+    
     .btn-contact:hover {
         background: #2d3748;
         transform: translateY(-2px);
     }
+    
     .btn-viber {
-        display: block; width: 100%; padding: 16px; background: #7360f2;
-        color: white; text-align: center; text-decoration: none;
-        border-radius: 8px; font-weight: bold; font-size: 16px;
-        transition: all 0.3s;
+        background: #7360f2;
+        color: white;
     }
+    
     .btn-viber:hover {
         background: #5f4fd1;
         transform: translateY(-2px);
     }
-    .btn-website {
-        display: block; width: 100%; padding: 16px; background: white;
-        color: #1565c0; text-align: center; text-decoration: none;
-        border-radius: 8px; font-weight: bold; font-size: 16px;
-        border: 2px solid #e2e8f0;
-        transition: all 0.3s;
-    }
-    .btn-website:hover {
-        border-color: #1565c0;
-        transform: translateY(-2px);
-    }
+    
     .btn-whatsapp {
-        display: block; width: 100%; padding: 16px; background: #25D366;
-        color: white; text-align: center; text-decoration: none;
-        border-radius: 8px; font-weight: bold; font-size: 16px;
-        transition: all 0.3s;
+        background: #25D366;
+        color: white;
     }
+    
     .btn-whatsapp:hover {
         background: #20ba5a;
         transform: translateY(-2px);
     }
-
-    /* Advertiser Inquiries Page */
-    .inquiries-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-        width: 100%;
-    }
-
-    .inquiries-header {
-        text-align: center;
-        margin-bottom: 40px;
-    }
-
-    .inquiries-header h1 {
-        color: #1565c0;
-        font-size: 36px;
-        margin-bottom: 10px;
-    }
-
-    .inquiries-header p {
-        color: #666;
-        font-size: 18px;
-    }
-
-    .two-column-layout {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 30px;
-        margin-bottom: 50px;
-    }
-
-    /* Submit Form Styles */
-    .submit-inquiry-section {
+    
+    .btn-website {
         background: white;
-        border-radius: 15px;
-        padding: 30px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-
-    .submit-inquiry-section h2 {
         color: #1565c0;
-        margin-bottom: 20px;
-        font-size: 24px;
+        border: 2px solid #e2e8f0;
     }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    .form-group label {
-        display: block;
-        color: #202124;
-        font-weight: 600;
-        margin-bottom: 8px;
-        font-size: 14px;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-        width: 100%;
-        padding: 12px 15px;
-        border: 2px solid #e0e0e0;
-        border-radius: 8px;
-        font-family: 'Segoe UI', sans-serif;
-        font-size: 14px;
-        transition: border-color 0.3s;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-        outline: none;
+    
+    .btn-website:hover {
         border-color: #1565c0;
-    }
-
-    .form-group textarea {
-        min-height: 100px;
-        resize: vertical;
-    }
-
-    .submit-btn {
-        width: 100%;
-        padding: 16px;
-        background: #1565c0;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-weight: 600;
-        font-size: 16px;
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-
-    .submit-btn:hover {
-        background: #0d47a1;
         transform: translateY(-2px);
-    }
-
-    .submit-btn:disabled {
-        background: #ccc;
-        cursor: not-allowed;
-        transform: none;
-    }
-
-    /* Inquiries Display Section */
-    .inquiries-display-section {
-        background: white;
-        border-radius: 15px;
-        padding: 30px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        max-height: 700px;
-        overflow-y: auto;
-    }
-
-    .inquiries-display-section h2 {
-        color: #1565c0;
-        margin-bottom: 20px;
-        font-size: 24px;
-        position: sticky;
-        top: 0;
-        background: white;
-        padding-bottom: 10px;
-        z-index: 10;
-    }
-
-    .inquiry-card {
-        background: #f8f9fa;
-        border-radius: 10px;
-        padding: 20px;
-        margin-bottom: 15px;
-        border-left: 4px solid #1565c0;
-    }
-
-    .inquiry-card h3 {
-        color: #202124;
-        font-size: 18px;
-        margin-bottom: 10px;
-    }
-
-    .inquiry-meta {
-        display: flex;
-        gap: 15px;
-        margin-bottom: 10px;
-        flex-wrap: wrap;
-    }
-
-    .inquiry-meta span {
-        color: #666;
-        font-size: 13px;
-        background: white;
-        padding: 4px 10px;
-        border-radius: 5px;
-    }
-
-    .inquiry-description {
-        color: #455a64;
-        line-height: 1.6;
-        margin-bottom: 15px;
-    }
-
-    .inquiry-contact {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    .contact-btn {
-        padding: 8px 16px;
-        background: #1565c0;
-        color: white;
-        text-decoration: none;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: 600;
-        transition: all 0.3s;
-    }
-
-    .contact-btn:hover {
-        background: #0d47a1;
-    }
-
-    .loading-spinner {
-        text-align: center;
-        padding: 40px;
-        color: #666;
-    }
-
-    .no-inquiries {
-        text-align: center;
-        padding: 40px;
-        color: #999;
-    }
-
-    .success-message {
-        background: #4caf50;
-        color: white;
-        padding: 15px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        display: none;
-    }
-
-    .error-message {
-        background: #f44336;
-        color: white;
-        padding: 15px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        display: none;
     }
 
     /* Promos Page Styles */
@@ -759,6 +560,8 @@
         font-size: 16px;
         transition: all 0.3s;
         box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        border: none;
+        cursor: pointer;
     }
 
     .add-promo-btn:hover {
@@ -766,7 +569,195 @@
         box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
     }
 
-    /* Feedback Floating Button */
+    /* About/Legal Pages Container */
+    .about-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        width: 100%;
+    }
+
+    .about-section {
+        background: white;
+        border-radius: 15px;
+        padding: 40px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .about-section h1 {
+        color: #1565c0;
+        font-size: 36px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .about-section h2 {
+        color: #1565c0;
+        font-size: 24px;
+        margin-top: 30px;
+        margin-bottom: 15px;
+    }
+
+    .about-section h3 {
+        color: #1976d2;
+        font-size: 20px;
+        margin-top: 25px;
+        margin-bottom: 12px;
+    }
+
+    .about-section p {
+        color: #455a64;
+        font-size: 16px;
+        line-height: 1.8;
+        margin-bottom: 15px;
+    }
+
+    .about-section ul {
+        color: #455a64;
+        font-size: 16px;
+        line-height: 1.8;
+        margin-left: 20px;
+        margin-bottom: 15px;
+    }
+
+    .about-section li {
+        margin-bottom: 10px;
+    }
+
+    .intro-text {
+        font-size: 18px;
+        color: #1976d2;
+        font-weight: 500;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .contact-info-box {
+        background: #f8f9fa;
+        border-left: 4px solid #1565c0;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+
+    .contact-info-box p {
+        margin-bottom: 10px;
+    }
+
+    .contact-info-box a {
+        color: #1565c0;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .contact-info-box a:hover {
+        text-decoration: underline;
+    }
+
+    /* Footer Styles */
+    .site-footer {
+        background: white;
+        border-top: 1px solid #e0e0e0;
+        padding: 30px 20px;
+        margin-top: 60px;
+    }
+
+    .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .footer-links {
+        display: flex;
+        justify-content: center;
+        gap: 25px;
+        flex-wrap: wrap;
+        margin-bottom: 15px;
+    }
+
+    .footer-link {
+        color: #1565c0;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        background: none;
+        border: none;
+        transition: color 0.3s;
+    }
+
+    .footer-link:hover {
+        color: #0d47a1;
+        text-decoration: underline;
+    }
+
+    .footer-copyright {
+        color: #666;
+        font-size: 13px;
+        margin-top: 10px;
+    }
+
+    /* Cookie Banner */
+    .cookie-banner {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.95);
+        color: white;
+        padding: 20px;
+        z-index: 9999;
+        display: none;
+    }
+
+    .cookie-banner.show {
+        display: block;
+    }
+
+    .cookie-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .cookie-content p {
+        margin: 0;
+        font-size: 14px;
+        flex: 1;
+    }
+
+    .cookie-link {
+        color: #64b5f6;
+        text-decoration: underline;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        padding: 0;
+    }
+
+    .cookie-accept {
+        background: #4caf50;
+        color: white;
+        border: none;
+        padding: 10px 30px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .cookie-accept:hover {
+        background: #45a049;
+    }
+
+    /* Feedback */
     .feedback-float {
         position: fixed;
         bottom: 30px;
@@ -796,7 +787,6 @@
         box-shadow: 0 6px 20px rgba(21, 101, 192, 0.4);
     }
     
-    /* Feedback Modal */
     .feedback-modal {
         display: none;
         position: fixed;
@@ -886,269 +876,32 @@
         background: #0d47a1;
     }
     
-    @media (max-width: 968px) {
-        .two-column-layout {
-            grid-template-columns: 1fr;
-        }
-
-        .inquiries-display-section {
-            max-height: none;
-        }
-    }
-
     @media (max-width: 768px) {
-        .logo {
-            font-size: 36px;
-        }
-        
-        .tagline {
-            font-size: 22px;
-        }
-        
-        .description {
-            font-size: 16px;
-        }
-        
-        .search-container {
-            flex-direction: column;
-            border-radius: 20px;
-        }
-        
-        .search-input {
-            width: 100%;
-            text-align: center;
-        }
-        
-        .search-btn {
-            width: 100%;
-        }
-        
-        .nav-bar {
-            justify-content: center;
-        }
-        
-        .nav-links {
-            justify-content: center;
-        }
-
-        .inquiries-header h1,
-        .promos-header h1 {
-            font-size: 28px;
-        }
-
-        .promo-operator {
-            font-size: 24px;
-        }
-
-        .discount-amount {
-            font-size: 36px;
-        }
-
-        .promo-contact {
-            flex-direction: column;
-        }
-
-        .promo-btn {
-            min-width: 100%;
-        }
+        .logo { font-size: 36px; }
+        .tagline { font-size: 22px; }
+        .description { font-size: 16px; }
+        .search-container { flex-direction: column; border-radius: 20px; }
+        .search-input { width: 100%; text-align: center; }
+        .search-btn { width: 100%; }
+        .nav-bar { justify-content: center; }
+        .nav-links { justify-content: center; }
+        .promos-header h1 { font-size: 28px; }
+        .promo-operator { font-size: 24px; }
+        .discount-amount { font-size: 36px; }
+        .promo-contact { flex-direction: column; }
+        .promo-btn { min-width: 100%; }
+        .about-section { padding: 25px; }
+        .about-section h1 { font-size: 28px; }
+        .about-section h2 { font-size: 20px; }
+        .footer-links { flex-direction: column; gap: 12px; }
+        .cookie-content { flex-direction: column; text-align: center; }
+        .cookie-accept { width: 100%; }
     }
-
-  /* Footer Styles */
-    .site-footer {
-        background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
-        color: white;
-        margin-top: 80px;
-        padding: 50px 20px 20px 20px;
-    }
-    
-    .footer-content {
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-    
-    .footer-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 40px;
-        margin-bottom: 40px;
-    }
-    
-    .footer-section h3 {
-        font-size: 18px;
-        margin-bottom: 15px;
-        font-weight: 600;
-    }
-    
-    .footer-section p {
-        font-size: 14px;
-        line-height: 1.6;
-        opacity: 0.9;
-    }
-    
-    .footer-links {
-        list-style: none;
-        padding: 0;
-    }
-    
-    .footer-links li {
-        margin-bottom: 10px;
-    }
-    
-    .footer-links a {
-        color: white;
-        text-decoration: none;
-        font-size: 14px;
-        opacity: 0.9;
-        transition: opacity 0.3s;
-        cursor: pointer;
-    }
-    
-    .footer-links a:hover {
-        opacity: 1;
-        text-decoration: underline;
-    }
-    
-    .footer-bottom {
-        border-top: 1px solid rgba(255, 255, 255, 0.2);
-        padding-top: 20px;
-        text-align: center;
-        font-size: 14px;
-        opacity: 0.9;
-    }
-    
-    .footer-privacy-notice {
-        background: rgba(255, 255, 255, 0.1);
-        padding: 15px;
-        border-radius: 8px;
-        font-size: 13px;
-        line-height: 1.6;
-        margin-bottom: 20px;
-    }
-    
-    .footer-privacy-notice a {
-        color: white;
-        text-decoration: underline;
-        font-weight: 600;
-    }
-    
-    /* Legal Pages Modal */
-    .legal-modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        z-index: 3000;
-        padding: 20px;
-        overflow-y: auto;
-    }
-    
-    .legal-modal.active {
-        display: block;
-    }
-    
-    .legal-content {
-        background: white;
-        border-radius: 15px;
-        padding: 40px;
-        max-width: 900px;
-        margin: 40px auto;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-        color: #333;
-    }
-    
-    .legal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 30px;
-        border-bottom: 2px solid #1565c0;
-        padding-bottom: 20px;
-    }
-    
-    .legal-header h2 {
-        color: #1565c0;
-        font-size: 28px;
-        margin: 0;
-    }
-    
-    .legal-close {
-        background: #f1f3f4;
-        border: none;
-        font-size: 28px;
-        color: #666;
-        cursor: pointer;
-        padding: 5px 15px;
-        border-radius: 8px;
-        transition: all 0.3s;
-    }
-    
-    .legal-close:hover {
-        background: #e8eaed;
-        color: #333;
-    }
-    
-    .legal-body {
-        line-height: 1.8;
-        font-size: 15px;
-    }
-    
-    .legal-body h3 {
-        color: #1565c0;
-        font-size: 20px;
-        margin-top: 30px;
-        margin-bottom: 15px;
-    }
-    
-    .legal-body p {
-        margin-bottom: 15px;
-    }
-    
-    .legal-body ul {
-        margin: 15px 0;
-        padding-left: 25px;
-    }
-    
-    .legal-body li {
-        margin-bottom: 8px;
-    }
-    
-    .legal-body strong {
-        color: #202124;
-    }
-    
-    .legal-updated {
-        background: #f8f9fa;
-        padding: 10px 15px;
-        border-radius: 8px;
-        font-size: 14px;
-        color: #666;
-        margin-bottom: 20px;
-    }
-
-    /* Add to existing mobile media query */
-    @media (max-width: 768px) {
-        .footer-grid {
-            grid-template-columns: 1fr;
-            gap: 30px;
-        }
-        
-        .legal-content {
-            padding: 25px;
-            margin: 20px auto;
-        }
-        
-        .legal-header h2 {
-            font-size: 22px;
-        }
-    }  
 </style>
 </head>
 <body>
 
-<!-- Navigation Bar -->
+<!-- Navigation - NO DUPLICATE ABOUT US -->
 <div class="nav-bar">
     <div class="nav-logo" onclick="showPage('home')">OOHPhilippines.com</div>
     <div class="nav-links">
@@ -1167,12 +920,7 @@
         <p class="description">Browse real locations, compare sites, and plan your next OOH campaign with confidence.</p>
         
         <div class="search-container">
-            <input 
-                type="text" 
-                class="search-input" 
-                id="mainSearch"
-                placeholder="Search by location, highway, or area..."
-            >
+            <input type="text" class="search-input" id="mainSearch" placeholder="Search by location, highway, or area...">
             <button class="search-btn" onclick="searchFromHome()">Search</button>
         </div>
         
@@ -1190,14 +938,12 @@
 <div id="inventoryPage" class="page">
     <div class="inventory-container">
         <h1 class="inventory-title">Billboard Inventory</h1>
-
         <div class="search-filter-container">
             <input type="text" class="search-box" id="searchInput" placeholder="🔍 Search by location or site name...">
             <div class="filter-group">
                 <select class="filter-select" id="locationFilter">
                     <option value="">All Locations</option>
                     <option value="Monumento">Monumento</option>
-                    <option value="Balintawak">Balintawak</option>
                     <option value="EDSA">EDSA</option>
                     <option value="C5">C5</option>
                     <option value="SLEX">SLEX</option>
@@ -1207,19 +953,16 @@
                     <option value="">All Directions</option>
                     <option value="Northbound">Northbound</option>
                     <option value="Southbound">Southbound</option>
-                    <option value="Eastbound">Eastbound</option>
-                    <option value="Westbound">Westbound</option>
                 </select>
                 <select class="filter-select" id="typeFilter">
                     <option value="">All Types</option>
                     <option value="Static">Static</option>
                     <option value="Digital">Digital</option>
-                    <option value="Lamp Post Banners">LPB</option>
                 </select>
                 <button class="clear-btn" onclick="clearFilters()">Clear All</button>
             </div>
-        </div>      
-
+        </div>
+            
 <!-- Billboard Card Example (only showing first one, rest would follow same pattern) -->
         <div class="billboard-card">
             <iframe class="map-window" 
@@ -8882,7 +8625,7 @@
         </div>
     </div>
  </div>
-   
+
 <!-- Promos Page -->
 <div id="promosPage" class="page">
     <div class="promos-container">
@@ -8890,248 +8633,128 @@
             <h1>🎉 Special Promotions</h1>
             <p>Exclusive deals from billboard operators across the Philippines</p>
         </div>
-
-        <!-- Add Promo CTA -->
+        
         <div class="add-promo-section">
             <h2>Billboard Operator?</h2>
             <p>List your promotional offers and reach more advertisers</p>
-            <a href="mailto:info@oohphilippines.com?subject=Add Promo - Billboard Operator" class="add-promo-btn">
-                ➕ Submit Your Promo
-            </a>
+            <a href="mailto:info@oohphilippines.com?subject=Add Promo - Billboard Operator" class="add-promo-btn">➕ Submit Your Promo</a>
         </div>
 
-        <!-- Promo Card 1 -->
+        <!-- Sample Promo Card 1 -->
         <div class="promo-card">
             <div class="promo-badge">LIMITED TIME</div>
             <div class="promo-header">
                 <div class="promo-operator">HD Digital Signs</div>
-                <div class="promo-title">New Year Special - Digital Billboard Package</div>
-                <div class="promo-validity">⏰ Valid until March 31, 2026</div>
+                <div class="promo-title">Digital Billboard Campaign Special</div>
+                <div class="promo-validity">Valid until March 31, 2026</div>
             </div>
             <div class="promo-body">
-                <div class="promo-description">
-                    Kick off your 2026 campaigns with our exclusive digital billboard package! Get premium visibility across Metro Manila's busiest routes with our state-of-the-art LED displays.
-                </div>
-                
                 <div class="promo-discount">
                     <div class="discount-amount">30% OFF</div>
-                    <div class="discount-text">On 3-month digital billboard contracts</div>
+                    <div class="discount-text">First Month Digital Billboard Rates</div>
                 </div>
-
+                <p class="promo-description">
+                    Launch your brand with impact on our premium LED screens across Metro Manila. Perfect for product launches and brand campaigns.
+                </p>
                 <div class="promo-features">
-                    <h3>Package Includes:</h3>
+                    <h3>What's Included:</h3>
                     <ul>
-                        <li>Premium digital billboard slots on EDSA and C5</li>
-                        <li>15-second ad rotation every 2 minutes</li>
+                        <li>30% discount on first month rental</li>
                         <li>Free creative design assistance</li>
-                        <li>Real-time campaign monitoring</li>
-                        <li>Flexible payment terms available</li>
+                        <li>Prime locations along EDSA and C5</li>
+                        <li>Flexible scheduling options</li>
                     </ul>
                 </div>
-
                 <div class="promo-contact">
-                    <a href="mailto:info@oohphilippines.com?subject=Inquiry: HD Digital Signs New Year Promo" class="promo-btn promo-btn-primary">
-                        📧 Get This Deal
-                    </a>
-                    <a href="tel:+639178316041" class="promo-btn promo-btn-secondary">
-                        📱 Call Now
-                    </a>
-                    <a href="https://hddigitalsigns.com/" target="_blank" class="promo-btn promo-btn-secondary">
-                        🌐 Visit Website
-                    </a>
+                    <a href="mailto:info@oohphilippines.com?subject=Promo Inquiry - HD Digital Signs" class="promo-btn promo-btn-primary">📧 Inquire Now</a>
+                    <a href="viber://chat?number=639178316041" class="promo-btn promo-btn-secondary">💬 Viber</a>
                 </div>
             </div>
         </div>
 
-        <!-- Promo Card 2 - Example -->
+        <!-- Sample Promo Card 2 -->
         <div class="promo-card">
-            <div class="promo-badge">HOT DEAL</div>
+            <div class="promo-badge">BEST VALUE</div>
             <div class="promo-header">
-                <div class="promo-operator">Metro Billboard Network</div>
-                <div class="promo-title">Provincial Expansion Package</div>
-                <div class="promo-validity">⏰ Valid until April 15, 2026</div>
+                <div class="promo-operator">Metro Billboard Co.</div>
+                <div class="promo-title">Static Billboard Bundle Package</div>
+                <div class="promo-validity">Valid until April 15, 2026</div>
             </div>
             <div class="promo-body">
-                <div class="promo-description">
-                    Expand your brand presence beyond Metro Manila! Special rates for advertisers looking to reach provincial markets with our strategic billboard placements.
-                </div>
-                
                 <div class="promo-discount">
                     <div class="discount-amount">25% OFF</div>
-                    <div class="discount-text">Bundle of 5+ provincial sites</div>
+                    <div class="discount-text">Book 3 Months, Get 1 Month Free</div>
                 </div>
-
+                <p class="promo-description">
+                    Maximize your reach with our strategic static billboard locations. Ideal for sustained brand visibility campaigns.
+                </p>
                 <div class="promo-features">
-                    <h3>Special Offer Details:</h3>
+                    <h3>Package Benefits:</h3>
                     <ul>
-                        <li>Coverage in Cebu, Davao, and Iloilo</li>
-                        <li>High-traffic locations near malls and highways</li>
-                        <li>6-month minimum contract</li>
-                        <li>Free installation and printing for static billboards</li>
-                        <li>Monthly performance reports included</li>
+                        <li>Book 3 months, get 4th month FREE</li>
+                        <li>High-traffic locations nationwide</li>
+                        <li>Free installation and removal</li>
+                        <li>Illuminated options available</li>
                     </ul>
                 </div>
-
                 <div class="promo-contact">
-                    <a href="mailto:info@oohphilippines.com?subject=Inquiry: Metro Billboard Provincial Package" class="promo-btn promo-btn-primary">
-                        📧 Learn More
-                    </a>
-                    <a href="tel:+639171234567" class="promo-btn promo-btn-secondary">
-                        📱 Contact Us
-                    </a>
+                    <a href="mailto:info@oohphilippines.com?subject=Promo Inquiry - Metro Billboard" class="promo-btn promo-btn-primary">📧 Get Details</a>
+                    <a href="https://wa.me/639178316041" class="promo-btn promo-btn-secondary">📱 WhatsApp</a>
                 </div>
             </div>
         </div>
 
-        <!-- Promo Card 3 - Example -->
+        <!-- Sample Promo Card 3 -->
         <div class="promo-card">
-            <div class="promo-badge">FLASH SALE</div>
+            <div class="promo-badge">NEW</div>
             <div class="promo-header">
                 <div class="promo-operator">SkyHigh Advertising</div>
-                <div class="promo-title">NLEX & SLEX Highway Super Bundle</div>
-                <div class="promo-validity">⏰ Valid until February 28, 2026</div>
+                <div class="promo-title">Highway Visibility Package</div>
+                <div class="promo-validity">Valid until May 30, 2026</div>
             </div>
             <div class="promo-body">
-                <div class="promo-description">
-                    Maximize your highway visibility! Book both NLEX and SLEX billboard packages together and save big on your expressway advertising campaign.
-                </div>
-                
                 <div class="promo-discount">
                     <div class="discount-amount">40% OFF</div>
-                    <div class="discount-text">When you book both NLEX + SLEX</div>
+                    <div class="discount-text">Multi-Site Highway Bundle</div>
                 </div>
-
+                <p class="promo-description">
+                    Dominate major highways with our strategic multi-billboard packages. Perfect for regional and national campaigns.
+                </p>
                 <div class="promo-features">
-                    <h3>Bundle Benefits:</h3>
+                    <h3>Bundle Includes:</h3>
                     <ul>
-                        <li>Strategic locations at major exits and toll gates</li>
-                        <li>Large format billboards (up to 20ft x 60ft)</li>
-                        <li>Both northbound and southbound visibility</li>
-                        <li>LED illumination included</li>
-                        <li>Minimum 12-month contract required</li>
-                        <li>Free quarterly billboard maintenance</li>
+                        <li>3+ billboards on NLEX/SLEX routes</li>
+                        <li>Up to 40% discount on bundle rates</li>
+                        <li>Free traffic and impressions report</li>
+                        <li>Priority site selection</li>
                     </ul>
                 </div>
-
                 <div class="promo-contact">
-                    <a href="mailto:info@oohphilippines.com?subject=Inquiry: SkyHigh NLEX SLEX Bundle" class="promo-btn promo-btn-primary">
-                        📧 Book This Bundle
-                    </a>
-                    <a href="https://wa.me/639189876543" target="_blank" class="promo-btn promo-btn-secondary">
-                        💬 WhatsApp Us
-                    </a>
+                    <a href="mailto:info@oohphilippines.com?subject=Promo Inquiry - SkyHigh" class="promo-btn promo-btn-primary">📧 Learn More</a>
+                    <a href="viber://chat?number=639178316041" class="promo-btn promo-btn-secondary">💬 Contact Us</a>
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 
-<!-- Advertiser Inquiries Page -->
+<!-- Inquiries Page -->
 <div id="inquiriesPage" class="page">
     <div class="promos-container">
         <div class="promos-header">
             <h1>📢 Looking for Billboard Sites?</h1>
-            <p>Post your requirements and connect with billboard operators across the Philippines</p>
+            <p>Post your requirements and connect with billboard operators</p>
         </div>
-
-        <!-- Submit Inquiry CTA -->
+        
         <div class="add-promo-section">
-            <h2>Advertiser?</h2>
-            <p>Post your billboard requirements and let operators reach out to you</p>
-            <button class="add-promo-btn" onclick="toggleInquiryForm()">
-                ➕ Post Your Requirements
-            </button>
+            <h2>Need Specific Locations?</h2>
+            <p>Tell us what you're looking for and we'll help you find the perfect billboard sites</p>
+            <a href="mailto:info@oohphilippines.com?subject=Billboard Site Request" class="add-promo-btn">📝 Submit Your Requirements</a>
         </div>
+    </div>
+</div>
 
-        <!-- Inquiry Form (Hidden by Default) -->
-        <div id="inquiryFormSection" style="display: none;">
-            <div class="promo-card" style="max-width: 700px; margin: 0 auto 40px auto;">
-                <div class="promo-header" style="background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);">
-                    <div class="promo-operator">Post Your Requirements</div>
-                    <div class="promo-title">Fill out the form below to connect with billboard operators</div>
-                </div>
-                <div class="promo-body">
-                    <div class="success-message" id="successMessage" style="background: #4caf50; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none;">
-                        ✓ Your inquiry has been submitted successfully! Operators will contact you directly.
-                    </div>
-                    <div class="error-message" id="errorMessage" style="background: #f44336; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none;">
-                        ✗ Something went wrong. Please try again or email us directly.
-                    </div>
-                    
-                    <form id="inquiryForm">
-                        <div class="form-group">
-                            <label>Company/Brand Name *</label>
-                            <input type="text" id="companyName" required placeholder="Enter your company name">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Contact Person *</label>
-                            <input type="text" id="contactPerson" required placeholder="Your name">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Email *</label>
-                            <input type="email" id="email" required placeholder="your@email.com">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Phone Number *</label>
-                            <input type="tel" id="phone" required placeholder="+63 XXX XXX XXXX">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Preferred Location *</label>
-                            <select id="location" required>
-                                <option value="">Select location</option>
-                                <option value="Metro Manila">Metro Manila</option>
-                                <option value="EDSA">EDSA</option>
-                                <option value="C5">C5 Road</option>
-                                <option value="SLEX">SLEX</option>
-                                <option value="NLEX">NLEX</option>
-                                <option value="Provincial">Provincial</option>
-                                <option value="Nationwide">Nationwide</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Billboard Type *</label>
-                            <select id="billboardType" required>
-                                <option value="">Select type</option>
-                                <option value="Static">Static Billboard</option>
-                                <option value="Digital">Digital Billboard</option>
-                                <option value="Both">Both Static & Digital</option>
-                                <option value="Any">Any Type</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Budget Range</label>
-                            <select id="budget">
-                                <option value="">Select budget range</option>
-                                <option value="Under 100K">Under ₱100,000/month</option>
-                                <option value="100K-300K">₱100,000 - ₱300,000/month</option>
-                                <option value="300K-500K">₱300,000 - ₱500,000/month</option>
-                                <option value="500K+">₱500,000+/month</option>
-                                <option value="To Discuss">Prefer to Discuss</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Campaign Details *</label>
-                            <textarea id="details" required placeholder="Tell us about your campaign, timeline, specific requirements, etc."></textarea>
-                        </div>
-                        
-                        <div style="display: flex; gap: 10px;">
-                            <button type="submit" class="submit-btn" id="submitBtn" style="flex: 1;">Submit Requirements</button>
-                            <button type="button" class="submit-btn" onclick="toggleInquiryForm()" style="flex: 1; background: #666;">Cancel</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Inquiries Section -->
+<!-- Recent Inquiries Section -->
         <div style="text-align: center; margin: 40px 0 30px 0;">
             <h2 style="color: #1565c0; font-size: 32px; margin-bottom: 10px;">Recent Advertiser Requirements</h2>
             <p style="color: #666; font-size: 16px;">Billboard operators: Connect with advertisers looking for your sites</p>
@@ -9246,99 +8869,147 @@
             </div>
         </div>
 
+<!-- About Us Page -->
+<div id="aboutPage" class="page">
+    <div class="about-container">
+        <div class="about-section">
+            <h1>About OOHPhilippines.com</h1>
+            <p class="intro-text">Your one-stop hub for everything Out-of-Home advertising in the Philippines.</p>
+            
+            <p>This platform is built by an industry insider with <strong>30+ years in OOH</strong>. We understand the challenges of finding the right billboard locations, connecting with reliable operators, and planning effective campaigns.</p>
+
+            <h2>Our Mission</h2>
+            <p>To simplify OOH advertising in the Philippines by bringing together advertisers, media practitioners, suppliers, and industry partners in one accessible platform.</p>
+
+            <h2>What We Offer</h2>
+            <ul>
+                <li><strong>Billboard Directory:</strong> Browse available sites across the Philippines</li>
+                <li><strong>Industry Connections:</strong> Direct access to media owners and operators</li>
+                <li><strong>Special Promotions:</strong> Exclusive deals from billboard operators</li>
+                <li><strong>Industry Insights:</strong> Articles and resources to help you succeed</li>
+            </ul>
+
+            <h2>Who We Serve</h2>
+            <ul>
+                <li>Advertisers looking for billboard locations</li>
+                <li>Media practitioners and planners</li>
+                <li>Billboard operators and suppliers</li>
+                <li>Brands and advertising agencies</li>
+            </ul>
+
+            <h2>Contact Us</h2>
+            <div class="contact-info-box">
+                <p><strong>Email:</strong> <a href="mailto:info@oohphilippines.com">info@oohphilippines.com</a></p>
+                <p><strong>Viber:</strong> <a href="viber://chat?number=639178316041">+63 917 831 6041</a></p>
+                <p><strong>WhatsApp:</strong> <a href="https://wa.me/639178316041">+63 917 831 6041</a></p>
+            </div>
+
+            <p style="margin-top: 30px; text-align: center; color: #1976d2; font-weight: 500;">
+                Let's help the OOH industry move faster, work smarter, and grow stronger—together.
+            </p>
+        </div>
     </div>
 </div>
 
-<!-- Floating Feedback Button -->
-<div class="feedback-float">
-    <button class="feedback-btn" onclick="openFeedbackModal()">
-        💬 Feedback
-    </button>
-</div>
+<!-- TERMS & CONDITIONS PAGE -->
+<div id="termsPage" class="page">
+    <div class="about-container">
+        <div class="about-section">
+            <h1>Terms and Conditions</h1>
+            <p style="color: #666; text-align: center; margin-bottom: 30px;">Last updated: February 9, 2026</p>
+            
+            <p>Welcome to OOHPhilippines.com. By using this website, you agree to these Terms and Conditions. If you do not agree, please stop using the site.</p>
 
-<!-- Feedback Modal -->
-<div class="feedback-modal" id="feedbackModal">
-    <div class="feedback-content">
-        <div class="feedback-header">
-            <h3>💡 Help Us Improve</h3>
-            <button class="close-btn" onclick="closeFeedbackModal()">×</button>
+            <h2>1. Purpose of the Website</h2>
+            <p>OOHPhilippines.com is a platform created to help:</p>
+            <ul>
+                <li>Advertisers</li>
+                <li>Media practitioners</li>
+                <li>Out-of-Home suppliers</li>
+                <li>Industry partners</li>
+            </ul>
+            <p>find OOH-related services, contacts, and industry information in one place.</p>
+
+            <h2>2. Use of Content</h2>
+            <p>All content on this site is for general information only.</p>
+            
+            <h3>You may:</h3>
+            <ul>
+                <li>View pages</li>
+                <li>Share links</li>
+                <li>Use content for personal or business reference</li>
+            </ul>
+            
+            <h3>You may not:</h3>
+            <ul>
+                <li>Copy or republish content without permission</li>
+                <li>Use this site for illegal activities</li>
+                <li>Misuse any listings, data, or contact info</li>
+            </ul>
+
+            <h2>3. Accuracy of Information</h2>
+            <p>We aim to keep listings and articles accurate and updated. However, we do not guarantee that all info is complete, current, or error-free.</p>
+            <p>Users should always verify details directly with suppliers, media owners, or partners.</p>
+
+            <h2>4. Third-Party Listings and Links</h2>
+            <p>OOHPhilippines.com may feature third-party businesses, links, and services.</p>
+            <p>We do not control these third parties and are not responsible for:</p>
+            <ul>
+                <li>Their services</li>
+                <li>Their pricing</li>
+                <li>Their actions</li>
+                <li>Their policies</li>
+            </ul>
+            <p>Any transaction is between you and them.</p>
+
+            <h2>5. User Submissions</h2>
+            <p>If you submit content, listings, or inquiries:</p>
+            <ul>
+                <li>You confirm the info is accurate</li>
+                <li>You allow us to display it on the site</li>
+                <li>You agree not to post harmful or misleading content</li>
+            </ul>
+            <p>We reserve the right to remove content that violates these terms.</p>
+
+            <h2>6. Limitation of Liability</h2>
+            <p>OOHPhilippines.com is not liable for:</p>
+            <ul>
+                <li>Any loss or damage from using this site</li>
+                <li>Business losses</li>
+                <li>Errors or downtime</li>
+                <li>Third-party actions</li>
+            </ul>
+            <p><strong>Use the site at your own risk.</strong></p>
+
+            <h2>7. Changes to Terms</h2>
+            <p>We may update these Terms and Conditions anytime. Updates will be posted on this page with a new date.</p>
+
+            <h2>8. Contact</h2>
+            <div class="contact-info-box">
+                <p><strong>Email:</strong> <a href="mailto:info@oohphilippines.com">info@oohphilippines.com</a></p>
+                <p><strong>Website:</strong> www.oohphilippines.com</p>
+            </div>
+
+            <h2>Disclaimer</h2>
+            <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 20px; border-radius: 8px; margin-top: 20px;">
+                <p style="margin: 0;"><strong>Important:</strong> The content on OOHPhilippines.com is for general industry information only.</p>
+                <p style="margin: 10px 0 0 0;">We do not provide legal, financial, or professional advice. Any decision you make based on content from this site is your responsibility.</p>
+            </div>
         </div>
-        <form class="feedback-form">
-            <textarea id="modalFeedback" placeholder="Share your thoughts, suggestions, or report any issues..."></textarea>
-            <button type="button" onclick="submitModalFeedback()">Send Feedback</button>
-        </form>
     </div>
 </div>
 
-<!-- Site Footer -->
-<footer class="site-footer">
-    <div class="footer-content">
-        <!-- Privacy Notice -->
-        <div class="footer-privacy-notice">
-            <strong>🔒 Privacy:</strong> We respect your data. We only collect basic info to respond to inquiries and improve the site. We do not sell your personal data. 
-            <a onclick="openLegalModal('privacy')">Read our Privacy Policy</a>
-        </div>
-
-        <!-- Footer Grid -->
-        <div class="footer-grid">
-            <!-- About Section -->
-            <div class="footer-section">
-                <h3>OOHPhilippines.com</h3>
-                <p>Your one-stop platform for finding the best billboard and out-of-home advertising solutions across the Philippines.</p>
-            </div>
-
-            <!-- Quick Links -->
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul class="footer-links">
-                    <li><a onclick="showPage('home')">Home</a></li>
-                    <li><a onclick="showPage('inventory')">View Inventory</a></li>
-                    <li><a onclick="showPage('promos')">Promotions</a></li>
-                    <li><a onclick="showPage('inquiries')">Post Requirements</a></li>
-                </ul>
-            </div>
-
-            <!-- Legal -->
-            <div class="footer-section">
-                <h3>Legal</h3>
-                <ul class="footer-links">
-                    <li><a onclick="openLegalModal('privacy')">Privacy Policy</a></li>
-                    <li><a onclick="openLegalModal('terms')">Terms & Conditions</a></li>
-                    <li><a onclick="openLegalModal('disclaimer')">Disclaimer</a></li>
-                </ul>
-            </div>
-
-            <!-- Contact -->
-            <div class="footer-section">
-                <h3>Contact Us</h3>
-                <ul class="footer-links">
-                    <li>📧 <a href="mailto:info@oohphilippines.com">info@oohphilippines.com</a></li>
-                    <li>🌐 <a href="https://www.oohphilippines.com" target="_blank">www.oohphilippines.com</a></li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Footer Bottom -->
-        <div class="footer-bottom">
-            <p>&copy; 2026 OOHPhilippines.com. All rights reserved.</p>
-        </div>
-    </div>
-</footer>
-
-<!-- Privacy Policy Modal -->
-<div class="legal-modal" id="privacyModal">
-    <div class="legal-content">
-        <div class="legal-header">
-            <h2>Privacy Policy</h2>
-            <button class="legal-close" onclick="closeLegalModal('privacy')">×</button>
-        </div>
-        <div class="legal-body">
-            <div class="legal-updated">Last updated: February 9, 2026</div>
+<!-- PRIVACY POLICY PAGE -->
+<div id="privacyPage" class="page">
+    <div class="about-container">
+        <div class="about-section">
+            <h1>Privacy Policy</h1>
+            <p style="color: #666; text-align: center; margin-bottom: 30px;">Last updated: February 9, 2026</p>
             
             <p>At OOHPhilippines.com, your privacy matters. This page explains what info we collect, how we use it, and how we keep it safe.</p>
             <p><strong>By using this website, you agree to this Privacy Policy.</strong></p>
 
-            <h3>1. Information We Collect</h3>
+            <h2>1. Information We Collect</h2>
             <p>We may collect basic info when you:</p>
             <ul>
                 <li>Fill out a contact form</li>
@@ -9346,6 +9017,7 @@
                 <li>Sign up for updates or newsletters</li>
                 <li>Submit a listing or inquiry</li>
             </ul>
+            
             <p>This may include:</p>
             <ul>
                 <li>Name</li>
@@ -9354,6 +9026,7 @@
                 <li>Phone number</li>
                 <li>Any message you choose to share</li>
             </ul>
+            
             <p>We also collect non-personal info such as:</p>
             <ul>
                 <li>Browser type</li>
@@ -9363,7 +9036,7 @@
             </ul>
             <p>This helps us improve the site.</p>
 
-            <h3>2. How We Use Your Information</h3>
+            <h2>2. How We Use Your Information</h2>
             <p>We use your info to:</p>
             <ul>
                 <li>Reply to your messages or inquiries</li>
@@ -9374,7 +9047,7 @@
             </ul>
             <p><strong>We do not sell your personal data.</strong></p>
 
-            <h3>3. Cookies</h3>
+            <h2>3. Cookies</h2>
             <p>OOHPhilippines.com may use cookies to:</p>
             <ul>
                 <li>Understand how visitors use the site</li>
@@ -9383,7 +9056,7 @@
             </ul>
             <p>You can turn off cookies in your browser settings if you prefer.</p>
 
-            <h3>4. How We Protect Your Data</h3>
+            <h2>4. How We Protect Your Data</h2>
             <p>We take reasonable steps to protect your data using:</p>
             <ul>
                 <li>Secure systems</li>
@@ -9392,7 +9065,7 @@
             </ul>
             <p>No system is 100% secure, but we work hard to keep your info safe.</p>
 
-            <h3>5. Sharing of Information</h3>
+            <h2>5. Sharing of Information</h2>
             <p>We only share your info when:</p>
             <ul>
                 <li>You ask us to connect you with a media owner, supplier, or partner</li>
@@ -9401,10 +9074,10 @@
             </ul>
             <p><strong>We do not share your data with random third parties.</strong></p>
 
-            <h3>6. Third-Party Links</h3>
+            <h2>6. Third-Party Links</h2>
             <p>Our site may link to other websites. We are not responsible for their privacy rules or content. Please check their privacy policies too.</p>
 
-            <h3>7. Your Rights</h3>
+            <h2>7. Your Rights</h2>
             <p>You may:</p>
             <ul>
                 <li>Ask what data we have about you</li>
@@ -9414,593 +9087,121 @@
             </ul>
             <p>Just contact us and we will act within a reasonable time.</p>
 
-            <h3>8. Changes to This Policy</h3>
+            <h2>8. Changes to This Policy</h2>
             <p>We may update this Privacy Policy from time to time. Any changes will be posted on this page with a new date.</p>
 
-            <h3>9. Contact Us</h3>
-            <p>For privacy concerns or questions, contact:</p>
-            <ul>
-                <li><strong>Email:</strong> info@oohphilippines.com</li>
-                <li><strong>Website:</strong> www.oohphilippines.com</li>
-            </ul>
+            <h2>9. Contact Us</h2>
+            <div class="contact-info-box">
+                <p><strong>Email:</strong> <a href="mailto:info@oohphilippines.com">info@oohphilippines.com</a></p>
+                <p><strong>Website:</strong> www.oohphilippines.com</p>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Terms and Conditions Modal -->
-<div class="legal-modal" id="termsModal">
-    <div class="legal-content">
-        <div class="legal-header">
-            <h2>Terms and Conditions</h2>
-            <button class="legal-close" onclick="closeLegalModal('terms')">×</button>
+<!-- FOOTER - APPEARS ON ALL PAGES -->
+<footer class="site-footer">
+    <div class="footer-content">
+        <div class="footer-links">
+            <button class="footer-link" onclick="showPage('about')">About Us</button>
+            <button class="footer-link" onclick="showPage('terms')">Terms & Conditions</button>
+            <button class="footer-link" onclick="showPage('privacy')">Privacy Policy</button>
+            <a href="mailto:info@oohphilippines.com" class="footer-link">Contact</a>
         </div>
-        <div class="legal-body">
-            <div class="legal-updated">Last updated: February 9, 2026</div>
-            
-            <p>Welcome to OOHPhilippines.com. By using this website, you agree to these Terms and Conditions. If you do not agree, please stop using the site.</p>
-
-            <h3>1. Purpose of the Website</h3>
-            <p>OOHPhilippines.com is a platform created to help:</p>
-            <ul>
-                <li>Advertisers</li>
-                <li>Media practitioners</li>
-                <li>Out-of-Home suppliers</li>
-                <li>Industry partners</li>
-            </ul>
-            <p>find OOH-related services, contacts, and industry information in one place.</p>
-
-            <h3>2. Use of Content</h3>
-            <p>All content on this site is for general information only.</p>
-            <p><strong>You may:</strong></p>
-            <ul>
-                <li>View pages</li>
-                <li>Share links</li>
-                <li>Use content for personal or business reference</li>
-            </ul>
-            <p><strong>You may not:</strong></p>
-            <ul>
-                <li>Copy or republish content without permission</li>
-                <li>Use this site for illegal activities</li>
-                <li>Misuse any listings, data, or contact info</li>
-            </ul>
-
-            <h3>3. Accuracy of Information</h3>
-            <p>We aim to keep listings and articles accurate and updated. However, we do not guarantee that all info is complete, current, or error-free.</p>
-            <p><strong>Users should always verify details directly with suppliers, media owners, or partners.</strong></p>
-
-            <h3>4. Third-Party Listings and Links</h3>
-            <p>OOHPhilippines.com may feature third-party businesses, links, and services.</p>
-            <p>We do not control these third parties and are not responsible for:</p>
-            <ul>
-                <li>Their services</li>
-                <li>Their pricing</li>
-                <li>Their actions</li>
-                <li>Their policies</li>
-            </ul>
-            <p><strong>Any transaction is between you and them.</strong></p>
-
-            <h3>5. User Submissions</h3>
-            <p>If you submit content, listings, or inquiries:</p>
-            <ul>
-                <li>You confirm the info is accurate</li>
-                <li>You allow us to display it on the site</li>
-                <li>You agree not to post harmful or misleading content</li>
-            </ul>
-            <p>We reserve the right to remove content that violates these terms.</p>
-
-            <h3>6. Limitation of Liability</h3>
-            <p>OOHPhilippines.com is not liable for:</p>
-            <ul>
-                <li>Any loss or damage from using this site</li>
-                <li>Business losses</li>
-                <li>Errors or downtime</li>
-                <li>Third-party actions</li>
-            </ul>
-            <p><strong>Use the site at your own risk.</strong></p>
-
-            <h3>7. Changes to Terms</h3>
-            <p>We may update these Terms and Conditions anytime. Updates will be posted on this page with a new date.</p>
-
-            <h3>8. Contact</h3>
-            <ul>
-                <li><strong>Email:</strong> info@oohphilippines.com</li>
-                <li><strong>Website:</strong> www.oohphilippines.com</li>
-            </ul>
+        <div class="footer-copyright">
+            © 2026 OOHPhilippines.com. All rights reserved.
         </div>
+    </div>
+</footer>
+
+<!-- Cookie Banner -->
+<div class="cookie-banner" id="cookieBanner">
+    <div class="cookie-content">
+        <p>🍪 This website uses cookies to improve your experience. By using this site, you agree to our <button class="cookie-link" onclick="showPage('privacy'); closeCookieBanner();">Privacy Policy</button>.</p>
+        <button class="cookie-accept" onclick="closeCookieBanner()">Accept</button>
     </div>
 </div>
 
-<!-- Disclaimer Modal -->
-<div class="legal-modal" id="disclaimerModal">
-    <div class="legal-content">
-        <div class="legal-header">
-            <h2>Disclaimer</h2>
-            <button class="legal-close" onclick="closeLegalModal('disclaimer')">×</button>
+<!-- Feedback Button -->
+<div class="feedback-float">
+    <button class="feedback-btn" onclick="openFeedbackModal()">💬 Feedback</button>
+</div>
+
+<!-- Feedback Modal -->
+<div class="feedback-modal" id="feedbackModal">
+    <div class="feedback-content">
+        <div class="feedback-header">
+            <h3>💡 Help Us Improve</h3>
+            <button class="close-btn" onclick="closeFeedbackModal()">×</button>
         </div>
-        <div class="legal-body">
-            <div class="legal-updated">Last updated: February 9, 2026</div>
-            
-            <p>The content on OOHPhilippines.com is for general industry information only.</p>
-            
-            <p><strong>We do not provide legal, financial, or professional advice.</strong> Any decision you make based on content from this site is your responsibility.</p>
-
-            <h3>OOHPhilippines.com is not responsible for:</h3>
-            <ul>
-                <li>Errors or omissions</li>
-                <li>Actions taken based on site content</li>
-                <li>Third-party services or outcomes</li>
-            </ul>
-
-            <p><strong>Always do your own checks before engaging any supplier, media owner, or service provider.</strong></p>
-
-            <h3>No Warranties</h3>
-            <p>This website is provided "as is" without any warranties, express or implied. We make no guarantees about the accuracy, completeness, or reliability of any information on this site.</p>
-
-            <h3>External Links</h3>
-            <p>OOHPhilippines.com may contain links to external websites. We are not responsible for the content, accuracy, or practices of third-party sites.</p>
-
-            <h3>Use at Your Own Risk</h3>
-            <p>You acknowledge that any reliance on material on this site is at your own risk. We recommend conducting your own research and due diligence before making any business decisions.</p>
-
-            <h3>Contact</h3>
-            <p>If you have questions about this disclaimer:</p>
-            <ul>
-                <li><strong>Email:</strong> info@oohphilippines.com</li>
-                <li><strong>Website:</strong> www.oohphilippines.com</li>
-            </ul>
-        </div>
+        <form class="feedback-form">
+            <textarea id="modalFeedback" placeholder="Share your thoughts, suggestions, or report issues..."></textarea>
+            <button type="button" onclick="submitModalFeedback()">Send Feedback</button>
+        </form>
     </div>
-</div>   
+</div>
 
 <script>
-// ===== GOOGLE SHEETS CONFIGURATION =====
-// IMPORTANT: Replace this with your actual Google Apps Script Web App URL after deployment
-const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
-
-// For Promos - you can use the same URL or a different one
-const PROMOS_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
-
-// ===== PAGE NAVIGATION =====
+// Page Navigation System
 function showPage(pageName) {
     // Hide all pages
-    document.getElementById('homePage').classList.remove('active');
-    document.getElementById('inventoryPage').classList.remove('active');
-    document.getElementById('promosPage').classList.remove('active');
-    document.getElementById('inquiriesPage').classList.remove('active');
+    const pages = ['homePage', 'inventoryPage', 'promosPage', 'inquiriesPage', 'aboutPage', 'termsPage', 'privacyPage'];
+    pages.forEach(id => {
+        document.getElementById(id).classList.remove('active');
+    });
     
     // Show selected page
-    if (pageName === 'home') {
-        document.getElementById('homePage').classList.add('active');
-    } else if (pageName === 'inventory') {
-        document.getElementById('inventoryPage').classList.add('active');
-    } else if (pageName === 'promos') {
-        document.getElementById('promosPage').classList.add('active');
-        loadPromos(); // Load promos when page is shown
-    } else if (pageName === 'inquiries') {
-        document.getElementById('inquiriesPage').classList.add('active');
-        loadInquiries(); // Load inquiries when page is shown
-    }
-    
-    // Scroll to top
+    document.getElementById(pageName + 'Page').classList.add('active');
     window.scrollTo(0, 0);
 }
 
+// Search Functions
 function searchFromHome() {
     const searchTerm = document.getElementById('mainSearch').value;
+    showPage('inventory');
     if (searchTerm.trim()) {
-        showPage('inventory');
         document.getElementById('searchInput').value = searchTerm;
-        filterCards();
-    } else {
-        showPage('inventory');
     }
 }
 
 function goToInventory(area) {
     showPage('inventory');
     document.getElementById('searchInput').value = area;
-    filterCards();
 }
 
-// Allow Enter key on home search
+// Enter key support for home search
 document.getElementById('mainSearch').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
         searchFromHome();
     }
 });
 
-// ===== INVENTORY FILTERING =====
-const searchInput = document.getElementById('searchInput');
-const locationFilter = document.getElementById('locationFilter');
-const facingFilter = document.getElementById('facingFilter');
-const typeFilter = document.getElementById('typeFilter');
-const cards = document.querySelectorAll('.billboard-card');
-
-function filterCards() {
-    const searchTerm = searchInput.value.toLowerCase();
-    const location = locationFilter.value.toLowerCase();
-    const facing = facingFilter.value.toLowerCase();
-    const type = typeFilter.value.toLowerCase();
-    
-    cards.forEach(card => {
-        const cardText = card.textContent.toLowerCase();
-        const tag = card.querySelector('.tag').textContent.toLowerCase();
-        const specs = card.querySelector('.spec-grid').textContent.toLowerCase();
-        
-        const matchesSearch = cardText.includes(searchTerm);
-        const matchesLocation = !location || tag.includes(location);
-        const matchesFacing = !facing || specs.includes(facing);
-        const matchesType = !type || specs.includes(type);
-        
-        if (matchesSearch && matchesLocation && matchesFacing && matchesType) {
-            card.style.display = 'block';
-        } else {
-            card.style.display = 'none';
-        }
-    });
-}
-
+// Filter Functions
 function clearFilters() {
-    searchInput.value = '';
-    locationFilter.value = '';
-    facingFilter.value = '';
-    typeFilter.value = '';
-    filterCards();
+    document.getElementById('searchInput').value = '';
+    document.getElementById('locationFilter').value = '';
+    document.getElementById('facingFilter').value = '';
+    document.getElementById('typeFilter').value = '';
 }
 
-searchInput.addEventListener('input', filterCards);
-locationFilter.addEventListener('change', filterCards);
-facingFilter.addEventListener('change', filterCards);
-typeFilter.addEventListener('change', filterCards);
-
-// ===== ADVERTISER INQUIRIES FUNCTIONALITY =====
-
-// Toggle inquiry form visibility
-function toggleInquiryForm() {
-    const formSection = document.getElementById('inquiryFormSection');
-    if (formSection.style.display === 'none') {
-        formSection.style.display = 'block';
-        // Scroll to form
-        formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-        formSection.style.display = 'none';
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+// Cookie Banner Functions
+function showCookieBanner() {
+    const banner = document.getElementById('cookieBanner');
+    const accepted = localStorage.getItem('cookiesAccepted');
+    if (!accepted && banner) {
+        banner.classList.add('show');
     }
 }
 
-// Submit Inquiry Form
-document.getElementById('inquiryForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const submitBtn = document.getElementById('submitBtn');
-    const successMsg = document.getElementById('successMessage');
-    const errorMsg = document.getElementById('errorMessage');
-    
-    // Hide messages
-    successMsg.style.display = 'none';
-    errorMsg.style.display = 'none';
-    
-    // Disable button
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting...';
-    
-    // Collect form data
-    const formData = {
-        timestamp: new Date().toISOString(),
-        companyName: document.getElementById('companyName').value,
-        contactPerson: document.getElementById('contactPerson').value,
-        email: document.getElementById('email').value,
-        phone: document.getElementById('phone').value,
-        location: document.getElementById('location').value,
-        billboardType: document.getElementById('billboardType').value,
-        budget: document.getElementById('budget').value,
-        details: document.getElementById('details').value,
-        status: 'Pending'
-    };
-    
-    // Check if Google Script URL is configured
-    if (GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
-        // Simulate submission with mailto
-        const subject = 'New Billboard Inquiry - ' + formData.companyName;
-        const body = `New inquiry received:
-
-Company: ${formData.companyName}
-Contact: ${formData.contactPerson}
-Email: ${formData.email}
-Phone: ${formData.phone}
-Location: ${formData.location}
-Type: ${formData.billboardType}
-Budget: ${formData.budget}
-
-Details:
-${formData.details}`;
-        
-        const mailtoLink = `mailto:info@oohphilippines.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        window.location.href = mailtoLink;
-        
-        // Show success message
-        successMsg.style.display = 'block';
-        document.getElementById('inquiryForm').reset();
-        
-        setTimeout(() => {
-            successMsg.style.display = 'none';
-            toggleInquiryForm();
-        }, 3000);
-        
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Submit Requirements';
-        return;
-    }
-    
-    try {
-        const response = await fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData)
-        });
-        
-        // Show success message
-        successMsg.style.display = 'block';
-        
-        // Reset form
-        document.getElementById('inquiryForm').reset();
-        
-        // Reload inquiries and hide form after 2 seconds
-        setTimeout(() => {
-            loadInquiries();
-            successMsg.style.display = 'none';
-            toggleInquiryForm();
-        }, 2000);
-        
-    } catch (error) {
-        console.error('Error:', error);
-        errorMsg.textContent = '✗ Something went wrong. Please try again or contact us directly.';
-        errorMsg.style.display = 'block';
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Submit Requirements';
-    }
-});
-
-// Load Inquiries from Google Sheets
-async function loadInquiries() {
-    const inquiriesList = document.getElementById('inquiriesList');
-    const staticInquiries = document.querySelector('.static-inquiries');
-    
-    // Check if Google Script URL is configured
-    if (GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
-        // Keep static inquiries visible
-        return;
-    }
-    
-    // Hide static inquiries
-    if (staticInquiries) {
-        staticInquiries.style.display = 'none';
-    }
-    
-    inquiriesList.innerHTML = '<div class="loading-spinner">Loading inquiries...</div>';
-    
-    try {
-        const response = await fetch(GOOGLE_SCRIPT_URL + '?action=getInquiries');
-        const data = await response.json();
-        
-        if (data.inquiries && data.inquiries.length > 0) {
-            // Filter only approved inquiries
-            const approvedInquiries = data.inquiries.filter(inq => inq.status === 'Approved');
-            
-            if (approvedInquiries.length === 0) {
-                inquiriesList.innerHTML = '<div class="no-inquiries" style="text-align: center; padding: 40px; color: #999;"><p style="font-size: 18px;">No active inquiries yet. Be the first to post!</p></div>';
-                return;
-            }
-            
-            inquiriesList.innerHTML = approvedInquiries.map(inquiry => createInquiryCard(inquiry)).join('');
-        } else {
-            inquiriesList.innerHTML = '<div class="no-inquiries" style="text-align: center; padding: 40px; color: #999;"><p style="font-size: 18px;">No inquiries yet. Be the first to post!</p></div>';
-        }
-    } catch (error) {
-        console.error('Error loading inquiries:', error);
-        inquiriesList.innerHTML = `
-            <div style="background: #f44336; color: white; padding: 15px; border-radius: 8px; max-width: 600px; margin: 20px auto; text-align: center;">
-                Unable to load inquiries. Please refresh the page or try again later.
-            </div>
-        `;
+function closeCookieBanner() {
+    const banner = document.getElementById('cookieBanner');
+    if (banner) {
+        banner.classList.remove('show');
+        localStorage.setItem('cookiesAccepted', 'true');
     }
 }
 
-// Create inquiry card HTML
-function createInquiryCard(inquiry) {
-    const date = new Date(inquiry.timestamp);
-    const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-    
-    return `
-        <div class="promo-card">
-            <div class="promo-badge" style="background: linear-gradient(135deg, #4caf50, #66bb6a);">ACTIVE</div>
-            <div class="promo-header" style="background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);">
-                <div class="promo-operator">${escapeHtml(inquiry.companyName)}</div>
-                <div class="promo-title">Billboard Requirement</div>
-                <div class="promo-validity">📅 Posted: ${formattedDate}</div>
-            </div>
-            <div class="promo-body">
-                <div class="promo-description">
-                    ${escapeHtml(inquiry.details)}
-                </div>
-                
-                <div style="background: #f8f9fa; border-radius: 10px; padding: 20px; margin-bottom: 25px;">
-                    <h3 style="color: #1565c0; font-size: 16px; margin-bottom: 15px;">📋 Requirements:</h3>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; color: #455a64; font-size: 14px;">
-                        <div><strong style="color: #202124; display: block; margin-bottom: 3px;">📍 Location:</strong> ${escapeHtml(inquiry.location)}</div>
-                        <div><strong style="color: #202124; display: block; margin-bottom: 3px;">🎯 Type:</strong> ${escapeHtml(inquiry.billboardType)}</div>
-                        ${inquiry.budget ? `<div><strong style="color: #202124; display: block; margin-bottom: 3px;">💰 Budget:</strong> ${escapeHtml(inquiry.budget)}</div>` : ''}
-                        <div><strong style="color: #202124; display: block; margin-bottom: 3px;">👤 Contact:</strong> ${escapeHtml(inquiry.contactPerson)}</div>
-                    </div>
-                </div>
-
-                <div class="promo-contact">
-                    <a href="mailto:${escapeHtml(inquiry.email)}?subject=Billboard Proposal - ${escapeHtml(inquiry.companyName)}" class="promo-btn promo-btn-primary">
-                        📧 Send Proposal
-                    </a>
-                    <a href="tel:${escapeHtml(inquiry.phone)}" class="promo-btn promo-btn-secondary">
-                        📱 Call Advertiser
-                    </a>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-// Helper function to escape HTML to prevent XSS
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-// ===== PROMOS FUNCTIONALITY =====
-
-// Load Promos from Google Sheets
-async function loadPromos() {
-    const promosContainer = document.querySelector('.promos-container');
-    const addPromoSection = promosContainer.querySelector('.add-promo-section');
-    
-    // Check if Google Script URL is configured
-    if (PROMOS_SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
-        // Show static example promos if not configured
-        return; // Keep the hardcoded examples visible
-    }
-    
-    // Remove existing dynamic promos (keep add-promo section)
-    const existingPromos = promosContainer.querySelectorAll('.promo-card');
-    existingPromos.forEach(card => card.remove());
-    
-    // Add loading indicator after add-promo section
-    const loadingDiv = document.createElement('div');
-    loadingDiv.className = 'loading-spinner';
-    loadingDiv.textContent = 'Loading promotions...';
-    loadingDiv.id = 'promosLoading';
-    addPromoSection.insertAdjacentElement('afterend', loadingDiv);
-    
-    try {
-        const response = await fetch(PROMOS_SCRIPT_URL + '?action=getPromos');
-        const data = await response.json();
-        
-        // Remove loading indicator
-        const loader = document.getElementById('promosLoading');
-        if (loader) loader.remove();
-        
-        if (data.promos && data.promos.length > 0) {
-            // Create promo cards from Google Sheets data
-            data.promos.forEach(promo => {
-                const promoCard = createPromoCard(promo);
-                promosContainer.appendChild(promoCard);
-            });
-        } else {
-            // No active promos
-            const noPromosDiv = document.createElement('div');
-            noPromosDiv.className = 'no-inquiries';
-            noPromosDiv.innerHTML = '<p style="font-size: 18px; color: #666;">No active promotions at the moment. Check back soon!</p>';
-            promosContainer.appendChild(noPromosDiv);
-        }
-    } catch (error) {
-        console.error('Error loading promos:', error);
-        
-        // Remove loading indicator
-        const loader = document.getElementById('promosLoading');
-        if (loader) loader.remove();
-        
-        // Show error message
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'error-message';
-        errorDiv.style.display = 'block';
-        errorDiv.style.maxWidth = '600px';
-        errorDiv.style.margin = '20px auto';
-        errorDiv.textContent = 'Unable to load promotions. Please refresh the page or try again later.';
-        promosContainer.appendChild(errorDiv);
-    }
-}
-
-// Create a promo card element from promo data
-function createPromoCard(promo) {
-    const card = document.createElement('div');
-    card.className = 'promo-card';
-    
-    // Build features list HTML
-    let featuresHTML = '';
-    if (promo.features && promo.features.length > 0) {
-        const featuresList = promo.features.map(feature => 
-            `<li>${escapeHtml(feature)}</li>`
-        ).join('');
-        
-        featuresHTML = `
-            <div class="promo-features">
-                <h3>Package Includes:</h3>
-                <ul>${featuresList}</ul>
-            </div>
-        `;
-    }
-    
-    // Build contact buttons HTML
-    let contactHTML = '';
-    const buttons = [];
-    
-    if (promo.email) {
-        buttons.push(`
-            <a href="mailto:${escapeHtml(promo.email)}?subject=Inquiry: ${escapeHtml(promo.operatorName)} - ${escapeHtml(promo.promoTitle)}" 
-               class="promo-btn promo-btn-primary">
-                📧 Get This Deal
-            </a>
-        `);
-    }
-    
-    if (promo.phone) {
-        const cleanPhone = promo.phone.replace(/\s/g, '');
-        buttons.push(`
-            <a href="tel:${escapeHtml(cleanPhone)}" class="promo-btn promo-btn-secondary">
-                📱 Call Now
-            </a>
-        `);
-    }
-    
-    if (promo.website) {
-        buttons.push(`
-            <a href="${escapeHtml(promo.website)}" target="_blank" class="promo-btn promo-btn-secondary">
-                🌐 Visit Website
-            </a>
-        `);
-    }
-    
-    contactHTML = `<div class="promo-contact">${buttons.join('')}</div>`;
-    
-    // Build the complete card HTML
-    card.innerHTML = `
-        <div class="promo-badge">${escapeHtml(promo.badge || 'SPECIAL OFFER')}</div>
-        <div class="promo-header">
-            <div class="promo-operator">${escapeHtml(promo.operatorName)}</div>
-            <div class="promo-title">${escapeHtml(promo.promoTitle)}</div>
-            ${promo.validUntil ? `<div class="promo-validity">⏰ Valid until ${escapeHtml(promo.validUntil)}</div>` : ''}
-        </div>
-        <div class="promo-body">
-            ${promo.description ? `<div class="promo-description">${escapeHtml(promo.description)}</div>` : ''}
-            
-            ${promo.discountAmount ? `
-                <div class="promo-discount">
-                    <div class="discount-amount">${escapeHtml(promo.discountAmount)}</div>
-                    ${promo.discountText ? `<div class="discount-text">${escapeHtml(promo.discountText)}</div>` : ''}
-                </div>
-            ` : ''}
-            
-            ${featuresHTML}
-            ${contactHTML}
-        </div>
-    `;
-    
-    return card;
-}
-
-// ===== FEEDBACK FUNCTIONS =====
+// Feedback Modal Functions
 function openFeedbackModal() {
     document.getElementById('feedbackModal').classList.add('active');
 }
@@ -10017,15 +9218,13 @@ function submitModalFeedback() {
         return;
     }
     
-    const subject = 'Website Feedback - OOHPhilippines.com';
-    const body = `Feedback:\n\n${feedback}\n\n---\nSubmitted from: ${window.location.href}`;
-    const mailtoLink = `mailto:info@oohphilippines.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    // Send feedback via email
+    window.location.href = `mailto:info@oohphilippines.com?subject=Website Feedback&body=${encodeURIComponent(feedback)}`;
     
-    window.location.href = mailtoLink;
-    
+    // Close modal after short delay
     setTimeout(() => {
         closeFeedbackModal();
-        alert('Thank you for your feedback!');
+        alert('Thank you for your feedback! Your email client should open now.');
     }, 500);
 }
 
@@ -10036,56 +9235,11 @@ document.getElementById('feedbackModal').addEventListener('click', function(e) {
     }
 });
 
-// ===== INITIALIZE =====
-// Load inquiries on page load if on inquiries page
+// Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
-    // You can add any initialization code here
+    showCookieBanner();
     console.log('OOHPhilippines.com loaded successfully!');
 });
-
-// ===== LEGAL MODAL FUNCTIONS =====
-function openLegalModal(type) {
-    if (type === 'privacy') {
-        document.getElementById('privacyModal').classList.add('active');
-    } else if (type === 'terms') {
-        document.getElementById('termsModal').classList.add('active');
-    } else if (type === 'disclaimer') {
-        document.getElementById('disclaimerModal').classList.add('active');
-    }
-    // Prevent body scroll when modal is open
-    document.body.style.overflow = 'hidden';
-}
-
-function closeLegalModal(type) {
-    if (type === 'privacy') {
-        document.getElementById('privacyModal').classList.remove('active');
-    } else if (type === 'terms') {
-        document.getElementById('termsModal').classList.remove('active');
-    } else if (type === 'disclaimer') {
-        document.getElementById('disclaimerModal').classList.remove('active');
-    }
-    // Restore body scroll
-    document.body.style.overflow = 'auto';
-}
-
-// Close legal modals when clicking outside
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('legal-modal')) {
-        e.target.classList.remove('active');
-        document.body.style.overflow = 'auto';
-    }
-});
-
-// Close legal modals with Escape key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        const modals = document.querySelectorAll('.legal-modal.active');
-        modals.forEach(modal => {
-            modal.classList.remove('active');
-        });
-        document.body.style.overflow = 'auto';
-    }
-});   
 </script>
 
 </body>
