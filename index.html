@@ -1177,11 +1177,12 @@
         </div>
         
         <div class="quick-links">
-            <span class="quick-link" onclick="goToInventory('edsa')">EDSA Billboards</span>
-            <span class="quick-link" onclick="goToInventory('c5')">C5 Road</span>
-            <span class="quick-link" onclick="goToInventory('slex')">SLEX</span>
-            <span class="quick-link" onclick="goToInventory('nlex')">NLEX</span>
-            <span class="quick-link" onclick="goToInventory('metro')">Metro Manila</span>
+            <span class="quick-link" onclick="goToInventory('EDSA')">EDSA Billboards</span>
+            <span class="quick-link" onclick="goToInventory('C5')">C5 Road</span>
+            <span class="quick-link" onclick="goToInventory('SLEX')">SLEX</span>
+            <span class="quick-link" onclick="goToInventory('NLEX')">NLEX</span>
+            <span class="quick-link" onclick="goToInventory('Metro Manila')">Metro Manila</span>
+            <span class="quick-link" onclick="goToInventory('Provincial')">Provincial</span>
         </div>
     </div>
 </div>
@@ -1555,34 +1556,41 @@
     <div class="inventory-container">
         <h1 class="inventory-title">Billboard Inventory</h1>
 
-        <div class="search-filter-container">
-            <input type="text" class="search-box" id="searchInput" placeholder="🔍 Search by location or site name...">
-            <div class="filter-group">
-                <select class="filter-select" id="locationFilter">
-                    <option value="">All Locations</option>
-                    <option value="Monumento">Monumento</option>
-                    <option value="Balintawak">Balintawak</option>
-                    <option value="EDSA">EDSA</option>
-                    <option value="C5">C5</option>
-                    <option value="SLEX">SLEX</option>
-                    <option value="NLEX">NLEX</option>
-                </select>
-                <select class="filter-select" id="facingFilter">
-                    <option value="">All Directions</option>
-                    <option value="Northbound">Northbound</option>
-                    <option value="Southbound">Southbound</option>
-                    <option value="Eastbound">Eastbound</option>
-                    <option value="Westbound">Westbound</option>
-                </select>
-                <select class="filter-select" id="typeFilter">
-                    <option value="">All Types</option>
-                    <option value="Static">Static</option>
-                    <option value="Digital">Digital</option>
-                    <option value="Lamp Post Banners">LPB</option>
-                </select>
-                <button class="clear-btn" onclick="clearFilters()">Clear All</button>
-            </div>
-        </div>      
+        <div class="search-container" style="max-width: 650px; width: 100%; margin-bottom: 20px;">
+    <input 
+        type="text" 
+        class="search-input" 
+        id="searchInput"
+        placeholder="Search by location, highway, or area..."
+    >
+    <button class="search-btn" onclick="filterCards()">Search</button>
+</div>
+
+<div class="quick-links" style="margin-top: 0; margin-bottom: 30px;">
+    <select class="filter-select" id="locationFilter" style="border-radius: 20px; background: rgba(255,255,255,0.85); border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08); color: #1565c0; font-weight: 500; padding: 10px 18px; font-size: 15px;">
+        <option value="">All Locations</option>
+        <option value="EDSA">EDSA</option>
+        <option value="C5">C5</option>
+        <option value="SLEX">SLEX</option>
+        <option value="NLEX">NLEX</option>
+        <option value="MetroManila">MetroManila</option>
+        <option value="Provincial">Provincial</option> 
+    </select>
+    <select class="filter-select" id="facingFilter" style="border-radius: 20px; background: rgba(255,255,255,0.85); border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08); color: #1565c0; font-weight: 500; padding: 10px 18px; font-size: 15px;">
+        <option value="">All Directions</option>
+        <option value="Northbound">Northbound</option>
+        <option value="Southbound">Southbound</option>
+        <option value="Eastbound">Eastbound</option>
+        <option value="Westbound">Westbound</option>
+    </select>
+    <select class="filter-select" id="typeFilter" style="border-radius: 20px; background: rgba(255,255,255,0.85); border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08); color: #1565c0; font-weight: 500; padding: 10px 18px; font-size: 15px;">
+        <option value="">All Types</option>
+        <option value="Static">Static</option>
+        <option value="Digital">LED</option>
+        <option value="Lamp Post Banners">LPB</option>
+    </select>
+    <span class="quick-link" onclick="clearFilters()" style="background: rgba(255,255,255,0.85);">Clear All</span>
+</div>      
 
 <!-- Billboard Card Example (only showing first one, rest would follow same pattern) -->
         <div class="billboard-card">
