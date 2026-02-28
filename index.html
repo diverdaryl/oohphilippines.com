@@ -1181,8 +1181,12 @@
             <span class="quick-link" onclick="goToInventory('C5')">C5 Road</span>
             <span class="quick-link" onclick="goToInventory('SLEX')">SLEX</span>
             <span class="quick-link" onclick="goToInventory('NLEX')">NLEX</span>
+            <span class="quick-link" onclick="goToInventory('COMMONWEALTH')">COMMONWEALTH</span>
+            <span class="quick-link" onclick="goToInventory('QUEZON AVE')">QUEZON AVE</span>
+            <span class="quick-link" onclick="goToInventory('ESPAÑA')">ESPAÑA</span>
+            <span class="quick-link" onclick="goToInventory('QUIAPO')">QUIAPO</span> 
             <span class="quick-link" onclick="goToInventory('Metro Manila')">Metro Manila</span>
-            <span class="quick-link" onclick="goToInventory('Provincial')">Provincial</span>
+            <span class="quick-link" onclick="goToInventory('PROVINCIAL')">PROVINCIAL</span> 
         </div>
     </div>
 </div>
@@ -1564,32 +1568,20 @@
         placeholder="Search by location, highway, or area..."
     >
     <button class="search-btn" onclick="filterCards()">Search</button>
+<button class="search-btn" onclick="clearFilters()" style="background: #fff; color: #1565c0; border: 2px solid #1565c0; margin-left: 8px;">Clear All</button>
 </div>
 
 <div class="quick-links" style="margin-top: 0; margin-bottom: 30px;">
-    <select class="filter-select" id="locationFilter" style="border-radius: 20px; background: rgba(255,255,255,0.85); border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08); color: #1565c0; font-weight: 500; padding: 10px 18px; font-size: 15px;">
-        <option value="">All Locations</option>
-        <option value="EDSA">EDSA</option>
-        <option value="C5">C5</option>
-        <option value="SLEX">SLEX</option>
-        <option value="NLEX">NLEX</option>
-        <option value="MetroManila">MetroManila</option>
-        <option value="Provincial">Provincial</option> 
-    </select>
-    <select class="filter-select" id="facingFilter" style="border-radius: 20px; background: rgba(255,255,255,0.85); border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08); color: #1565c0; font-weight: 500; padding: 10px 18px; font-size: 15px;">
-        <option value="">All Directions</option>
-        <option value="Northbound">Northbound</option>
-        <option value="Southbound">Southbound</option>
-        <option value="Eastbound">Eastbound</option>
-        <option value="Westbound">Westbound</option>
-    </select>
-    <select class="filter-select" id="typeFilter" style="border-radius: 20px; background: rgba(255,255,255,0.85); border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08); color: #1565c0; font-weight: 500; padding: 10px 18px; font-size: 15px;">
-        <option value="">All Types</option>
-        <option value="Static">Static</option>
-        <option value="Digital">LED</option>
-        <option value="Lamp Post Banners">LPB</option>
-    </select>
-    <span class="quick-link" onclick="clearFilters()" style="background: rgba(255,255,255,0.85);">Clear All</span>
+    <span class="quick-link" onclick="filterByTag('EDSA')">EDSA</span>
+    <span class="quick-link" onclick="filterByTag('C5')">C5</span>
+    <span class="quick-link" onclick="filterByTag('NLEX')">NLEX</span>
+    <span class="quick-link" onclick="filterByTag('SLEX')">SLEX</span>
+    <span class="quick-link" onclick="filterByTag('COMMONWEALTH')">COMMONWEALTH</span>
+    <span class="quick-link" onclick="filterByTag('QUEZON AVE')">QUEZON AVE</span>
+    <span class="quick-link" onclick="filterByTag('QUIAPO')">QUIAPO</span>
+    <span class="quick-link" onclick="filterByTag('BINONDO')">BINONDO</span> 
+    <span class="quick-link" onclick="filterByTag('METRO MANILA')">METRO MANILA</span>
+    <span class="quick-link" onclick="filterByTag('PROVINCIAL')">PROVINCIAL</span>
 </div>      
 
 <!-- Billboard Card Example (only showing first one, rest would follow same pattern) -->
@@ -1599,7 +1591,7 @@
                 allowfullscreen="" loading="lazy">
             </iframe>
             <div class="details">
-                <span class="tag">EDSA Monumento Circle A1 Northbound • Caloocan</span>
+                <span class="tag">EDSA A1 • Northbound • Caloocan</span>
                 <h2>Site: Monumento Circle AU1 AL1</h2>
                 <div class="spec-grid">
                     <div class="spec-item"><strong>Size</strong> Please Call 09178316041</div>
@@ -1623,8 +1615,8 @@
                 allowfullscreen="" loading="lazy">
             </iframe>
             <div class="details">
-                <span class="tag">EDSA North • Caloocan</span>
-                <h2>Site: Monumento Circle A2</h2>
+                <span class="tag">EDSA • Caloocan</span>
+                <h2>Site: Edsa Monumento Circle A2</h2>
                 <div class="spec-grid">
                     <div class="spec-item"><strong>Size</strong> Please Call 09178316041</div>
                     <div class="spec-item"><strong>Type</strong> Static</div>
@@ -1649,7 +1641,7 @@
                 allowfullscreen="" loading="lazy">
             </iframe>
             <div class="details">
-                <span class="tag">EDSA North • Caloocan</span>
+                <span class="tag">EDSA • Caloocan</span>
                 <h2>Site: Edsa Monumento Circle A3LED AL3 AR3</h2>
                 <div class="spec-grid">
                     <div class="spec-item"><strong>Size</strong> Please Inquire</div>
@@ -1698,8 +1690,8 @@
                 allowfullscreen="" loading="lazy">
             </iframe>
             <div class="details">
-                <span class="tag">EDSA North • Caloocan</span>
-                <h2>Site: Monumento A5</h2>
+                <span class="tag">EDSA • Caloocan</span>
+                <h2>Site: EDSA A5</h2>
                 <div class="spec-grid">
                     <div class="spec-item"><strong>Size</strong> Please Inquire</div>
                     <div class="spec-item"><strong>Type</strong> Static</div>
@@ -15167,7 +15159,7 @@
                 </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
-                    a href="mailto:inquiry@unmg.com.ph?subject=Inquiry: Commonwealth C570&body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" class="btn-contact">📧 Email Inquiry</a>
+                    <a href="mailto:inquiry@unmg.com.ph?subject=Inquiry: Commonwealth C570&body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" class="btn-contact">📧 Email Inquiry</a>
                     <a href="sms:+639175376543?body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-viber">💬 Send SMS</a>
                     <a href="viber://chat?number=+639175376543" target="_blank" class="btn-viber">💬 Message on Viber</a>
                     <a href="https://api.whatsapp.com/send?phone=639175376543&text=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-whatsapp">📱 WhatsApp</a>
@@ -15577,8 +15569,8 @@
                 </div>
             </div>
         </div>
-   </div>
-   </div>
+        </div>
+        </div>
 
 <!-- Lightbox -->
 <div id="lightbox" 
@@ -16275,47 +16267,41 @@ function escapeHtml(text) {
      
 // ===== INVENTORY FILTERING =====
 const searchInput = document.getElementById('searchInput');
-const locationFilter = document.getElementById('locationFilter');
-const facingFilter = document.getElementById('facingFilter');
-const typeFilter = document.getElementById('typeFilter');
 const cards = document.querySelectorAll('.billboard-card');
 
 function filterCards() {
     const searchTerm = searchInput.value.toLowerCase();
-    const location = locationFilter.value.toLowerCase();
-    const facing = facingFilter.value.toLowerCase();
-    const type = typeFilter.value.toLowerCase();
-    
     cards.forEach(card => {
         const cardText = card.textContent.toLowerCase();
-        const tag = card.querySelector('.tag').textContent.toLowerCase();
-        const specs = card.querySelector('.spec-grid').textContent.toLowerCase();
-        
-        const matchesSearch = cardText.includes(searchTerm);
-        const matchesLocation = !location || tag.includes(location);
-        const matchesFacing = !facing || specs.includes(facing);
-        const matchesType = !type || specs.includes(type);
-        
-        if (matchesSearch && matchesLocation && matchesFacing && matchesType) {
-            card.style.display = 'block';
-        } else {
-            card.style.display = 'none';
-        }
+        card.style.display = cardText.includes(searchTerm) ? 'block' : 'none';
+    });
+}
+
+function filterByTag(tag) {
+    document.querySelectorAll('.quick-link').forEach(btn => {
+        btn.style.background = 'rgba(255,255,255,0.7)';
+        btn.style.fontWeight = '500';
+    });
+    event.target.style.background = 'white';
+    event.target.style.fontWeight = '700';
+    const tagLower = tag.toLowerCase();
+    cards.forEach(card => {
+        const cardText = card.textContent.toLowerCase();
+        card.style.display = cardText.includes(tagLower) ? 'block' : 'none';
     });
 }
 
 function clearFilters() {
     searchInput.value = '';
-    locationFilter.value = '';
-    facingFilter.value = '';
-    typeFilter.value = '';
-    filterCards();
+    document.querySelectorAll('.quick-link').forEach(btn => {
+        btn.style.background = 'rgba(255,255,255,0.7)';
+        btn.style.fontWeight = '500';
+    });
+    cards.forEach(card => card.style.display = 'block');
 }
 
 searchInput.addEventListener('input', filterCards);
-locationFilter.addEventListener('change', filterCards);
 facingFilter.addEventListener('change', filterCards);
-typeFilter.addEventListener('change', filterCards);
 
 // ===== FEEDBACK FUNCTIONS =====
 function openFeedbackModal() {
