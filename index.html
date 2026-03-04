@@ -1151,7 +1151,38 @@
 
     .cookie-accept:hover {
         background: #45a049;
-    }  
+    
+    }
+
+    .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    padding: 30px;
+    flex-wrap: wrap;
+}
+
+.page-btn {
+    background: #1565c0;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.page-btn:hover { background: #0d47a1; }
+.page-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+.page-info {
+    color: #1565c0;
+    font-weight: 600;
+    font-size: 15px;
+} 
 </style>
 </head>
 <body>
@@ -21115,20 +21146,58 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('OOHPhilippines.com loaded successfully!');
 });
 
-// ===== LAZY LOAD IFRAMES =====
-document.addEventListener('DOMContentLoaded', function() {
-    const lazyIframes = document.querySelectorAll('iframe[data-src]');
-    const iframeObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const iframe = entry.target;
-                iframe.src = iframe.dataset.src;
-                iframeObserver.unobserve(iframe);
-            }
+// ===== PAGINATION =====
+function initPagination() {
+    const allCards = document.querySelectorAll('#inventoryPage .billboard-card');
+    const cardsPerPage = 10;
+    let currentPage = 1;
+    const totalPages = Math.ceil(allCards.length / cardsPerPage);
+
+    // Remove old pagination if exists
+    const oldPag = document.getElementById('paginationControls');
+    if (oldPag) oldPag.remove();
+
+    // Create pagination controls
+    const pagination = document.createElement('div');
+    pagination.className = 'pagination';
+    pagination.id = 'paginationControls';
+    pagination.innerHTML = `
+        <button class="page-btn" id="prevBtn" onclick="changePage(-1)">← Previous</button>
+        <span class="page-info" id="pageInfo"></span>
+        <button class="page-btn" id="nextBtn" onclick="changePage(1)">Next →</button>
+    `;
+    document.getElementById('inventoryPage').appendChild(pagination);
+
+    function showPage(page) {
+        currentPage = page;
+        const start = (page - 1) * cardsPerPage;
+        const end = start + cardsPerPage;
+
+        allCards.forEach((card, i) => {
+            card.style.display = (i >= start && i < end) ? 'block' : 'none';
         });
-    }, { rootMargin: '200px' });
-    lazyIframes.forEach(iframe => iframeObserver.observe(iframe));
-});     
+
+        document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+        document.getElementById('prevBtn').disabled = currentPage === 1;
+        document.getElementById('nextBtn').disabled = currentPage === totalPages;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    window.changePage = function(direction) {
+        showPage(currentPage + direction);
+    };
+
+    showPage(1);
+}
+
+// Run pagination when inventory page is shown
+const originalShowPage = window.showPage;
+window.showPage = function(pageName) {
+    originalShowPage(pageName);
+    if (pageName === 'inventory') {
+        setTimeout(initPagination, 100);
+    }
+};     
 </script>
 
 </body>
