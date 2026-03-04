@@ -21147,57 +21147,46 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ===== PAGINATION =====
-function initPagination() {
-    const allCards = document.querySelectorAll('#inventoryPage .billboard-card');
-    const cardsPerPage = 10;
-    let currentPage = 1;
-    const totalPages = Math.ceil(allCards.length / cardsPerPage);
+var paginationCurrentPage = 1;
+var paginationCardsPerPage = 10;
 
-    // Remove old pagination if exists
-    const oldPag = document.getElementById('paginationControls');
+function initPagination() {
+    var allCards = document.querySelectorAll('#inventoryPage .billboard-card');
+    var totalPages = Math.ceil(allCards.length / paginationCardsPerPage);
+    paginationCurrentPage = 1;
+
+    var oldPag = document.getElementById('paginationControls');
     if (oldPag) oldPag.remove();
 
-    // Create pagination controls
-    const pagination = document.createElement('div');
+    var pagination = document.createElement('div');
     pagination.className = 'pagination';
     pagination.id = 'paginationControls';
-    pagination.innerHTML = `
-        <button class="page-btn" id="prevBtn" onclick="changePage(-1)">← Previous</button>
-        <span class="page-info" id="pageInfo"></span>
-        <button class="page-btn" id="nextBtn" onclick="changePage(1)">Next →</button>
-    `;
+    pagination.innerHTML = '<button class="page-btn" id="prevBtn" onclick="changePaginationPage(-1)">← Previous</button><span class="page-info" id="pageInfo"></span><button class="page-btn" id="nextBtn" onclick="changePaginationPage(1)">Next →</button>';
     document.getElementById('inventoryPage').appendChild(pagination);
 
-    function showPage(page) {
-        currentPage = page;
-        const start = (page - 1) * cardsPerPage;
-        const end = start + cardsPerPage;
-
-        allCards.forEach((card, i) => {
-            card.style.display = (i >= start && i < end) ? 'block' : 'none';
-        });
-
-        document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${totalPages}`;
-        document.getElementById('prevBtn').disabled = currentPage === 1;
-        document.getElementById('nextBtn').disabled = currentPage === totalPages;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    window.changePage = function(direction) {
-        showPage(currentPage + direction);
-    };
-
-    showPage(1);
+    renderPaginationPage(allCards, totalPages);
 }
 
-// Run pagination when inventory page is shown
-const originalShowPage = window.showPage;
-window.showPage = function(pageName) {
-    originalShowPage(pageName);
-    if (pageName === 'inventory') {
-        setTimeout(initPagination, 100);
-    }
-};     
+function renderPaginationPage(allCards, totalPages) {
+    var start = (paginationCurrentPage - 1) * paginationCardsPerPage;
+    var end = start + paginationCardsPerPage;
+
+    allCards.forEach(function(card, i) {
+        card.style.display = (i >= start && i < end) ? 'block' : 'none';
+    });
+
+    document.getElementById('pageInfo').textContent = 'Page ' + paginationCurrentPage + ' of ' + totalPages;
+    document.getElementById('prevBtn').disabled = paginationCurrentPage === 1;
+    document.getElementById('nextBtn').disabled = paginationCurrentPage === totalPages;
+}
+
+function changePaginationPage(direction) {
+    var allCards = document.querySelectorAll('#inventoryPage .billboard-card');
+    var totalPages = Math.ceil(allCards.length / paginationCardsPerPage);
+    paginationCurrentPage += direction;
+    renderPaginationPage(allCards, totalPages);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}     
 </script>
 
 </body>
