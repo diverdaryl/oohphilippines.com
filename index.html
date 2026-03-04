@@ -21114,6 +21114,21 @@ document.addEventListener('DOMContentLoaded', function() {
     showCookieBanner();
     console.log('OOHPhilippines.com loaded successfully!');
 });
+
+// ===== LAZY LOAD IFRAMES =====
+document.addEventListener('DOMContentLoaded', function() {
+    const lazyIframes = document.querySelectorAll('iframe[data-src]');
+    const iframeObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const iframe = entry.target;
+                iframe.src = iframe.dataset.src;
+                iframeObserver.unobserve(iframe);
+            }
+        });
+    }, { rootMargin: '200px' });
+    lazyIframes.forEach(iframe => iframeObserver.observe(iframe));
+});     
 </script>
 
 </body>
