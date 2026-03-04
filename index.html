@@ -18083,30 +18083,63 @@
         </div>
 
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"                                                                                                                                                                                                                                                                                                    
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D676</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>      
-                <div class="price">Please Call for Rates</div>
-                <div class="button-group">
-                    <a href="mailto:darylabueva@gmail.com?subject=Inquiry: NLEX D676" class="btn-contact">📧 Email Inquiry</a>
-                    <a href="sms:+639178316041?body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-viber">💬 Send SMS</a>
-                    <a href="sms:+639178751992?body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-viber">💬 Send SMS</a>
-                    <a href="viber://chat?number=+639178316041" target="_blank" class="btn-viber">💬 Message on Viber</a>
-                    <a href="https://api.whatsapp.com/send?phone=639178316041&text=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-whatsapp">📱 WhatsApp</a>
-                    <a href="https://hddigitalsigns.com/" target="_blank" class="btn-website">🌐 Visit Website</a>
-                </div>
-            </div>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772595522305!6m8!1m7!1sRl_yNrmRUvKcCRPEsKlD9g!2m2!1d14.65908651138908!2d121.0001195618412!3f207.58244141545157!4f10.986946692090811!5f0.7820865974627469"
+        allowfullscreen="" loading="lazy" style="display:none;">
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D676</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
         </div>
+        <div class="price">Please Call for Rates</div>
+        <div class="button-group">
+            <a href="mailto:darylabueva@gmail.com?subject=Inquiry: NLEX D676" class="btn-contact">📧 Email Inquiry</a>
+            <a href="sms:+639178316041?body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-viber">💬 Send SMS</a>
+            <a href="sms:+639178751992?body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-viber">💬 Send SMS</a>
+            <a href="viber://chat?number=+639178316041" target="_blank" class="btn-viber">💬 Message on Viber</a>
+            <a href="https://api.whatsapp.com/send?phone=639178316041&text=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-whatsapp">📱 WhatsApp</a>
+            <a href="https://hddigitalsigns.com/" target="_blank" class="btn-website">🌐 Visit Website</a>
+        </div>
+    </div>
+</div>
 
         <div class="billboard-card">
             <iframe class="map-window" 
@@ -18185,29 +18218,61 @@
         </div>
 
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772445626041!6m8!1m7!1sbZlYPd6x4A5wubdmkMKzpw!2m2!1d14.67062456888528!2d121.0006082321435!3f337.4208496218633!4f8.832322752297259!5f3.325193203789971"                                                                                                                                                                                                                                                                                                        
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D680</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>        
-                <div class="price">Please Call for Rates</div>
-                <div class="button-group">
-                    <a href="mailto:inquiry@unmg.com.ph?subject=Inquiry: NLEX D680&body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" class="btn-contact">📧 Email Inquiry</a>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772596568038!6m8!1m7!1sWAqBy4PvAQ2Pb7WY59OQug!2m2!1d14.67278510503419!2d121.0002599322374!3f169.57239981292423!4f9.034763142317018!5f0.9983765262649823" 
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D680</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
+        <div class="price">Please Call for Rates</div>
+        <div class="button-group">
+            <a href="mailto:inquiry@unmg.com.ph?subject=Inquiry: NLEX D680&body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" class="btn-contact">📧 Email Inquiry</a>
                     <a href="sms:+639175376543?body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-viber">💬 Send SMS</a>
                     <a href="viber://chat?number=+639175376543" target="_blank" class="btn-viber">💬 Message on Viber</a>
                     <a href="https://api.whatsapp.com/send?phone=639175376543&text=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-whatsapp">📱 WhatsApp</a>
                     <a href="https://unmg.com.ph/" target="_blank" class="btn-website">🌐 Visit Website</a>
-                </div>
-            </div>
         </div>
+    </div>
+</div>
 
         <div class="billboard-card">
             <iframe class="map-window" 
@@ -18236,19 +18301,51 @@
         </div>
 
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772445757009!6m8!1m7!1sFOTnk44sGGhEj9Zli6X3OA!2m2!1d14.67460789295682!2d121.0005809282675!3f26.795099555315176!4f9.12692035077552!5f3.325193203789971"                                                                                                                                                                                                                                                                                                         
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D682</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772596961529!6m8!1m7!1sRp_EFj9-2Fuh6LiWYVQfmQ!2m2!1d14.6760222719096!2d121.0003484075095!3f136.0515488303966!4f11.242831973727348!5f2.424471363785681"
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D682</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
                     <a href="mailto:darylabueva@gmail.com?subject=Inquiry: NLEX D682" class="btn-contact">📧 Email Inquiry</a>
@@ -18261,19 +18358,51 @@
         </div>
 
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772445793217!6m8!1m7!1scPkGEOExxfsZ1w3QMdZjJQ!2m2!1d14.67524113043663!2d121.0005907296596!3f26.648674388448587!4f16.98192489899894!5f3.305014199391742"                                                                                                                                                                                                                                                                                                          
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D683</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772597124025!6m8!1m7!1scRIr2HLQvBELP2wlNZCD4A!2m2!1d14.67682000257657!2d121.0001726820789!3f142.23965648150377!4f10.633925841757602!5f3.325193203789971"
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D683</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
                     <a href="mailto:sales@outcomm.ph?subject=Inquiry:NLEX D683&body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" class="btn-contact">📧 Email Inquiry</a>
@@ -18286,19 +18415,51 @@
         </div>
 
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772445853507!6m8!1m7!1sm0bqasM_aRtpTcRgPjipFQ!2m2!1d14.67449763954517!2d121.0005779528447!3f331.27279813070743!4f8.206698036892917!5f3.0493000340550767"                                                                                                                                                                                                                                                                                                         
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D684</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772597263566!6m8!1m7!1scRIr2HLQvBELP2wlNZCD4A!2m2!1d14.67682000257657!2d121.0001726820789!3f182.99212776268737!4f4.195748483862786!5f0.7820865974627469" 
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D684</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
                     <a href="mailto:darylabueva@gmail.com?subject=Inquiry: NLEX D684" class="btn-contact">📧 Email Inquiry</a>
@@ -18311,19 +18472,51 @@
         </div>
 
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772445906850!6m8!1m7!1sWpRiY_9a1Fv7gSO7aARqZA!2m2!1d14.67882100805881!2d121.0004556103985!3f343.37764923100934!4f4.306893354241879!5f3.2398868171288893"                                                                                                                                                                                                                                                                                                          
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D685</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772601248816!6m8!1m7!1sOBBqQLUhDsaX0LJoPLHGRQ!2m2!1d14.68257224325037!2d121.0005831160783!3f205.0204476104159!4f4.249510462649511!5f2.2150534248697746" 
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D685</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
                     <a href="mailto:inquiry@unmg.com.ph?subject=Inquiry: NLEX D685&body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" class="btn-contact">📧 Email Inquiry</a>
@@ -18336,19 +18529,51 @@
         </div>
 
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772445939120!6m8!1m7!1sUbt3nKufaPIniNg9fdH2kA!2m2!1d14.67891509862251!2d121.0004599860246!3f30.7750420293314!4f10.06964993071989!5f3.325193203789971"                                                                                                                                                                                                                                                                                                          
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D686</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772601378327!6m8!1m7!1sX1TcvI0lSXkO76q89T9lJQ!2m2!1d14.68090689486059!2d121.0004017026719!3f152.36590305372061!4f9.197608290458888!5f1.536618466477265" 
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D686</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
                     <a href="mailto:darylabueva@gmail.com?subject=Inquiry: NLEX D686" class="btn-contact">📧 Email Inquiry</a>
@@ -18384,19 +18609,51 @@
         </div>
 
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772446016959!6m8!1m7!1sIcnMgNhrXClNbMy2EIJrbw!2m2!1d14.68069175277157!2d121.000733112293!3f18.11289082894216!4f12.796695993127045!5f3.125218079787187"                                                                                                                                                                                                                                                                                                           
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D688</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772601579658!6m8!1m7!1s4vmJzJV_adDYXCvW0ru4Ow!2m2!1d14.68210340201402!2d121.0005748899095!3f153.65928900721048!4f12.96911015104125!5f1.228954013962611"  
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D688</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
                     <a href="mailto: inquiries@hdiadventures.com?subject=Inquiry: NLEX D688&body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" class="btn-contact">📧 Email Inquiry</a>
@@ -18407,19 +18664,51 @@
         </div>
 
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772446048567!6m8!1m7!1spC-HNxnMykKsW2tbTXajCw!2m2!1d14.68272095786312!2d121.0007868448474!3f325.0164175641787!4f12.70784938461587!5f3.0493000340550767"                                                                                                                                                                                                                                                                                                            
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D689</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772601687424!6m8!1m7!1sCKKk6wuXpF8cRU5wD3PxLQ!2m2!1d14.68405328064282!2d121.0006180335334!3f190.9019696842687!4f11.92276547860223!5f1.24501629935162" 
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D689</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
                     <a href="mailto:inquiry@unmg.com.ph?subject=Inquiry: NLEX D689&body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" class="btn-contact">📧 Email Inquiry</a>
@@ -18432,19 +18721,51 @@
         </div>
 
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772446123543!6m8!1m7!1sLroIoraXwPZXCMYeduiiAg!2m2!1d14.68290548493138!2d121.0007920080721!3f29.023386504215722!4f14.237316520827392!5f3.325193203789971"                                                                                                                                                                                                                                                                                                             
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D690</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772601822545!6m8!1m7!1sCKKk6wuXpF8cRU5wD3PxLQ!2m2!1d14.68405328064282!2d121.0006180335334!3f128.86819215670576!4f13.832802756893898!5f2.740594793595234" 
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D690</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
                     <a href="mailto:info@summitoutdoormedia.com.ph?subject=Inquiry: NLEX D690&body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" class="btn-contact">📧 Email Inquiry</a>
@@ -18454,19 +18775,51 @@
         </div>
 
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772446202424!6m8!1m7!1sWNC112CWWo446PsLDToKsg!2m2!1d14.68999085423887!2d121.0009229263729!3f371.97155359420617!4f5.520100256941774!5f3.188972083559939"                                                                                                                                                                                                                                                                                                              
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D691</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772601993505!6m8!1m7!1sxo2bOBsh83QBCFYvm2yLeA!2m2!1d14.69144716987834!2d121.0007004701921!3f160.30095599075784!4f17.516915052187073!5f0.7820865974627469"
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D691</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
                     <a href="mailto:darylabueva@gmail.com?subject=Inquiry: NLEX D691" class="btn-contact">📧 Email Inquiry</a>
@@ -18479,19 +18832,51 @@
         </div>
 
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772446255559!6m8!1m7!1sRkS05OvM6zRqTTpjpoSkfw!2m2!1d14.69435090941952!2d121.0002080372159!3f322.6779800086959!4f8.329501183580376!5f3.325193203789971"                                                                                                                                                                                                                                                                                                              
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D692</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772602112310!6m8!1m7!1sZfbDym4q-Ok3F7eBy9EhlA!2m2!1d14.69633198801713!2d120.9992819742547!3f178.3840283979472!4f10.656015442697225!5f1.5284152198717105"
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D692</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
                     <a href="mailto:darylabueva@gmail.com?subject=Inquiry: NLEX D692" class="btn-contact">📧 Email Inquiry</a>
@@ -18555,19 +18940,51 @@
         </div>
 
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772446352158!6m8!1m7!1sIiwePnHHmcR9VD4lF6SgJA!2m2!1d14.69560691398745!2d120.9997394057863!3f352.6220731273906!4f12.761229105592577!5f3.2608377963651636"                                                                                                                                                                                                                                                                                                                
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D695</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772602229028!6m8!1m7!1sgij_0zFGCXI7UbsxCe0zvg!2m2!1d14.69781811386551!2d120.9984914633845!3f141.40483684652332!4f7.3793939430911735!5f2.680437220986396"
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D695</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
                     <a href="mailto:sales@jkjmediaservices.com?subject=Inquiry: NLEX D695&body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" class="btn-contact">📧 Email Inquiry</a>
@@ -18578,19 +18995,51 @@
         </div>
 
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772446382488!6m8!1m7!1sw23AtptmAkdIFbgM6H4u2g!2m2!1d14.69640596009787!2d120.9995386507028!3f303.04908933119117!4f8.320972826033938!5f3.325193203789971"                                                                                                                                                                                                                                                                                                                 
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D696</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772602331550!6m8!1m7!1sOF-vwTdJqZLizrnTTnV9jw!2m2!1d14.69773660117783!2d120.9985351328344!3f170.65637313365195!4f10.416116659624748!5f2.7881949217117525" 
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D696</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
                     <a href="mailto:outdoorman@mac.com?subject=Inquiry: NLEX D696&body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" class="btn-contact">📧 Email Inquiry</a>
@@ -18600,20 +19049,52 @@
             </div>
         </div>
 
-        <div class="billboard-card">
-            <iframe class="map-window" 
-                 <<iframe src="https://www.google.com/maps/embed?pb=!4v1772446410663!6m8!1m7!1sqqFQFs5X5SkW4QbmixgbZQ!2m2!1d14.69708368537304!2d120.9990352738076!3f343.22279698965264!4f6.535020205822008!5f3.325193203789971"                                                                                                                                                                                                                                                                                                                 
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D697</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>
+        <<div class="billboard-card">
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772602422913!6m8!1m7!1sNAmwpZWuB9QYic9XT6Ae3g!2m2!1d14.69936358199593!2d120.9976578026899!3f133.7716003810644!4f4.331869576147483!5f0.7820865974627469"  
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D697</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
                     <a href="mailto:inquiry@unmg.com.ph?subject=Inquiry: NLEX D697&body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" class="btn-contact">📧 Email Inquiry</a>
@@ -18626,19 +19107,51 @@
         </div>
 
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772446464125!6m8!1m7!1szSbZ3ODGbIX-MPZS4h1Qjw!2m2!1d14.69991127611846!2d120.9975064024309!3f292.26301563479353!4f17.49335780255339!5f3.260614679341519"                                                                                                                                                                                                                                                                                                                  
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D698</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772602531322!6m8!1m7!1suiR_juO5EzLMlTuoqaTRRQ!2m2!1d14.70082963028482!2d120.9968656184292!3f142.93892126865902!4f5.0920901575774735!5f0.7820865974627469"  
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D698</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
                     <a href="mailto:ciarafrancia0819@gmail.com?subject=Inquiry: NLEX D698" class="btn-contact">📧 Email Inquiry</a>
@@ -18651,19 +19164,51 @@
         </div>
 
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772446494743!6m8!1m7!1srfHUVV404eGrMudXD-TFGA!2m2!1d14.70007327776989!2d120.997418537685!3f4.718749060103881!4f15.161267261870577!5f2.646743274483464"                                                                                                                                                                                                                                                                                                                   
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D699</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772602663878!6m8!1m7!1s_wGEQbW0mMSkcR6iN1MWSg!2m2!1d14.7022158695632!2d120.9961185870747!3f145.9855547170901!4f2.4694088092957287!5f3.325193203789971" 
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D699</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
                     <a href="mailto:darylabueva@gmail.com?subject=Inquiry: NLEX D699" class="btn-contact">📧 Email Inquiry</a>
@@ -18677,19 +19222,51 @@
         </div>
 
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772446533721!6m8!1m7!1sIGQhgiXmV7edMB-UZXMACA!2m2!1d14.70064163485119!2d120.9971125858415!3f294.5122314457351!4f15.042306278108327!5f3.1589962157897693"                                                                                                                                                                                                                                                                                                                   
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D700</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772603000912!6m8!1m7!1syDQXTzJqjj27p13LbWWSaw!2m2!1d14.7014752629519!2d120.9965180078801!3f151.4902319581441!4f9.97706735070173!5f0.7820865974627469"  
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D700</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
                     <a href="mailto:darylabueva@gmail.com?subject=Inquiry: NLEX D700" class="btn-contact">📧 Email Inquiry</a>
@@ -18703,19 +19280,51 @@
         </div>
 
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772446559350!6m8!1m7!1s2K65G7IdJ8SGamKb_0ZsCw!2m2!1d14.70124879398642!2d120.9967830916445!3f308.13736232174926!4f9.427884259273938!5f3.325193203789971"                                                                                                                                                                                                                                                                                                                    
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D701</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> LED</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772603082012!6m8!1m7!1sIAI0x9lDpjom9xPHIu3Ysg!2m2!1d14.70257939049607!2d120.9959225518416!3f150.47704258459618!4f0.9391040227258287!5f0.7820865974627469" 
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D701</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
                     <a href="mailto:darylabueva@gmail.com?subject=Inquiry: NLEX D701" class="btn-contact">📧 Email Inquiry</a>
@@ -18728,19 +19337,51 @@
         </div>
 
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772446593493!6m8!1m7!1s_q52NisQ9fkme3Ik1f4MUA!2m2!1d14.70226266369525!2d120.996234807813!3f353.3861386370554!4f12.281781868250619!5f3.325193203789971"                                                                                                                                                                                                                                                                                                                     
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D702</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772603217798!6m8!1m7!1sGdUAmoJYeTNFyRieV5-dig!2m2!1d14.70370089580745!2d120.9953181662198!3f119.19526514024665!4f12.935200988466065!5f2.7915932983033622"  
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D702</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
                     <a href="mailto:darylabueva@gmail.com?subject=Inquiry: NLEX D702" class="btn-contact">📧 Email Inquiry</a>
@@ -18754,19 +19395,51 @@
         </div>
 
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772446632231!6m8!1m7!1sdaOr9e73J3WAM33eF7IRWQ!2m2!1d14.70343210211923!2d120.9955674122051!3f300.5365044475261!4f9.36371511186698!5f3.325193203789971"                                                                                                                                                                                                                                                                                                                      
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D703</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772603325293!6m8!1m7!1sMD7sr2tFf_4qra3vTXa98Q!2m2!1d14.70422958342231!2d120.9950295373278!3f185.74572312013598!4f8.173753909035753!5f1.672300922100991" 
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D703</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
                     <a href="mailto:darylabueva@gmail.com?subject=Inquiry: NLEX D703" class="btn-contact">📧 Email Inquiry</a>
@@ -18779,75 +19452,169 @@
         </div>
 
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772446663629!6m8!1m7!1sdaOr9e73J3WAM33eF7IRWQ!2m2!1d14.70343210211923!2d120.9955674122051!3f315.6210100446137!4f10.677890284720917!5f3.325193203789971"                                                                                                                                                                                                                                                                                                                       
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D704</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772603408874!6m8!1m7!1s7Zo8s0aLXDjCfNOlSSJ5dg!2m2!1d14.70551854723497!2d120.9943337795911!3f158.26871235397638!4f9.380534872489733!5f2.5039236322286897"   
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D704</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
-                    <a href="mailto:darylabueva@gmail.com?subject=Inquiry: NLEX D704" class="btn-contact">📧 Email Inquiry</a>
-                    <a href="sms:+639178316041?body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-viber">💬 Send SMS</a>
-                    <a href="viber://chat?number=+639178316041" target="_blank" class="btn-viber">💬 Message on Viber</a>
-                    <a href="https://api.whatsapp.com/send?phone=639178316041&text=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-whatsapp">📱 WhatsApp</a>
+                    <a href="mailto:ciarafrancia0819@gmail.com?subject=Inquiry: NLEX D704" class="btn-contact">📧 Email Inquiry</a>
+                    <a href="sms:+639776571967?body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-viber">💬 Send SMS</a>
+                    <a href="sms:+639209204694?body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-viber">💬 Send SMS</a>
+                    <a href="sms:+639159826888?body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-viber">💬 Send SMS</a>
                     <a href="https://hddigitalsigns.com/" target="_blank" class="btn-website">🌐 Visit Website</a>
                 </div>
             </div>
         </div>
 
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772446710822!6m8!1m7!1sWtVTV3V5ZdrMaxbd7n597A!2m2!1d14.70620873229181!2d120.9940691280519!3f1.1126800609748102!4f8.759777831674683!5f2.7509374110917597"                                                                                                                                                                                                                                                                                                                        
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D705</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772603584252!6m8!1m7!1sJtIctJn4hjkbMgXDrWK-BQ!2m2!1d14.70751630009165!2d120.9932571413154!3f145.99559566747564!4f12.892023580413607!5f0.7820865974627469"   
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D705</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
-                    <a href="mailto:darylabueva@gmail.com?subject=Inquiry: NLEX D705" class="btn-contact">📧 Email Inquiry</a>
-                    <a href="sms:+639178316041?body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-viber">💬 Send SMS</a>
-                    <a href="viber://chat?number=+639178316041" target="_blank" class="btn-viber">💬 Message on Viber</a>
-                    <a href="https://api.whatsapp.com/send?phone=639178316041&text=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-whatsapp">📱 WhatsApp</a>
-                    <a href="https://hddigitalsigns.com/" target="_blank" class="btn-website">🌐 Visit Website</a>
+                    <a href="mailto:inquiry@unmg.com.ph?subject=Inquiry: NLEX D705&body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" class="btn-contact">📧 Email Inquiry</a>
+                    <a href="sms:+639175376543?body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-viber">💬 Send SMS</a>
+                    <a href="viber://chat?number=+639175376543" target="_blank" class="btn-viber">💬 Message on Viber</a>
+                    <a href="https://api.whatsapp.com/send?phone=639175376543&text=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-whatsapp">📱 WhatsApp</a>
+                    <a href="https://unmg.com.ph/" target="_blank" class="btn-website">🌐 Visit Website</a>
                 </div>
             </div>
         </div>
 
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772446760415!6m8!1m7!1skQplxUiQ5yvZ1XH9IGqNXQ!2m2!1d14.70773547217295!2d120.9932474268474!3f281.3651739633789!4f10.874215825603684!5f3.1589962157897693"                                                                                                                                                                                                                                                                                                                         
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D706</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772603888723!6m8!1m7!1sZoz19uqTYWHzTEwFqWrxoA!2m2!1d14.70909019703804!2d120.9924074287382!3f151.47832772926637!4f-14.442548261200159!5f0.4000000000000002"   
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D706</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
-                    <a href="mailto:darylabueva@gmail.com?subject=Inquiry: NLEX D706" class="btn-contact">📧 Email Inquiry</a>
-                    <a href="sms:+639178316041?body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-viber">💬 Send SMS</a>
-                    <a href="viber://chat?number=+639178316041" target="_blank" class="btn-viber">💬 Message on Viber</a>
-                    <a href="https://api.whatsapp.com/send?phone=639178316041&text=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-whatsapp">📱 WhatsApp</a>
+                    <a href="mailto:sgbillboard@gmail.com?subject=Inquiry: Edsa Trinoma to Quezon Ave A49&body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" class="btn-contact">📧 Email Inquiry</a>
+                    <a href="sms:+639328444474?body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-viber">💬 Send SMS</a>
                     <a href="https://hddigitalsigns.com/" target="_blank" class="btn-website">🌐 Visit Website</a>
                 </div>
             </div>
@@ -18869,54 +19636,115 @@
                 </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
-                    <a href="mailto:darylabueva@gmail.com?subject=Inquiry: NLEX D707" class="btn-contact">📧 Email Inquiry</a>
-                    <a href="sms:+639178316041?body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-viber">💬 Send SMS</a>
-                    <a href="viber://chat?number=+639178316041" target="_blank" class="btn-viber">💬 Message on Viber</a>
-                    <a href="https://api.whatsapp.com/send?phone=639178316041&text=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-whatsapp">📱 WhatsApp</a>
-                    <a href="https://hddigitalsigns.com/" target="_blank" class="btn-website">🌐 Visit Website</a>
+                    <a href="mailto:outdoorman@mac.com?subject=Inquiry: NLEX D707&body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" class="btn-contact">📧 Email Inquiry</a>
+                    <a href="sms: +639175314403?body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-viber">💬 Send SMS</a>
+                    <a href="https://www.dooh.ph/" target="_blank" class="btn-website">🌐 Visit Website</a>
                 </div>
             </div>
         </div>
 
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772446852533!6m8!1m7!1sJ9PwQkgcDPvueHp8W56mNw!2m2!1d14.71057911197526!2d120.9917471885874!3f316.2704599977862!4f11.40806568472209!5f3.325193203789971"                                                                                                                                                                                                                                                                                                                           
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D708</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772604245401!6m8!1m7!1sDDoxdMahtUPRnFPRwyhTKA!2m2!1d14.71260762586322!2d120.9905460744006!3f143.17384689523118!4f9.212433094689402!5f0.7820865974627469"   
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D708</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
-                    <a href="mailto:darylabueva@gmail.com?subject=Inquiry: NLEX D708" class="btn-contact">📧 Email Inquiry</a>
-                    <a href="sms:+639178316041?body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-viber">💬 Send SMS</a>
-                    <a href="viber://chat?number=+639178316041" target="_blank" class="btn-viber">💬 Message on Viber</a>
-                    <a href="https://api.whatsapp.com/send?phone=639178316041&text=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-whatsapp">📱 WhatsApp</a>
+                    <a href="mailto:sgbillboard@gmail.com?subject=Inquiry: NLEX D708&body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" class="btn-contact">📧 Email Inquiry</a>
+                    <a href="sms:+639328444474?body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-viber">💬 Send SMS</a>
                     <a href="https://hddigitalsigns.com/" target="_blank" class="btn-website">🌐 Visit Website</a>
                 </div>
             </div>
         </div>
 
+
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772446951325!6m8!1m7!1sia6pbtUge1Hn70NzDakI_g!2m2!1d14.71341106502763!2d120.9902240890565!3f298.820859053116!4f10.461764735247144!5f2.8073224701922967"                                                                                                                                                                                                                                                                                                                           
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D709</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772604591667!6m8!1m7!1sWG7JDxmzpC-0UUP_UNImUQ!2m2!1d14.71438922368689!2d120.9895617365204!3f156.28129490563083!4f4.140936904831634!5f0.7820865974627469"  
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D709</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
                     <a href="mailto:darylabueva@gmail.com?subject=Inquiry: NLEX D709" class="btn-contact">📧 Email Inquiry</a>
@@ -18929,26 +19757,56 @@
         </div>
 
         <div class="billboard-card">
-            <iframe class="map-window" 
-                 <iframe src="https://www.google.com/maps/embed?pb=!4v1772447030257!6m8!1m7!1sKphR4b_5eyu6O_n3up1V8A!2m2!1d14.72139585859926!2d120.9858947515634!3f5.979476098495125!4f19.09427552003808!5f2.8074393256601207"                                                                                                                                                                                                                                                                                                                           
-                allowfullscreen="" loading="lazy">
-            </iframe>
-            <div class="details">
-                <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound</span>
-                <h2>Site: NLEX D710</h2>
-                <div class="spec-grid">
-                    <div class="spec-item"><strong>Size</strong> Please Inquire</div>
-                    <div class="spec-item"><strong>Type</strong> Static</div>
-                    <div class="spec-item"><strong>Facing</strong> Southbound</div>
-                    <div class="spec-item"><strong>Illumination</strong> Yes</div>
-                </div>
+    <!-- Dual Face Tab Switcher -->
+    <div style="display:flex; background:#e3f2fd; border-radius:8px 8px 0 0; overflow:hidden;">
+        <button id="tab-nlex-a" onclick="
+            document.getElementById('face-nlex-a').style.display='block';
+            document.getElementById('face-nlex-b').style.display='none';
+            document.getElementById('tab-nlex-a').style.background='#1565c0';
+            document.getElementById('tab-nlex-a').style.color='white';
+            document.getElementById('tab-nlex-b').style.background='transparent';
+            document.getElementById('tab-nlex-b').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:#1565c0; color:white; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face A – Northbound
+        </button>
+        <button id="tab-nlex-b" onclick="
+            document.getElementById('face-nlex-b').style.display='block';
+            document.getElementById('face-nlex-a').style.display='none';
+            document.getElementById('tab-nlex-b').style.background='#1565c0';
+            document.getElementById('tab-nlex-b').style.color='white';
+            document.getElementById('tab-nlex-a').style.background='transparent';
+            document.getElementById('tab-nlex-a').style.color='#1565c0';
+        " style="flex:1; padding:10px; border:none; background:transparent; color:#1565c0; font-weight:700; cursor:pointer; font-size:13px;">
+            📍 Face B – Southbound
+        </button>
+    </div>
+
+    <!-- Face A -->
+    <iframe id="face-nlex-a" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772445176980!6m8!1m7!1sUnlM31XRvm9zK0zmrbqEMw!2m2!1d14.65849212739765!2d121.0002279901104!3f308.15520742900696!4f16.74638914809644!5f1.5334730082838446"
+        allowfullscreen="" loading="lazy">
+    </iframe>
+
+    <!-- Face B -->
+    <iframe id="face-nlex-b" class="map-window"
+        src="https://www.google.com/maps/embed?pb=!4v1772604746761!6m8!1m7!1s212Q2PMDEbaWx8Pt_VKlQA!2m2!1d14.72200202696843!2d120.9854826923812!3f123.92071166736098!4f17.011017830211927!5f0.7820865974627469"   
+    </iframe>
+
+    <div class="details">
+        <span class="tag">NLEX • Balintawak • Malinta • Meycauayan • Marilao • Bocaue • Northbound • Southbound</span>
+        <h2>Site: NLEX D710</h2>
+        <span style="display:inline-block; background:#e3f2fd; color:#1565c0; font-size:12px; font-weight:700; padding:4px 10px; border-radius:20px; margin-bottom:10px;">🔄 Double Face</span>
+        <div class="spec-grid">
+            <div class="spec-item"><strong>Size</strong> Please Inquire</div>
+            <div class="spec-item"><strong>Type</strong> Static</div>
+            <div class="spec-item"><strong>Facing</strong> Both Directions</div>
+            <div class="spec-item"><strong>Illumination</strong> Yes</div>
+        </div>
                 <div class="price">Please Call for Rates</div>
                 <div class="button-group">
-                    <a href="mailto:darylabueva@gmail.com?subject=Inquiry: NLEX D710" class="btn-contact">📧 Email Inquiry</a>
-                    <a href="sms:+639178316041?body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-viber">💬 Send SMS</a>
-                    <a href="viber://chat?number=+639178316041" target="_blank" class="btn-viber">💬 Message on Viber</a>
-                    <a href="https://api.whatsapp.com/send?phone=639178316041&text=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-whatsapp">📱 WhatsApp</a>
-                    <a href="https://hddigitalsigns.com/" target="_blank" class="btn-website">🌐 Visit Website</a>
+                    <a href="mailto:sales@jkjmediaservices.com?subject=Inquiry: NLEX D710&body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" class="btn-contact">📧 Email Inquiry</a>
+                    <a href="sms:+639171605462?body=I%20saw%20your%20site%20in%20OOHPhilippines.com.%20Is%20it%20available%3F" target="_blank" class="btn-viber">💬 Send SMS</a>
+                    <a href="https://jkjmediaservices.com/" target="_blank" class="btn-website">🌐 Visit Website</a>
                 </div>
             </div>
         </div>
