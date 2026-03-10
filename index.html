@@ -1493,88 +1493,74 @@
         </div>
 
         <!-- Inquiry Form (Hidden by Default) -->
-        <div id="inquiryFormSection" style="display: none;">
-            <div class="promo-card" style="max-width: 700px; margin: 0 auto 40px auto;">
-                <div class="promo-header" style="background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);">
-                    <div class="promo-operator">Post Your Requirements</div>
-                    <div class="promo-title">Fill out the form below to connect with billboard operators</div>
-                </div>
-                <div class="promo-body">
-                    <div class="success-message" id="successMessage">
-                        ✓ Your inquiry has been submitted successfully! Operators will contact you directly.
-                    </div>
-                    <div class="error-message" id="errorMessage">
-                        ✗ Something went wrong. Please try again or email us directly.
-                    </div>
-                    
-                    <form id="inquiryForm" action="https://formspree.io/f/mgonakpa" method="POST">
-                        <div class="form-group">
-                            <label>Company/Brand Name *</label>
-                            <input type="text" id="companyName" required placeholder="Enter your company name">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Contact Person *</label>
-                            <input type="text" id="contactPerson" required placeholder="Your name">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Email *</label>
-                            <input type="email" id="email" required placeholder="your@email.com">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Phone Number *</label>
-                            <input type="tel" id="phone" required placeholder="+63 XXX XXX XXXX">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Preferred Location *</label>
-                            <select id="location" required>
-                                <option value="">Select location</option>
-                                <option value="Metro Manila">Metro Manila</option>
-                                <option value="EDSA">EDSA</option>
-                                <option value="C5">C5 Road</option>
-                                <option value="SLEX">SLEX</option>
-                                <option value="NLEX">NLEX</option>
-                                <option value="Provincial">Provincial</option>
-                                <option value="Nationwide">Nationwide</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Billboard Type *</label>
-                            <select id="billboardType" required>
-                                <option value="">Select type</option>
-                                <option value="Static">Static Billboard</option>
-                                <option value="Digital">Digital Billboard</option>
-                                <option value="Both">Both Static & Digital</option>
-                                <option value="Any">Any Type</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Budget Range</label>
-                            <select id="budget">
-                                <option value="">Select budget range</option>
-                                <option value="Under 100K">Under ₱100,000/month</option>
-                                <option value="100K-300K">₱100,000 - ₱300,000/month</option>
-                                <option value="300K-500K">₱300,000 - ₱500,000/month</option>
-                                <option value="500K+">₱500,000+/month</option>
-                                <option value="To Discuss">Prefer to Discuss</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Campaign Details *</label>
-                            <textarea id="details" required placeholder="Tell us about your campaign, timeline, specific requirements, etc."></textarea>
-                        </div>
-                        
-                        <div style="display: flex; gap: 10px;">
-                            <button type="submit" class="submit-btn" id="submitBtn" style="flex: 1;">Submit Requirements</button>
-                            <button type="button" class="submit-btn" onclick="toggleInquiryForm()" style="flex: 1; background: #666;">Cancel</button>
-                        </div>
-                    </form>
+        <form id="inquiryForm" action="https://formspree.io/f/mgonakpa" method="POST">
+    <div class="form-group">
+        <label>Company/Brand Name *</label>
+        <input type="text" name="company" id="companyName" required placeholder="Enter your company name">
+    </div>
+    
+    <div class="form-group">
+        <label>Contact Person *</label>
+        <input type="text" name="contact_person" id="contactPerson" required placeholder="Your name">
+    </div>
+    
+    <div class="form-group">
+        <label>Email *</label>
+        <input type="email" name="email" id="email" required placeholder="your@email.com">
+    </div>
+    
+    <div class="form-group">
+        <label>Phone Number *</label>
+        <input type="tel" name="phone" id="phone" required placeholder="+63 XXX XXX XXXX">
+    </div>
+    
+    <div class="form-group">
+        <label>Preferred Location *</label>
+        <select name="location" id="location" required>
+            <option value="">Select location</option>
+            <option value="Metro Manila">Metro Manila</option>
+            <option value="EDSA">EDSA</option>
+            <option value="C5">C5 Road</option>
+            <option value="SLEX">SLEX</option>
+            <option value="NLEX">NLEX</option>
+            <option value="Provincial">Provincial</option>
+            <option value="Nationwide">Nationwide</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label>Billboard Type *</label>
+        <select name="billboard_type" id="billboardType" required>
+            <option value="">Select type</option>
+            <option value="Static">Static Billboard</option>
+            <option value="Digital">Digital Billboard</option>
+            <option value="Both">Both Static & Digital</option>
+            <option value="Any">Any Type</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label>Budget Range</label>
+        <select name="budget" id="budget">
+            <option value="">Select budget range</option>
+            <option value="Under 100K">Under ₱100,000/month</option>
+            <option value="100K-300K">₱100,000 - ₱300,000/month</option>
+            <option value="300K-500K">₱300,000 - ₱500,000/month</option>
+            <option value="500K+">₱500,000+/month</option>
+            <option value="To Discuss">Prefer to Discuss</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label>Campaign Details *</label>
+        <textarea name="details" id="details" required placeholder="Tell us about your campaign, timeline, specific requirements, etc."></textarea>
+    </div>
+    
+    <div style="display: flex; gap: 10px;">
+        <button type="submit" class="submit-btn" id="submitBtn" style="flex: 1;">Submit Requirements</button>
+        <button type="button" class="submit-btn" onclick="toggleInquiryForm()" style="flex: 1; background: #666;">Cancel</button>
+    </div>
+</form>
                 </div>
             </div>
         </div>
