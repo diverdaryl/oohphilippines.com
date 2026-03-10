@@ -20774,7 +20774,12 @@ function openLightbox(src) {
     document.getElementById('lightboxImg').src = src;
     document.getElementById('lightbox').style.display = 'flex';
 }
-     
+function toggleInquiryForm() {
+    var form = document.getElementById('inquiryFormSection');
+    if (form) {
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+}     
 function toggleMobileMenu() {
   document.getElementById('hamburgerBtn').classList.toggle('open');
   document.getElementById('mobileDropdown').classList.toggle('open');
