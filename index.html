@@ -20789,9 +20789,8 @@ function submitInquiry() {
                '\nBudget: ' + budget +
                '\nCampaign Details: ' + details;
 
-    window.location.href = 'mailto:info@oohphilippines.com?subject=Billboard Inquiry from ' + encodeURIComponent(company) + '&body=' + encodeURIComponent(body);
-}     
-function toggleInquiryForm() {
+    window.location.href = 'mailto:info@oohphilippines.com?subject=Request to Post: Looking for OOH Site/s&body=' + encodeURIComponent(body);
+}
     var form = document.getElementById('inquiryFormSection');
     if (form) {
         form.style.display = form.style.display === 'none' ? 'block' : 'none';
