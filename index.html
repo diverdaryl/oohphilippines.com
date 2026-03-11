@@ -1284,7 +1284,7 @@
         <button class="nav-link" onclick="showPage('promos')">🎉 Promos</button>
         <button class="nav-link" onclick="showPage('inquiries')">Looking For Sites?</button>
         <button class="nav-link" onclick="showPage('about')">About Us</button>
-        <a href="mailto:info@oohphilippines.com?subject=Billboard Operator - Site Upload Request&body=Hi OOHPhilippines,%0A%0AI would like to upload my billboard site/s. Here are my details:%0A%0ACompany Name:%0AContact Person:%0APhone Number:%0ABillboard Location:%0ABillboard Size:%0ABillboard Type (Static/Digital):%0A%0APlease see attached photos of the billboard site.%0A%0AThank you!" class="nav-link primary">Upload your Sites Here</a>
+        <button class="nav-link primary" onclick="showPage('uploadSite')">Upload your Sites Here</button>
     </div>
     <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileMenu()">
         <span></span><span></span><span></span>
@@ -1295,7 +1295,7 @@
     <button onclick="showPage('promos'); closeMobileMenu()">🎉 Promos</button>
     <button onclick="showPage('inquiries'); closeMobileMenu()">Looking For Sites?</button>
     <button onclick="showPage('about'); closeMobileMenu()">About Us</button>
-    <a href="YOUR_EMAIL_LINK" class="primary">Upload your Sites Here</a>
+    <button onclick="showPage('uploadSite'); closeMobileMenu()">📍 Upload your Sites Here</button>
 </div>
 </div>     
 
@@ -1340,13 +1340,8 @@
             <p>Exclusive deals from billboard operators across the Philippines</p>
         </div>
 
-        <!-- Add Promo CTA -->
-        <div class="add-promo-section">
-            <h2>Billboard Operator?</h2>
-            <p>List your promotional offers and reach more advertisers</p>
-            <a href="mailto:info@oohphilippines.com?subject=Add Promo - Billboard Operator" class="add-promo-btn">
-                ➕ Submit Your Promo
-            </a>
+        <div style="text-align:center; margin-bottom:30px;">
+        <button class="add-promo-btn" onclick="showPage('submitPromo')">🎉 Submit Your Promo</button>
         </div>
 
         <!-- Promo Card 1 -->
@@ -1676,6 +1671,193 @@
                         </a>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Site Page -->
+<div id="uploadSitePage" class="page">
+    <div class="promos-container">
+        <div class="promos-header">
+            <h1>📍 Upload Your Billboard Site</h1>
+            <p>List your billboard and reach hundreds of advertisers across the Philippines</p>
+        </div>
+
+        <div class="promo-card" style="max-width: 700px; margin: 0 auto 40px auto;">
+            <div class="promo-header" style="background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);">
+                <div class="promo-operator">Billboard Operator?</div>
+                <div class="promo-title">Fill out the form below to list your billboard site</div>
+            </div>
+            <div class="promo-body">
+                <form id="uploadSiteForm">
+                    <div class="form-group">
+                        <label>Company/Operator Name *</label>
+                        <input type="text" id="operatorName" required placeholder="Enter your company name">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Contact Person *</label>
+                        <input type="text" id="operatorContact" required placeholder="Your name">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="operatorEmail" required placeholder="your@email.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone Number *</label>
+                        <input type="tel" id="operatorPhone" required placeholder="+63 XXX XXX XXXX">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Billboard Location *</label>
+                        <input type="text" id="siteLocation" required placeholder="e.g. EDSA Northbound near Quezon Ave">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Billboard Size *</label>
+                        <input type="text" id="siteSize" required placeholder="e.g. 20ft x 40ft">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Billboard Type *</label>
+                        <select id="siteType" required>
+                            <option value="">Select type</option>
+                            <option value="Static">Static Billboard</option>
+                            <option value="Digital">Digital Billboard</option>
+                            <option value="LED">LED Billboard</option>
+                            <option value="Backlit">Backlit Billboard</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Illumination</label>
+                        <select id="siteIllumination">
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Rate</label>
+                        <input type="text" id="siteRate" placeholder="e.g. ₱50,000/month or Please Inquire">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Additional Details</label>
+                        <textarea id="siteDetails" placeholder="Facing, traffic direction, landmarks, availability, etc."></textarea>
+                    </div>
+
+                    <div style="background:#e3f2fd; border-radius:10px; padding:15px; margin-bottom:20px; font-size:14px; color:#1565c0;">
+                        📎 <strong>Note:</strong> After clicking Submit, your email app will open with all details pre-filled. Please attach photos of your billboard before sending.
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <button type="button" class="submit-btn" id="uploadSiteBtn" style="flex: 1;" onclick="submitSiteUpload()">📤 Submit Site</button>
+                        <button type="button" class="submit-btn" onclick="showPage('home')" style="flex: 1; background: #666;">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Submit Promo Page -->
+<div id="submitPromoPage" class="page">
+    <div class="promos-container">
+        <div class="promos-header">
+            <h1>🎉 Submit Your Promo</h1>
+            <p>Reach hundreds of advertisers by posting your billboard promo on OOHPhilippines.com</p>
+        </div>
+
+        <div class="promo-card" style="max-width: 700px; margin: 0 auto 40px auto;">
+            <div class="promo-header" style="background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);">
+                <div class="promo-operator">Billboard Operator?</div>
+                <div class="promo-title">Fill out the form below to submit your promo</div>
+            </div>
+            <div class="promo-body">
+                <form id="submitPromoForm">
+                    <div class="form-group">
+                        <label>Company/Operator Name *</label>
+                        <input type="text" id="promoOperator" required placeholder="e.g. HD Digital Signs">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Contact Person *</label>
+                        <input type="text" id="promoContact" required placeholder="Your name">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="promoEmail" required placeholder="your@email.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone Number *</label>
+                        <input type="tel" id="promoPhone" required placeholder="+63 XXX XXX XXXX">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Promo Title *</label>
+                        <input type="text" id="promoTitle" required placeholder="e.g. New Year Special - Digital Billboard Package">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Promo Badge *</label>
+                        <select id="promoBadge" required>
+                            <option value="">Select badge type</option>
+                            <option value="FLASH SALE">🔥 Flash Sale</option>
+                            <option value="HOT DEAL">⭐ Hot Deal</option>
+                            <option value="LIMITED TIME">⏰ Limited Time</option>
+                            <option value="SPECIAL OFFER">🎯 Special Offer</option>
+                            <option value="NEW">🆕 New</option>
+                            <option value="EXCLUSIVE">💎 Exclusive</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Discount Amount *</label>
+                        <input type="text" id="promoDiscount" required placeholder="e.g. 30% OFF or ₱50,000 OFF">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Discount Description *</label>
+                        <input type="text" id="promoDiscountDesc" required placeholder="e.g. On 3-month digital billboard contracts">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Valid Until *</label>
+                        <input type="date" id="promoValidity" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Promo Description *</label>
+                        <textarea id="promoDescription" required placeholder="Describe your promo offer in detail..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Package Inclusions</label>
+                        <textarea id="promoInclusions" placeholder="List what's included in the promo (one per line)"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Website (optional)</label>
+                        <input type="text" id="promoWebsite" placeholder="e.g. www.yourcompany.com">
+                    </div>
+
+                    <div style="background:#e3f2fd; border-radius:10px; padding:15px; margin-bottom:20px; font-size:14px; color:#1565c0;">
+                        📎 <strong>Note:</strong> After clicking Submit, your email app will open with all details pre-filled. Our team will review and post your promo within 24-48 hours.
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <button type="button" class="submit-btn" style="flex: 1;" onclick="submitPromo()">🎉 Submit Promo</button>
+                        <button type="button" class="submit-btn" onclick="showPage('promos')" style="flex: 1; background: #666;">Cancel</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -20787,6 +20969,65 @@ function submitInquiry() {
                '\nBudget: ' + budget +
                '\nCampaign Details: ' + details;
     window.location.href = 'mailto:info@oohphilippines.com?subject=Request to Post: Looking for OOH Site/s - ' + encodeURIComponent(company) + '&body=' + encodeURIComponent(body);
+}
+function submitSiteUpload() {
+    var operator = document.getElementById('operatorName').value;
+    var contact = document.getElementById('operatorContact').value;
+    var email = document.getElementById('operatorEmail').value;
+    var phone = document.getElementById('operatorPhone').value;
+    var location = document.getElementById('siteLocation').value;
+    var size = document.getElementById('siteSize').value;
+    var type = document.getElementById('siteType').value;
+    var illumination = document.getElementById('siteIllumination').value;
+    var rate = document.getElementById('siteRate').value;
+    var details = document.getElementById('siteDetails').value;
+    if (!operator || !contact || !email || !phone || !location || !size || !type) {
+        alert('Please fill in all required fields.');
+        return;
+    }
+    var body = 'Company/Operator: ' + operator +
+               '\nContact Person: ' + contact +
+               '\nEmail: ' + email +
+               '\nPhone: ' + phone +
+               '\nBillboard Location: ' + location +
+               '\nBillboard Size: ' + size +
+               '\nBillboard Type: ' + type +
+               '\nIllumination: ' + illumination +
+               '\nRate: ' + rate +
+               '\nAdditional Details: ' + details +
+               '\n\nPlease see attached photos of the billboard site.';
+    window.location.href = 'mailto:info@oohphilippines.com?subject=Billboard Site Upload - ' + encodeURIComponent(operator) + '&body=' + encodeURIComponent(body);
+}
+function submitPromo() {
+    var operator = document.getElementById('promoOperator').value;
+    var contact = document.getElementById('promoContact').value;
+    var email = document.getElementById('promoEmail').value;
+    var phone = document.getElementById('promoPhone').value;
+    var title = document.getElementById('promoTitle').value;
+    var badge = document.getElementById('promoBadge').value;
+    var discount = document.getElementById('promoDiscount').value;
+    var discountDesc = document.getElementById('promoDiscountDesc').value;
+    var validity = document.getElementById('promoValidity').value;
+    var description = document.getElementById('promoDescription').value;
+    var inclusions = document.getElementById('promoInclusions').value;
+    var website = document.getElementById('promoWebsite').value;
+    if (!operator || !contact || !email || !phone || !title || !badge || !discount || !discountDesc || !validity || !description) {
+        alert('Please fill in all required fields.');
+        return;
+    }
+    var body = 'Company/Operator: ' + operator +
+               '\nContact Person: ' + contact +
+               '\nEmail: ' + email +
+               '\nPhone: ' + phone +
+               '\nPromo Title: ' + title +
+               '\nPromo Badge: ' + badge +
+               '\nDiscount: ' + discount +
+               '\nDiscount Description: ' + discountDesc +
+               '\nValid Until: ' + validity +
+               '\nPromo Description: ' + description +
+               '\nPackage Inclusions: ' + inclusions +
+               '\nWebsite: ' + website;
+    window.location.href = 'mailto:info@oohphilippines.com?subject=Promo Submission - ' + encodeURIComponent(operator) + '&body=' + encodeURIComponent(body);
 }
 function toggleMobileMenu() {
     document.getElementById('hamburgerBtn').classList.toggle('open');
