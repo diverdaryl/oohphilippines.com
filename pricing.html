@@ -57,7 +57,7 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
 .operator-section { margin-top: 20px; }
 .operator-section h2 { font-size: 28px; font-weight: 800; color: #1565c0; margin-bottom: 8px; }
 .operator-section > p { font-size: 15px; color: #666; margin-bottom: 24px; }
-.operator-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 40px; }
+.operator-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 400px)); gap: 24px; margin-bottom: 40px; }
 .operator-card { background: white; border-radius: 20px; padding: 32px 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); display: flex; flex-direction: column; gap: 16px; transition: all 0.3s; }
 .operator-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.12); }
 .op-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; width: fit-content; }
@@ -335,6 +335,9 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
       <div id="pathNotListed" style="display:none;">
         <label class="modal-label">Billboard Location / Address</label>
         <input class="modal-input" type="text" id="billboardLocation" placeholder="e.g. EDSA cor. Ortigas Ave, Mandaluyong" />
+        <label class="modal-label">Description (optional)</label>
+        <textarea class="modal-input" id="billboardDescription" placeholder="e.g. Prime location along EDSA northbound, high traffic area, visible from 500m" rows="3" style="resize:vertical;"></textarea>
+
         <label class="modal-label">Size</label>
         <input class="modal-input" type="text" id="billboardSize" placeholder="e.g. 20ft x 40ft" />
         <div style="display:flex;gap:10px;">
@@ -564,7 +567,8 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
         return;
       }
       featuredSiteCode = 'NEW-' + Date.now();
-      featuredNotes = 'NEW LISTING — Location: ' + location + ' | Size: ' + size + ' | Type: ' + type + ' | Illumination: ' + illumination + ' | Company: ' + company;
+      const description = document.getElementById('billboardDescription').value.trim();
+      featuredNotes = 'NEW LISTING — Location: ' + location + (description ? ' | Description: ' + description : '') + ' | Size: ' + size + ' | Type: ' + type + ' | Illumination: ' + illumination + ' | Company: ' + company;
     }
 
     featuredEmail = email;
