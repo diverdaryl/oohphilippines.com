@@ -231,6 +231,51 @@ body {
 .qr-timer { font-size: 12px; font-weight: 700; color: #e65100; background: #fff3e0; padding: 5px 14px; border-radius: 20px; }
 .qr-timer.expired { color: #c0392b; background: #fde8e8; }
 
+/* Featured form step */
+.featured-form { display: none; }
+.featured-form.active { display: block; }
+.file-upload-box {
+  border: 2px dashed #e0e0e0;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.3s;
+  margin-bottom: 16px;
+  position: relative;
+}
+.file-upload-box:hover { border-color: #1565c0; }
+.file-upload-box input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+.file-upload-icon { font-size: 28px; margin-bottom: 6px; }
+.file-upload-text { font-size: 13px; color: #90a4ae; }
+.file-upload-name { font-size: 13px; color: #1565c0; font-weight: 600; margin-top: 4px; display: none; }
+.step-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  font-size: 12px;
+  color: #90a4ae;
+}
+.step-dot {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  color: #90a4ae;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+  flex-shrink: 0;
+}
+.step-dot.active { background: #1565c0; color: white; }
+.step-line { flex: 1; height: 1px; background: #e0e0e0; }
+
 @media (max-width: 600px) {
     .pricing-wrap { padding: 24px 16px 40px; }
     .pricing-wrap h1 { font-size: 28px; }
@@ -447,9 +492,53 @@ body {
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">×</button>
 
+    <!-- Step 1: Featured listing details (only for featured) -->
+    <div class="featured-form" id="featuredFormStep">
+      <div class="step-indicator">
+        <div class="step-dot active">1</div>
+        <div class="step-line"></div>
+        <div class="step-dot">2</div>
+        <div class="step-line"></div>
+        <div class="step-dot">3</div>
+      </div>
+      <div class="modal-tag" id="featuredTag">Featured Listing</div>
+      <div class="modal-title">Billboard Details</div>
+      <div class="modal-amount">₱1,500 / month</div>
+      <div class="modal-error" id="featuredErrorMsg"></div>
+
+      <label class="modal-label">Your Email Address</label>
+      <input class="modal-input" type="email" id="featuredEmailInput" placeholder="you@company.com" />
+
+      <label class="modal-label">Billboard Site Code</label>
+      <input class="modal-input" type="text" id="siteCodeInput" placeholder="e.g. G-001, F-023, H-045"
+        style="text-transform:uppercase;" />
+      <div style="font-size:12px;color:#90a4ae;margin-top:-10px;margin-bottom:14px;">
+        Find your site code in the OOHPhilippines directory
+      </div>
+
+      <label class="modal-label">Upload Billboard Photo (optional)</label>
+      <div class="file-upload-box" id="fileUploadBox">
+        <input type="file" id="photoInput" accept="image/*" onchange="handleFileSelect(this)" />
+        <div class="file-upload-icon">📷</div>
+        <div class="file-upload-text">Click to upload a high-quality photo<br><span style="font-size:11px;">JPG, PNG up to 5MB</span></div>
+        <div class="file-upload-name" id="fileName"></div>
+      </div>
+
+      <button class="modal-btn" onclick="handleFeaturedNext()">Continue to Payment →</button>
+      <div class="pm-note">Pay securely via QR Ph · Scan with any banking app</div>
+    </div>
+
+    <!-- Step 2: Email form (subscription plans) -->
     <div id="formStep">
+      <div class="step-indicator" id="subStepIndicator" style="display:none;">
+        <div class="step-dot active">1</div>
+        <div class="step-line"></div>
+        <div class="step-dot">2</div>
+        <div class="step-line"></div>
+        <div class="step-dot">3</div>
+      </div>
       <div class="modal-tag" id="modalTag">Pro Plan</div>
-      <div class="modal-title">Subscribe Now</div>
+      <div class="modal-title" id="modalTitle">Subscribe Now</div>
       <div class="modal-amount" id="modalAmount">₱999 / month</div>
       <div class="modal-error" id="errorMsg"></div>
       <label class="modal-label">Your Email Address</label>
@@ -505,18 +594,40 @@ body {
   let currentPlan = null;
   let currentType = null;
   let timerInterval = null;
+  let featuredSiteCode = null;
+  let featuredPhotoBase64 = null;
+  let featuredPhotoName = null;
+  let featuredEmail = null;
 
   function openModal(plan, title, amount, type) {
     currentPlan = plan;
     currentType = type;
-    document.getElementById('modalTag').textContent = title;
-    document.getElementById('modalAmount').textContent = AMOUNTS[plan];
+
+    // Reset fields
     document.getElementById('emailInput').value = '';
     document.getElementById('errorMsg').classList.remove('active');
-    showStep('form');
+    document.getElementById('modalTag').textContent = title;
+    document.getElementById('modalAmount').textContent = AMOUNTS[plan];
+
+    if (type === 'featured_listing') {
+      // Show featured form first
+      document.getElementById('featuredEmailInput').value = '';
+      document.getElementById('siteCodeInput').value = '';
+      document.getElementById('photoInput').value = '';
+      document.getElementById('fileName').style.display = 'none';
+      document.getElementById('featuredErrorMsg').classList.remove('active');
+      featuredSiteCode = null;
+      featuredPhotoBase64 = null;
+      featuredPhotoName = null;
+      featuredEmail = null;
+      showStep('featured');
+    } else {
+      showStep('form');
+      setTimeout(() => document.getElementById('emailInput').focus(), 100);
+    }
+
     document.getElementById('modalOverlay').classList.add('active');
     document.body.style.overflow = 'hidden';
-    setTimeout(() => document.getElementById('emailInput').focus(), 100);
   }
 
   function closeModal() {
@@ -530,6 +641,7 @@ body {
   }
 
   function showStep(step) {
+    document.getElementById('featuredFormStep').classList.toggle('active', step === 'featured');
     document.getElementById('formStep').style.display = step === 'form' ? 'block' : 'none';
     document.getElementById('loadingState').classList.toggle('active', step === 'loading');
     document.getElementById('qrSection').classList.toggle('active', step === 'qr');
@@ -541,8 +653,62 @@ body {
     el.classList.add('active');
   }
 
+  function showFeaturedError(msg) {
+    const el = document.getElementById('featuredErrorMsg');
+    el.textContent = msg;
+    el.classList.add('active');
+  }
+
+  function handleFileSelect(input) {
+    const file = input.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      showFeaturedError('Photo must be under 5MB.');
+      input.value = '';
+      return;
+    }
+    featuredPhotoName = file.name;
+    document.getElementById('fileName').textContent = '📎 ' + file.name;
+    document.getElementById('fileName').style.display = 'block';
+
+    // Convert to base64
+    const reader = new FileReader();
+    reader.onload = (e) => { featuredPhotoBase64 = e.target.result; };
+    reader.readAsDataURL(file);
+  }
+
+  function handleFeaturedNext() {
+    const email = document.getElementById('featuredEmailInput').value.trim();
+    const siteCode = document.getElementById('siteCodeInput').value.trim().toUpperCase();
+
+    document.getElementById('featuredErrorMsg').classList.remove('active');
+
+    if (!email || !email.includes('@')) {
+      showFeaturedError('Please enter a valid email address.');
+      return;
+    }
+    if (!siteCode) {
+      showFeaturedError('Please enter your billboard site code.');
+      return;
+    }
+
+    featuredEmail = email;
+    featuredSiteCode = siteCode;
+
+    // Pre-fill email in next step
+    document.getElementById('emailInput').value = email;
+
+    // Show payment step
+    document.getElementById('modalTitle').textContent = 'Confirm & Pay';
+    showStep('form');
+    setTimeout(() => document.getElementById('emailInput').focus(), 100);
+  }
+
   async function handlePayment() {
-    const email = document.getElementById('emailInput').value.trim();
+    const email = currentType === 'featured_listing'
+      ? (featuredEmail || document.getElementById('emailInput').value.trim())
+      : document.getElementById('emailInput').value.trim();
+
     if (!email || !email.includes('@')) {
       showError('Please enter a valid email address.');
       return;
@@ -554,7 +720,14 @@ body {
       const res = await fetch(EDGE_FN_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, payment_type: currentType, plan: currentPlan }),
+        body: JSON.stringify({
+          email,
+          payment_type: currentType,
+          plan: currentPlan,
+          site_code: featuredSiteCode || null,
+          photo_base64: featuredPhotoBase64 || null,
+          photo_name: featuredPhotoName || null,
+        }),
       });
 
       const data = await res.json();
