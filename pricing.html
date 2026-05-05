@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TRKYRLSQHP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-TRKYRLSQHP');
+</script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pricing — OOHPhilippines.com</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    min-height: 100vh;
+    padding: 0;
+}
+
+/* ── NAV ── */
+.nav-wrapper {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+.nav-bar {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    flex-wrap: nowrap;
+    gap: 8px;
+}
+.nav-logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1565c0;
+    text-decoration: none;
+    letter-spacing: -0.5px;
+    cursor: pointer;
+}
+.nav-links {
+    display: flex;
+    gap: 4px;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+.nav-link {
+    color: #1565c0;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 7px 13px;
+    border-radius: 7px;
+    background: rgba(255,255,255,0.75);
+    transition: all 0.3s;
+    white-space: nowrap;
+    cursor: pointer;
+    border: none;
+    font-size: 13px;
+    font-family: 'Segoe UI', sans-serif;
+}
+.nav-link:hover { background: white; transform: translateY(-2px); }
+.nav-link.active { background: #1565c0; color: white; }
+.nav-link.primary { background: #1565c0; color: white; }
+.nav-link.primary:hover { background: #0d47a1; }
+
+/* ── PRICING STYLES (copied from index.html) ── */
+.pricing-wrap { max-width: 1100px; margin: 0 auto; padding: 40px 20px 60px; }
+.pricing-wrap h1 { font-size: 36px; font-weight: 800; color: #1565c0; margin-bottom: 10px; }
+.pricing-wrap > p { color: #666; font-size: 16px; margin-bottom: 24px; }
+.billing-toggle { display: flex; gap: 10px; margin-bottom: 32px; flex-wrap: wrap; }
+.billing-btn { padding: 10px 22px; border-radius: 50px; border: 2px solid #e65100; background: white; color: #e65100; font-weight: 700; font-size: 14px; cursor: pointer; font-family: 'Segoe UI', sans-serif; transition: all 0.2s; }
+.billing-btn.active { background: #e65100; color: white; }
+.save-badge { background: #fff3e0; color: #e65100; font-size: 11px; padding: 2px 8px; border-radius: 20px; margin-left: 6px; }
+.pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 40px; }
+.pricing-card { background: white; border-radius: 20px; padding: 32px 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); position: relative; border: 2px solid transparent; transition: all 0.3s; }
+.pricing-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.12); }
+.pricing-card.featured { border-color: #e65100; box-shadow: 0 8px 30px rgba(230,81,0,0.15); }
+.featured-badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #e65100, #bf360c); color: white; font-size: 12px; font-weight: 800; padding: 4px 16px; border-radius: 20px; white-space: nowrap; letter-spacing: 0.5px; }
+.plan-icon { font-size: 36px; display: block; margin-bottom: 12px; }
+.plan-name { font-size: 24px; font-weight: 800; color: #1565c0; margin-bottom: 6px; }
+.plan-tagline { font-size: 14px; color: #888; margin-bottom: 20px; line-height: 1.5; }
+.plan-price { margin-bottom: 6px; }
+.plan-price.free .currency, .plan-price.free .amount { color: #4caf50; }
+.currency { font-size: 20px; font-weight: 700; color: #1565c0; vertical-align: top; margin-top: 8px; display: inline-block; }
+.amount { font-size: 48px; font-weight: 900; color: #1565c0; line-height: 1; }
+.period { font-size: 14px; color: #888; margin-top: 4px; }
+.annual-note { font-size: 13px; color: #e65100; font-weight: 600; min-height: 20px; margin-bottom: 16px; }
+.plan-divider { border: none; border-top: 1px solid #f0f0f0; margin: 16px 0; }
+.plan-features { list-style: none; margin-bottom: 24px; }
+.plan-features li { font-size: 14px; color: #455a64; padding: 6px 0; display: flex; align-items: flex-start; gap: 10px; line-height: 1.4; }
+.plan-features li.muted { color: #bbb; }
+.check { font-size: 16px; flex-shrink: 0; }
+.plan-cta { display: block; width: 100%; padding: 14px; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; transition: all 0.2s; font-family: 'Segoe UI', sans-serif; border: none; }
+.plan-cta.primary { background: linear-gradient(135deg, #e65100, #bf360c); color: white; }
+.plan-cta.primary:hover { opacity: 0.9; transform: translateY(-1px); }
+.plan-cta.outline { background: white; color: #e65100; border: 2px solid #e65100; }
+.plan-cta.outline:hover { background: #e65100; color: white; }
+.plan-cta.ghost { background: #f5f5f5; color: #aaa; cursor: not-allowed; }
+.pricing-guarantee { background: white; border-radius: 16px; padding: 28px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.06); margin-bottom: 40px; }
+.pricing-faq { margin-top: 40px; }
+.pricing-faq h2 { font-size: 28px; font-weight: 800; color: #1565c0; margin-bottom: 24px; text-align: center; }
+.faq-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+.faq-item { background: white; border-radius: 14px; padding: 22px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); }
+.faq-item h3 { font-size: 15px; font-weight: 700; color: #1565c0; margin-bottom: 10px; }
+.faq-item p { font-size: 14px; color: #666; line-height: 1.6; }
+
+/* ── OPERATOR LISTINGS SECTION ── */
+.operator-section { margin-top: 60px; }
+.operator-section h2 { font-size: 28px; font-weight: 800; color: #1565c0; margin-bottom: 8px; }
+.operator-section > p { font-size: 15px; color: #666; margin-bottom: 24px; }
+.operator-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 40px; }
+.operator-card { background: white; border-radius: 20px; padding: 32px 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); position: relative; border: 2px solid transparent; transition: all 0.3s; }
+.operator-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.12); }
+.op-badge { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; }
+.op-badge.featured-op { background: #fff8e1; color: #f57f17; }
+.op-badge.sponsored-op { background: #fce4ec; color: #c62828; }
+
+/* ── PAYMENT MODAL ── */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(6px);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+.modal-overlay.active { display: flex; }
+.modal {
+    background: white;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 420px;
+    padding: 32px;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    animation: modalIn 0.25s ease;
+}
+@keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.modal-close {
+    position: absolute;
+    top: 14px; right: 14px;
+    background: #f5f5f5;
+    border: none;
+    border-radius: 50%;
+    width: 32px; height: 32px;
+    font-size: 18px;
+    cursor: pointer;
+    color: #607d8b;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+}
+.modal-close:hover { background: #e0e0e0; }
+.modal-tag {
+    display: inline-block;
+    background: #fff3e0;
+    color: #e65100;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 20px;
+    margin-bottom: 10px;
+}
+.modal-title { font-size: 26px; font-weight: 800; color: #1565c0; margin-bottom: 4px; }
+.modal-amount { font-size: 32px; font-weight: 900; color: #e65100; margin-bottom: 20px; }
+.modal-label {
+    display: block; font-size: 12px; font-weight: 700;
+    color: #90a4ae; letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 6px;
+}
+.modal-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 15px; color: #202124;
+    outline: none; transition: border-color 0.3s;
+    margin-bottom: 16px;
+}
+.modal-input:focus { border-color: #1565c0; }
+.modal-input::placeholder { color: #b0bec5; }
+.modal-error {
+    display: none;
+    background: #fde8e8; border: 1px solid #f5c6cb;
+    border-radius: 8px; padding: 10px 14px;
+    font-size: 13px; color: #c0392b; margin-bottom: 14px;
+}
+.modal-error.active { display: block; }
+.modal-btn {
+    width: 100%; padding: 14px;
+    background: linear-gradient(135deg, #e65100, #bf360c);
+    color: white; border: none; border-radius: 10px;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 15px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s;
+}
+.modal-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.pm-note { text-align: center; font-size: 12px; color: #90a4ae; margin-top: 14px; }
+.pm-badges { display: flex; justify-content: center; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.pm-badge { background: #f5f5f5; border: 1px solid #e0e0e0; border-radius: 5px; padding: 3px 8px; font-size: 11px; font-weight: 600; color: #607d8b; }
+
+/* Loading */
+.loading-state { display: none; flex-direction: column; align-items: center; gap: 14px; padding: 20px 0; text-align: center; }
+.loading-state.active { display: flex; }
+.spinner { width: 40px; height: 40px; border: 3px solid #fff3e0; border-top-color: #e65100; border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-state p { font-size: 14px; color: #90a4ae; }
+
+/* QR */
+.qr-section { display: none; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
+.qr-section.active { display: flex; }
+.qr-title { font-size: 20px; font-weight: 800; color: #1565c0; }
+.qr-box { background: white; border: 2px solid #e3f2fd; border-radius: 14px; padding: 14px; width: 210px; height: 210px; display: flex; align-items: center; justify-content: center; }
+.qr-box img { width: 100%; height: 100%; object-fit: contain; }
+.qr-instructions { font-size: 13px; color: #607d8b; line-height: 1.6; max-width: 300px; }
+.qr-timer { font-size: 12px; font-weight: 700; color: #e65100; background: #fff3e0; padding: 5px 14px; border-radius: 20px; }
+.qr-timer.expired { color: #c0392b; background: #fde8e8; }
+
+@media (max-width: 600px) {
+    .pricing-wrap { padding: 24px 16px 40px; }
+    .pricing-wrap h1 { font-size: 28px; }
+    .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<div class="nav-wrapper">
+<div class="nav-bar">
+    <a href="index.html" class="nav-logo">OOHPhilippines.com</a>
+    <div class="nav-links">
+        <a href="index.html" class="nav-link">🔍 Search</a>
+        <span class="nav-link active">💎 Pricing</span>
+        <a href="mailto:info@oohphilippines.com" class="nav-link">Contact Us</a>
+        <a href="index.html#subscriberLogin" class="nav-link" style="background:#fff3e0;color:#e65100;">🔑 Subscriber Login</a>
+    </div>
+</div>
+</div>
+
+<!-- PRICING CONTENT -->
+<div class="pricing-wrap">
+
+    <div class="pricing-hero">
+        <h1>Simple, transparent pricing</h1>
+        <p>Find the perfect plan for your OOH advertising needs. Upgrade or cancel anytime.</p>
+        <div style="font-size:13px;color:#e65100;font-weight:700;margin-bottom:4px;">⭐ Founding Member Offer: Lock in today's rates before prices increase.</div>
+        <div style="font-size:12px;color:#888;font-weight:400;margin-bottom:24px;">Early subscribers keep their rate permanently as the platform grows.</div>
+    </div>
+
+    <!-- PLAN CARDS -->
+    <div class="pricing-grid">
+
+        <!-- Free -->
+        <div class="pricing-card">
+            <span class="plan-icon">🔍</span>
+            <div class="plan-name">Free</div>
+            <div class="plan-tagline">Explore the Philippine OOH market at no cost.</div>
+            <div class="plan-price free">
+                <span class="currency">₱</span><span class="amount">0</span>
+                <div class="period">forever</div>
+            </div>
+            <div class="annual-note">&nbsp;</div>
+            <hr class="plan-divider">
+            <ul class="plan-features">
+                <li><span class="check">✅</span> Search &amp; browse all billboard sites</li>
+                <li><span class="check">✅</span> View location, size &amp; type</li>
+                <li><span class="check">✅</span> Browse active promos</li>
+                <li><span class="check">✅</span> 5 searches per week</li>
+                <li class="muted"><span class="check">🔒</span> Full contact info (phone, Viber, WhatsApp)</li>
+                <li class="muted"><span class="check">🔒</span> Shortlist &amp; save sites</li>
+                <li class="muted"><span class="check">🔒</span> Export to PDF / Excel</li>
+                <li class="muted"><span class="check">🔒</span> Unlimited searches</li>
+            </ul>
+            <button class="plan-cta ghost" disabled>Current Plan</button>
+        </div>
+
+        <!-- Pro -->
+        <div class="pricing-card featured">
+            <div class="featured-badge">⭐ MOST POPULAR</div>
+            <span class="plan-icon">💼</span>
+            <div class="plan-name">Pro</div>
+            <div class="plan-tagline">For brands &amp; media buyers planning campaigns.</div>
+            <div class="plan-price">
+                <span class="currency">₱</span><span class="amount">999</span>
+                <div class="period">/ month</div>
+            </div>
+            <div class="annual-note">&nbsp;</div>
+            <hr class="plan-divider">
+            <ul class="plan-features">
+                <li><span class="check">✅</span> Everything in Free</li>
+                <li><span class="check">✅</span> <strong>Unlimited searches</strong></li>
+                <li><span class="check">✅</span> Full contact info (phone, Viber, WhatsApp)</li>
+                <li><span class="check">✅</span> Shortlist &amp; save favorite sites</li>
+                <li><span class="check">✅</span> Download site specs as PDF</li>
+                <li><span class="check">✅</span> Priority email support</li>
+                <li class="muted"><span class="check">🔒</span> Multiple user seats</li>
+                <li class="muted"><span class="check">🔒</span> Campaign planning tools</li>
+            </ul>
+            <button class="plan-cta primary" onclick="openModal('pro','Pro Plan',999,'subscription')">Subscribe — ₱999/mo →</button>
+            <div style="text-align:center;margin-top:12px;">
+                <span style="font-size:13px;color:#90a4ae;">Already subscribed? </span>
+                <a href="index.html" style="color:#1565c0;font-weight:700;font-size:13px;text-decoration:none;">Log in →</a>
+            </div>
+        </div>
+
+        <!-- Agency -->
+        <div class="pricing-card">
+            <span class="plan-icon">🏢</span>
+            <div class="plan-name">Agency</div>
+            <div class="plan-tagline">For agencies managing multiple clients &amp; campaigns.</div>
+            <div class="plan-price">
+                <span class="currency">₱</span><span class="amount">2,999</span>
+                <div class="period">/ month</div>
+            </div>
+            <div class="annual-note">&nbsp;</div>
+            <hr class="plan-divider">
+            <ul class="plan-features">
+                <li><span class="check">✅</span> Everything in Pro</li>
+                <li><span class="check">✅</span> <strong>Up to 5 user seats</strong></li>
+                <li><span class="check">✅</span> Campaign planning &amp; grouping</li>
+                <li><span class="check">✅</span> Export inventory to Excel / CSV</li>
+                <li><span class="check">✅</span> Branded site proposals</li>
+                <li><span class="check">✅</span> Dedicated account manager</li>
+                <li><span class="check">✅</span> Early access to new features</li>
+                <li><span class="check">✅</span> Phone &amp; chat support</li>
+            </ul>
+            <button class="plan-cta outline" onclick="openModal('agency','Agency Plan',2999,'subscription')">Subscribe — ₱2,999/mo →</button>
+            <div style="text-align:center;margin-top:12px;">
+                <span style="font-size:13px;color:#90a4ae;">Already subscribed? </span>
+                <a href="index.html" style="color:#1565c0;font-weight:700;font-size:13px;text-decoration:none;">Log in →</a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- GUARANTEE -->
+    <div class="pricing-guarantee">
+        <div style="font-size:36px;">🤝</div>
+        <strong style="color:#1565c0;font-size:18px;">No contracts. No surprises.</strong>
+        <p style="margin-top:8px;color:#666;font-size:14px;line-height:1.6;">
+            Plans billed monthly. Cancel anytime. All payments in Philippine Peso (₱) via QR Ph.<br>
+            Questions? Email us at <a href="mailto:info@oohphilippines.com" style="color:#1565c0;">info@oohphilippines.com</a>
+        </p>
+    </div>
+
+    <!-- OPERATOR SECTION -->
+    <div class="operator-section">
+        <h2>📍 For Billboard Operators</h2>
+        <p>Boost your listings and get more inquiries from agencies and advertisers.</p>
+        <div class="operator-grid">
+
+            <div class="operator-card">
+                <div class="op-badge featured-op">★ Featured</div>
+                <span class="plan-icon">📌</span>
+                <div class="plan-name">Featured Listing</div>
+                <div class="plan-tagline">Get highlighted at the top of search results.</div>
+                <div class="plan-price">
+                    <span class="currency">₱</span><span class="amount">1,500</span>
+                    <div class="period">/ month</div>
+                </div>
+                <div class="annual-note">&nbsp;</div>
+                <hr class="plan-divider">
+                <ul class="plan-features">
+                    <li><span class="check">✅</span> Highlighted card in search results</li>
+                    <li><span class="check">✅</span> Appears at the top of listings</li>
+                    <li><span class="check">✅</span> "Featured" badge on your site</li>
+                    <li><span class="check">✅</span> More visibility for advertisers</li>
+                </ul>
+                <button class="plan-cta outline" onclick="openModal('featured','Featured Listing',1500,'featured_listing')">Get Featured — ₱1,500/mo →</button>
+            </div>
+
+            <div class="operator-card" style="border-color:#e65100;box-shadow:0 8px 30px rgba(230,81,0,0.15);">
+                <div class="featured-badge">◆ TOP PICK</div>
+                <div class="op-badge sponsored-op">◆ Sponsored</div>
+                <span class="plan-icon">🚀</span>
+                <div class="plan-name">Sponsored Listing</div>
+                <div class="plan-tagline">Maximum exposure across the entire directory.</div>
+                <div class="plan-price">
+                    <span class="currency">₱</span><span class="amount">3,000</span>
+                    <div class="period">/ month</div>
+                </div>
+                <div class="annual-note">&nbsp;</div>
+                <hr class="plan-divider">
+                <ul class="plan-features">
+                    <li><span class="check">✅</span> Everything in Featured</li>
+                    <li><span class="check">✅</span> Banner placement at top of directory</li>
+                    <li><span class="check">✅</span> Priority visibility on all pages</li>
+                    <li><span class="check">✅</span> "Sponsored" badge on your site</li>
+                </ul>
+                <button class="plan-cta primary" onclick="openModal('sponsored','Sponsored Listing',3000,'featured_listing')">Get Sponsored — ₱3,000/mo →</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="pricing-faq">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-grid">
+            <div class="faq-item">
+                <h3>How do I subscribe?</h3>
+                <p>Click the Subscribe button, enter your email, and scan the QR code with GCash, Maya, BPI, or any QR Ph-enabled banking app. Your account activates automatically after payment.</p>
+            </div>
+            <div class="faq-item">
+                <h3>Can I cancel anytime?</h3>
+                <p>Yes. There are no long-term contracts. You can cancel at any time and you won't be billed for the next period.</p>
+            </div>
+            <div class="faq-item">
+                <h3>What payment methods do you accept?</h3>
+                <p>We accept payments via QR Ph — scan with GCash, Maya, BPI, UnionBank, and all major Philippine banking apps. Fast and secure.</p>
+            </div>
+            <div class="faq-item">
+                <h3>Can I upgrade from Pro to Agency?</h3>
+                <p>Absolutely. Just email us at info@oohphilippines.com and we'll handle the upgrade. It takes effect immediately with no downtime.</p>
+            </div>
+            <div class="faq-item">
+                <h3>Is the Free plan really free forever?</h3>
+                <p>Yes. You can search and browse all billboard sites for free. Paid plans unlock unlimited searches, full contact details, shortlisting, and more.</p>
+            </div>
+            <div class="faq-item">
+                <h3>Do you offer discounts for NGOs or startups?</h3>
+                <p>Yes! We support the local advertising industry. Contact us at info@oohphilippines.com and we'll work something out.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+
+    <div id="formStep">
+      <div class="modal-tag" id="modalTag">Pro Plan</div>
+      <div class="modal-title">Subscribe Now</div>
+      <div class="modal-amount" id="modalAmount">₱999 / month</div>
+      <div class="modal-error" id="errorMsg"></div>
+      <label class="modal-label">Your Email Address</label>
+      <input class="modal-input" type="email" id="emailInput" placeholder="you@company.com"
+        onkeydown="if(event.key==='Enter') handlePayment()" />
+      <button class="modal-btn" onclick="handlePayment()">Continue to Payment →</button>
+      <div class="pm-note">Pay securely via QR Ph · Scan with any banking app</div>
+      <div class="pm-badges">
+        <span class="pm-badge">GCash</span>
+        <span class="pm-badge">Maya</span>
+        <span class="pm-badge">BPI</span>
+        <span class="pm-badge">UnionBank</span>
+        <span class="pm-badge">+ more</span>
+      </div>
+    </div>
+
+    <div class="loading-state" id="loadingState">
+      <div class="spinner"></div>
+      <p>Generating your QR code…</p>
+    </div>
+
+    <div class="qr-section" id="qrSection">
+      <div class="qr-title" id="qrTitle">Scan to Pay</div>
+      <div class="qr-box">
+        <img id="qrImage" src="" alt="Payment QR Code" />
+      </div>
+      <div class="qr-instructions">
+        Open <strong>GCash, Maya, BPI</strong>, or any banking app and tap <strong>Scan QR</strong>.<br>
+        Your subscription activates automatically after payment.
+      </div>
+      <div class="qr-timer" id="qrTimer">Expires in 5:00</div>
+      <div class="pm-badges">
+        <span class="pm-badge">QR Ph</span>
+        <span class="pm-badge">GCash</span>
+        <span class="pm-badge">Maya</span>
+        <span class="pm-badge">BPI</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const EDGE_FN_URL = 'https://xecxfkuzexshafwuuizf.supabase.co/functions/v1/create-payment';
+
+  const AMOUNTS = {
+    pro:       '₱999 / month',
+    agency:    '₱2,999 / month',
+    featured:  '₱1,500 / month',
+    sponsored: '₱3,000 / month',
+  };
+
+  let currentPlan = null;
+  let currentType = null;
+  let timerInterval = null;
+
+  function openModal(plan, title, amount, type) {
+    currentPlan = plan;
+    currentType = type;
+    document.getElementById('modalTag').textContent = title;
+    document.getElementById('modalAmount').textContent = AMOUNTS[plan];
+    document.getElementById('emailInput').value = '';
+    document.getElementById('errorMsg').classList.remove('active');
+    showStep('form');
+    document.getElementById('modalOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => document.getElementById('emailInput').focus(), 100);
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+    if (timerInterval) clearInterval(timerInterval);
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
+  function showStep(step) {
+    document.getElementById('formStep').style.display = step === 'form' ? 'block' : 'none';
+    document.getElementById('loadingState').classList.toggle('active', step === 'loading');
+    document.getElementById('qrSection').classList.toggle('active', step === 'qr');
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('errorMsg');
+    el.textContent = msg;
+    el.classList.add('active');
+  }
+
+  async function handlePayment() {
+    const email = document.getElementById('emailInput').value.trim();
+    if (!email || !email.includes('@')) {
+      showError('Please enter a valid email address.');
+      return;
+    }
+    document.getElementById('errorMsg').classList.remove('active');
+    showStep('loading');
+
+    try {
+      const res = await fetch(EDGE_FN_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, payment_type: currentType, plan: currentPlan }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        showStep('form');
+        showError(data.error || 'Something went wrong. Please try again.');
+        return;
+      }
+
+      document.getElementById('qrTitle').textContent = `Scan to Pay ${AMOUNTS[currentPlan]}`;
+      document.getElementById('qrImage').src = data.qr_url;
+      showStep('qr');
+      startTimer(300);
+
+    } catch (err) {
+      console.error(err);
+      showStep('form');
+      showError('Network error. Please check your connection and try again.');
+    }
+  }
+
+  function startTimer(seconds) {
+    if (timerInterval) clearInterval(timerInterval);
+    let remaining = seconds;
+    function tick() {
+      const m = Math.floor(remaining / 60);
+      const s = remaining % 60;
+      const el = document.getElementById('qrTimer');
+      el.textContent = `Expires in ${m}:${s.toString().padStart(2, '0')}`;
+      if (remaining <= 0) {
+        clearInterval(timerInterval);
+        el.textContent = 'QR code expired. Please close and try again.';
+        el.classList.add('expired');
+      }
+      remaining--;
+    }
+    tick();
+    timerInterval = setInterval(tick, 1000);
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+
+</body>
+</html>

@@ -1833,46 +1833,7 @@
     .results-divider::before { content:''; position:absolute; top:50%; left:0; right:0; height:1px; background:#e0e0e0; }
     .results-divider span { position:relative; background:#f0f4f8; padding:4px 14px; font-size:12px; font-weight:700; color:#888; border-radius:20px; border:1px solid #e0e0e0; }
 
-    /* ── PRICING PAGE ── */
-    .pricing-wrap { max-width: 1100px; margin: 0 auto; padding: 40px 20px 60px; }
-    .pricing-wrap h1 { font-size: 36px; font-weight: 800; color: #1565c0; margin-bottom: 10px; }
-    .pricing-wrap > p { color: #666; font-size: 16px; margin-bottom: 24px; }
-    .billing-toggle { display: flex; gap: 10px; margin-bottom: 32px; flex-wrap: wrap; }
-    .billing-btn { padding: 10px 22px; border-radius: 50px; border: 2px solid #e65100; background: white; color: #e65100; font-weight: 700; font-size: 14px; cursor: pointer; font-family: 'Segoe UI', sans-serif; transition: all 0.2s; }
-    .billing-btn.active { background: #e65100; color: white; }
-    .save-badge { background: #fff3e0; color: #e65100; font-size: 11px; padding: 2px 8px; border-radius: 20px; margin-left: 6px; }
-    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 40px; }
-    .pricing-card { background: white; border-radius: 20px; padding: 32px 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); position: relative; border: 2px solid transparent; transition: all 0.3s; }
-    .pricing-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.12); }
-    .pricing-card.featured { border-color: #e65100; box-shadow: 0 8px 30px rgba(230,81,0,0.15); }
-    .featured-badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #e65100, #bf360c); color: white; font-size: 12px; font-weight: 800; padding: 4px 16px; border-radius: 20px; white-space: nowrap; letter-spacing: 0.5px; }
-    .plan-icon { font-size: 36px; display: block; margin-bottom: 12px; }
-    .plan-name { font-size: 24px; font-weight: 800; color: #1565c0; margin-bottom: 6px; }
-    .plan-tagline { font-size: 14px; color: #888; margin-bottom: 20px; line-height: 1.5; }
-    .plan-price { margin-bottom: 6px; }
-    .plan-price.free .currency, .plan-price.free .amount { color: #4caf50; }
-    .currency { font-size: 20px; font-weight: 700; color: #1565c0; vertical-align: top; margin-top: 8px; display: inline-block; }
-    .amount { font-size: 48px; font-weight: 900; color: #1565c0; line-height: 1; }
-    .period { font-size: 14px; color: #888; margin-top: 4px; }
-    .annual-note { font-size: 13px; color: #e65100; font-weight: 600; min-height: 20px; margin-bottom: 16px; }
-    .plan-divider { border: none; border-top: 1px solid #f0f0f0; margin: 16px 0; }
-    .plan-features { list-style: none; margin-bottom: 24px; }
-    .plan-features li { font-size: 14px; color: #455a64; padding: 6px 0; display: flex; align-items: flex-start; gap: 10px; line-height: 1.4; }
-    .plan-features li.muted { color: #bbb; }
-    .check { font-size: 16px; flex-shrink: 0; }
-    .plan-cta { display: block; width: 100%; padding: 14px; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; transition: all 0.2s; font-family: 'Segoe UI', sans-serif; border: none; }
-    .plan-cta.primary { background: linear-gradient(135deg, #e65100, #bf360c); color: white; }
-    .plan-cta.primary:hover { opacity: 0.9; transform: translateY(-1px); }
-    .plan-cta.outline { background: white; color: #e65100; border: 2px solid #e65100; }
-    .plan-cta.outline:hover { background: #e65100; color: white; }
-    .plan-cta.ghost { background: #f5f5f5; color: #aaa; cursor: not-allowed; }
-    .pricing-guarantee { background: white; border-radius: 16px; padding: 28px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.06); margin-bottom: 40px; }
-    .pricing-faq { margin-top: 40px; }
-    .pricing-faq h2 { font-size: 28px; font-weight: 800; color: #1565c0; margin-bottom: 24px; text-align: center; }
-    .faq-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-    .faq-item { background: white; border-radius: 14px; padding: 22px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); }
-    .faq-item h3 { font-size: 15px; font-weight: 700; color: #1565c0; margin-bottom: 10px; }
-    .faq-item p { font-size: 14px; color: #666; line-height: 1.6; }
+
 
 </style>
 
@@ -1895,7 +1856,7 @@
         <button class="nav-link" onclick="showPage('home')">🔍 Search</button>
         <button class="nav-link" onclick="showPage('promos')" id="promosNavBtn">🎉 Promos <span id="promosBadge" style="display:none;background:#e65100;color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;margin-left:4px;vertical-align:middle;"></span></button>
         <button class="nav-link" onclick="showPage('inquiries')" id="inquiriesNavBtn">Looking For Sites? <span id="inquiriesBadge" style="display:none;background:#e65100;color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;margin-left:4px;vertical-align:middle;"></span></button>
-        <button class="nav-link" onclick="showPage('pricing')">💎 Pricing</button>
+        <a href="pricing.html" class="nav-link">💎 Pricing</a>
         <a href="/guides.html" class="nav-link">📖 Guides</a>
         <button class="nav-link" onclick="showPage('about')">About Us</button>
         <button class="nav-link primary" onclick="showPage('uploadSite')" style="padding:6px 12px;">List Your Site</button>
@@ -1928,7 +1889,7 @@
     <button onclick="showPage('home'); closeMobileMenu()">🔍 Search</button>
     <button onclick="showPage('promos'); closeMobileMenu()">🎉 Promos <span id="promosBadgeMobile" style="display:none;background:#e65100;color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;margin-left:4px;vertical-align:middle;"></span></button>
     <button onclick="showPage('inquiries'); closeMobileMenu()">Looking For Sites? <span id="inquiriesBadgeMobile" style="display:none;background:#e65100;color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;margin-left:4px;vertical-align:middle;"></span></button>
-    <button onclick="showPage('pricing'); closeMobileMenu()">💎 Pricing</button>
+    <a href="pricing.html" class="nav-link" style="display:block;text-align:left;">💎 Pricing</a>
     <a href="/guides.html" class="nav-link" style="display:block;text-align:left;">📖 Guides</a>
     <button onclick="showPage('about'); closeMobileMenu()">About Us</button>
     <button onclick="showPage('uploadSite'); closeMobileMenu()">📍 Upload your Sites Here</button>
@@ -1988,7 +1949,7 @@
         <div class="paywall-icon">🔍</div>
         <h2>You've Used Your 5 Free Searches</h2>
         <p>Your searches reset every 7 days. Subscribe for <strong>unlimited access</strong> to all billboard inventory, full contact details, shortlisting, and campaign planning.</p>
-        <button class="paywall-subscribe-btn" onclick="closePaywallModal(); showPage('pricing')">💎 View Subscription Plans</button>
+        <button class="paywall-subscribe-btn" onclick="closePaywallModal(); window.location.href='pricing.html'">💎 View Subscription Plans</button>
         <button class="paywall-dismiss-btn" onclick="closePaywallModal()">Maybe later</button>
     </div>
 </div>
@@ -3586,7 +3547,7 @@
             </div>
             <button class="sub-login-btn" onclick="subLogin()">🔑 Log In</button>
             <div class="sub-hint">
-                Don't have an account yet? <strong><button onclick="showPage('pricing')" style="background:none;border:none;color:#e65100;font-weight:700;cursor:pointer;font-size:13px;padding:0;font-family:'Segoe UI',sans-serif;">View Pricing →</button></strong><br>
+                Don't have an account yet? <strong><a href="pricing.html" style="color:#e65100;font-weight:700;font-size:13px;text-decoration:none;">View Pricing →</a></strong><br>
                 <em style="color:#aaa;font-size:12px;">Contact info&#64;oohphilippines.com to get your login credentials after subscribing.</em>
             </div>
         </div>
@@ -3681,149 +3642,6 @@
 }
 </style>
 
-<!-- PRICING PAGE -->
-<div id="pricingPage" class="page">
-
-<div class="pricing-wrap">
-    
-    <div class="pricing-hero">
-        <h1>Simple, transparent pricing</h1>
-        <p>Find the perfect plan for your OOH advertising needs. Upgrade or cancel anytime.</p>
-        <div class="billing-toggle">
-            <button class="billing-btn active" id="btnMonthly" onclick="pricingSetBilling('monthly')">Monthly</button>
-            <button class="billing-btn" id="btnAnnual" onclick="pricingSetBilling('annual')">Annual <span class="save-badge">Save 17%</span></button>
-        </div>
-        <div style="font-size:13px;color:#e65100;font-weight:700;margin-bottom:4px;">⭐ Founding Member Offer: 17% off annual — for the first 10 subscribers only.</div>
-        <div style="font-size:12px;color:#888;font-weight:400;margin-bottom:16px;">Founding Members lock in a permanent 17% discount on their chosen plan. While we reserve the right to adjust pricing as the platform grows, your founding rate will always reflect 17% off the current standard rate.</div>
-    </div>
-
-    
-    <div class="pricing-grid">
-
-        
-        <div class="pricing-card">
-            <span class="plan-icon">🔍</span>
-            <div class="plan-name">Free</div>
-            <div class="plan-tagline">Explore the Philippine OOH market at no cost.</div>
-            <div class="plan-price free">
-                <span class="currency">₱</span><span class="amount">0</span>
-                <div class="period">forever</div>
-            </div>
-            <div class="annual-note">&nbsp;</div>
-            <hr class="plan-divider">
-            <ul class="plan-features">
-                <li><span class="check">✅</span> Search & browse all billboard sites</li>
-                <li><span class="check">✅</span> View location, size & type</li>
-                <li><span class="check">✅</span> View location, size &amp; type only</li>
-                <li><span class="check">✅</span> Browse active promos</li>
-                <li class="muted"><span class="check">🔒</span> Real-time availability status</li>
-                <li class="muted"><span class="check">🔒</span> Contact info (email, phone, Viber, WhatsApp)</li>
-                <li class="muted"><span class="check">🔒</span> Shortlist & save sites</li>
-                <li class="muted"><span class="check">🔒</span> Export to PDF / Excel</li>
-            </ul>
-            <button class="plan-cta ghost" disabled>Current Plan</button>
-        </div>
-
-        
-        <div class="pricing-card featured">
-            <div class="featured-badge">⭐ MOST POPULAR</div>
-            <span class="plan-icon">💼</span>
-            <div class="plan-name">Pro</div>
-            <div class="plan-tagline">For brands & media buyers planning campaigns.</div>
-            <div class="plan-price" id="proPriceDisplay">
-                <span class="currency">₱</span><span class="amount" id="proAmount">5,000</span>
-                <div class="period" id="proPeriod">/ month</div>
-            </div>
-            <div class="annual-note" id="proAnnualNote">&nbsp;</div>
-            <hr class="plan-divider">
-            <ul class="plan-features">
-                <li><span class="check">✅</span> Everything in Free</li>
-                <li><span class="check">✅</span> <strong>Real-time availability status</strong></li>
-                <li><span class="check">✅</span> Full contact info (phone, Viber, WhatsApp)</li>
-                <li><span class="check">✅</span> Shortlist & save favorite sites</li>
-                <li><span class="check">✅</span> Download site specs as PDF</li>
-                <li><span class="check">✅</span> Priority email support</li>
-                <li class="muted"><span class="check">🔒</span> Multiple user seats</li>
-                <li class="muted"><span class="check">🔒</span> Campaign planning tools</li>
-            </ul>
-            <a href="/cdn-cgi/l/email-protection#ddb4b3bbb29db2b2b5adb5b4b1b4adadb4b3b8aef3beb2b0e2aea8bfb7b8bea9e08dafb2f8efed8ea8bfaebeafb4ada9b4b2b3f8efed94b3aca8b4afa4fbbfb2b9a4e095b4f8ef9ef8efed94f8efeab0f8efedb4b3a9b8afb8aea9b8b9f8efedb4b3f8efedaea8bfaebeafb4bfb4b3baf8efeda9b2f8efeda9b5b8f8efed8dafb2f8efedadb1bcb3f3" class="plan-cta primary">Get Pro Access →</a>
-            <div style="text-align:center;margin-top:12px;">
-                <span style="font-size:13px;color:#90a4ae;">Already subscribed? </span>
-                <button onclick="showPage('subscriberLogin')" style="background:none;border:none;color:#1565c0;font-weight:700;font-size:13px;cursor:pointer;padding:0;font-family:'Segoe UI',sans-serif;">Log in →</button>
-            </div>
-        </div>
-
-        
-        <div class="pricing-card">
-            <span class="plan-icon">🏢</span>
-            <div class="plan-name">Agency</div>
-            <div class="plan-tagline">For agencies managing multiple clients & campaigns.</div>
-            <div class="plan-price" id="agencyPriceDisplay">
-                <span class="currency">₱</span><span class="amount" id="agencyAmount">180,000</span>
-                <div class="period" id="agencyPeriod">/ year</div>
-            </div>
-            <div class="annual-note" id="agencyAnnualNote" style="color:#e65100;font-weight:700;font-size:13px;">⭐ Founding Rate: ₱149,400/yr (17% off)</div>
-            <hr class="plan-divider">
-            <ul class="plan-features">
-                <li><span class="check">✅</span> Everything in Pro</li>
-                <li><span class="check">✅</span> <strong>Up to 5 user seats</strong></li>
-                <li><span class="check">✅</span> Campaign planning & grouping</li>
-                <li><span class="check">✅</span> Export inventory to Excel / CSV</li>
-                <li><span class="check">✅</span> Branded site proposals</li>
-                <li><span class="check">✅</span> Dedicated account manager</li>
-                <li><span class="check">✅</span> Early access to new features</li>
-                <li><span class="check">✅</span> Phone & chat support</li>
-            </ul>
-            <a href="/cdn-cgi/l/email-protection#6f060109002f0000071f070603061f1f06010a1c410c0002501c1a0d050a0c1b523f1d004a5d5f3c1a0d1c0c1d061f1b0600014a5d5f26011e1a061d16490d000b165227064a5d2c4a5d5f264a5d58024a5d5f06011b0a1d0a1c1b0a0b4a5d5f06014a5d5f1c1a0d1c0c1d060d0601084a5d5f1b004a5d5f1b070a4a5d5f3f1d004a5d5f1f030e0141" class="plan-cta primary">Get Pro Access →</a>
-            <div style="text-align:center;margin-top:12px;">
-                <span style="font-size:13px;color:#90a4ae;">Already subscribed? </span>
-                <button onclick="showPage('subscriberLogin')" style="background:none;border:none;color:#1565c0;font-weight:700;font-size:13px;cursor:pointer;padding:0;font-family:'Segoe UI',sans-serif;">Log in →</button>
-            </div>
-        </div>
-
-    </div>
-
-    
-    <div class="pricing-guarantee">
-        <div style="font-size:36px;">🤝</div>
-        <strong style="color:#1565c0;font-size:18px;">No contracts. No surprises.</strong>
-        <p>Pro plans available monthly or annually. Agency is annual only. All plans billed in Philippine Peso (₱).<br>
-        Questions? Email us at info&#64;oohphilippines.com</p>
-    </div>
-
-    
-    <div class="pricing-faq">
-        <h2>Frequently Asked Questions</h2>
-        <div class="faq-grid">
-            <div class="faq-item">
-                <h3>How do I subscribe?</h3>
-                <p>Click "Get Pro Access" or "Contact Us" and send us an email. We'll send you payment details via GCash, bank transfer, or PayMaya. Your account is activated within 24 hours.</p>
-            </div>
-            <div class="faq-item">
-                <h3>Can I cancel anytime?</h3>
-                <p>Yes. There are no long-term contracts. You can cancel at any time and you won't be billed for the next period. Annual plans are non-refundable once paid.</p>
-            </div>
-            <div class="faq-item">
-                <h3>What payment methods do you accept?</h3>
-                <p>We accept GCash, Maya, BPI, BDO, and other major Philippine banks via bank transfer. We'll send an invoice upon subscription.</p>
-            </div>
-            <div class="faq-item">
-                <h3>Can I upgrade from Pro to Agency?</h3>
-                <p>Absolutely. Just email us and we'll prorate the difference. Upgrading takes effect immediately with no downtime.</p>
-            </div>
-            <div class="faq-item">
-                <h3>Is the Free plan really free forever?</h3>
-                <p>Yes. You can search and browse all billboard sites for free, forever. Paid plans unlock real-time availability status, full contact details, and more.</p>
-            </div>
-            <div class="faq-item">
-                <h3>Do you offer discounts for NGOs or startups?</h3>
-                <p>Yes! We support the local advertising industry. Contact us at info&#64;oohphilippines.com and we'll work something out.</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-</div>
 
 <!-- OPERATOR LOGIN PAGE -->
 <div id="operatorLoginPage" class="page">
@@ -5557,23 +5375,6 @@ function resolvePhoto(photo, mapsUrl) {
 }
 
 // --- Pricing page billing toggle ---
-var pricingBilling = 'monthly';
-function pricingSetBilling(type) {
-    pricingBilling = type;
-    var btnM = document.getElementById('btnMonthly');
-    var btnA = document.getElementById('btnAnnual');
-    if (btnM) btnM.classList.toggle('active', type === 'monthly');
-    if (btnA) btnA.classList.toggle('active', type === 'annual');
-    if (type === 'monthly') {
-        document.getElementById('proAmount').textContent = '5,000';
-        document.getElementById('proPeriod').textContent = '/ month';
-        document.getElementById('proAnnualNote').innerHTML = '&nbsp;';
-    } else {
-        document.getElementById('proAmount').textContent = '50,000';
-        document.getElementById('proPeriod').textContent = '/ year';
-        document.getElementById('proAnnualNote').innerHTML = '&#x2B50; Save &#x20B1;10,000 vs monthly &nbsp;|&nbsp; <strong>Founding Rate: &#x20B1;41,500/yr (17% off)</strong>';
-    }
-}
 
 // ── OPERATOR CONTACT EDIT ──────────────────────────────
 function opOpenContactModal(siteName) {
@@ -5695,7 +5496,7 @@ function updateNavForFreeUser() {
         var navWrapper = document.querySelector('.nav-wrapper');
         if (navWrapper) navWrapper.insertAdjacentElement('afterend', infoBar);
     }
-    infoBar.innerHTML = '👋 Hi, <strong>' + (freeCurrentUser.name || freeCurrentUser.email) + '</strong> &nbsp;|&nbsp; <a href="javascript:void(0)" onclick="showPage(\'pricing\')" style="color:#e65100;font-weight:700;">Upgrade for Unlimited Access →</a> &nbsp;|&nbsp; <a href="javascript:void(0)" onclick="doFreeLogout()" style="color:#999;font-size:12px;">Log out</a>';
+    infoBar.innerHTML = '👋 Hi, <strong>' + (freeCurrentUser.name || freeCurrentUser.email) + '</strong> &nbsp;|&nbsp; <a href="pricing.html" style="color:#e65100;font-weight:700;">Upgrade for Unlimited Access →</a> &nbsp;|&nbsp; <a href="javascript:void(0)" onclick="doFreeLogout()" style="color:#999;font-size:12px;">Log out</a>';
 }
 
 function doFreeLogout() {
@@ -5969,10 +5770,39 @@ async function doFreeLogin() {
         return;
     }
 
-    freeCurrentUser = { name: data.name, email: data.email, company: data.company || '' };
-    try { localStorage.setItem(FREE_USER_KEY, JSON.stringify(freeCurrentUser)); } catch(e) {}
-    closeSignupModal();
-    updateNavForFreeUser();
+    // Check for an active subscription
+    var now = new Date().toISOString();
+    var { data: sub } = await _supabase
+        .from('subscriptions')
+        .select('plan, expires_at, status')
+        .eq('user_email', email)
+        .eq('status', 'active')
+        .gt('expires_at', now)
+        .maybeSingle();
+
+    if (sub) {
+        // Active paid subscription found — grant subscriber access
+        var mgr = (typeof ACCOUNT_MANAGERS !== 'undefined' && ACCOUNT_MANAGERS['default']) ? ACCOUNT_MANAGERS['default'] : null;
+        subCurrentUser = {
+            username: email,
+            name:     data.name,
+            company:  data.company || '',
+            plan:     sub.plan,
+            agencyId: email,
+            seat:     'admin',
+            manager:  mgr
+        };
+        try { localStorage.removeItem(FREE_USER_KEY); } catch(e) {}
+        closeSignupModal();
+        subUpdateNavButtons();
+        showPage('subscriberShortlist');
+    } else {
+        // No active subscription — log in as free user
+        freeCurrentUser = { name: data.name, email: data.email, company: data.company || '' };
+        try { localStorage.setItem(FREE_USER_KEY, JSON.stringify(freeCurrentUser)); } catch(e) {}
+        closeSignupModal();
+        updateNavForFreeUser();
+    }
 }
 
 // ═══════════════════════════════════════════════════════
