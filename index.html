@@ -5850,12 +5850,15 @@ function showUpgradePrompt() {
         '<a href="pricing.html" style="display:inline-block;background:linear-gradient(135deg,#e65100,#bf360c);color:white;font-weight:700;font-size:15px;padding:12px 28px;border-radius:10px;text-decoration:none;">💎 Upgrade to Pro — ₱999/mo →</a>' +
         '<div style="font-size:12px;color:#90a4ae;margin-top:10px;">Your searches reset every 7 days · Cancel anytime</div>';
     container.parentNode.insertBefore(banner, container.nextSibling);
-    // Hide Load More button so user can't load more results
-    var loadMoreBtn = document.getElementById('loadMoreBtn') || document.querySelector('.load-more-btn') || document.querySelector('[onclick*="showMore"]');
+    // Clear allMatches so Load More has nothing to show
+    allMatches = [];
+    visibleCount = 0;
+    // Hide Load More button
+    var loadMoreBtn = document.getElementById('loadMoreBtn');
     if (loadMoreBtn) loadMoreBtn.style.display = 'none';
     // Hide results counter
     var counter = document.getElementById('resultCount');
-    if (counter) counter.style.display = 'none';
+    if (counter) counter.textContent = '';
 }
 
 async function updatePromosBadge() {
