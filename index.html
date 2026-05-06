@@ -5496,7 +5496,7 @@ function updateNavForFreeUser() {
         var navWrapper = document.querySelector('.nav-wrapper');
         if (navWrapper) navWrapper.insertAdjacentElement('afterend', infoBar);
     }
-    infoBar.innerHTML = '👋 Hi, <strong>' + (freeCurrentUser.name || freeCurrentUser.email) + '</strong> &nbsp;|&nbsp; <a href="pricing.html" style="color:#e65100;font-weight:700;">Upgrade for Unlimited Access →</a> &nbsp;|&nbsp; <a href="javascript:void(0)" onclick="doFreeLogout()" style="color:#999;font-size:12px;">Log out</a>';
+    infoBar.innerHTML = '👋 Hi, <strong>' + (freeCurrentUser.name || freeCurrentUser.email) + '</strong> &nbsp;|&nbsp; <a href="pricing.html" style="display:inline-block;background:#e65100;color:white;font-weight:700;padding:5px 14px;border-radius:20px;text-decoration:none;font-size:13px;">💎 Upgrade to Pro →</a> &nbsp;|&nbsp; <a href="javascript:void(0)" onclick="doFreeLogout()" style="color:#999;font-size:12px;">Log out</a>';
 }
 
 function doFreeLogout() {
