@@ -5776,10 +5776,39 @@ async function doFreeLogin() {
         return;
     }
 
-    freeCurrentUser = { name: data.name, email: data.email, company: data.company || '' };
-    try { localStorage.setItem(FREE_USER_KEY, JSON.stringify(freeCurrentUser)); } catch(e) {}
-    closeSignupModal();
-    updateNavForFreeUser();
+    // Check for an active subscription
+    var now = new Date().toISOString();
+    var { data: sub } = await _supabase
+        .from('subscriptions')
+        .select('plan, expires_at, status')
+        .eq('user_email', email)
+        .eq('status', 'active')
+        .gt('expires_at', now)
+        .maybeSingle();
+
+    if (sub) {
+        // Active paid subscription — grant subscriber access
+        var mgr = (typeof ACCOUNT_MANAGERS !== 'undefined' && ACCOUNT_MANAGERS['default']) ? ACCOUNT_MANAGERS['default'] : null;
+        subCurrentUser = {
+            username: email,
+            name:     data.name,
+            company:  data.company || '',
+            plan:     sub.plan,
+            agencyId: email,
+            seat:     'admin',
+            manager:  mgr
+        };
+        try { localStorage.removeItem(FREE_USER_KEY); } catch(e) {}
+        closeSignupModal();
+        subUpdateNavButtons();
+        showPage('subscriberShortlist');
+    } else {
+        // No active subscription — log in as free user
+        freeCurrentUser = { name: data.name, email: data.email, company: data.company || '' };
+        try { localStorage.setItem(FREE_USER_KEY, JSON.stringify(freeCurrentUser)); } catch(e) {}
+        closeSignupModal();
+        updateNavForFreeUser();
+    }
 }
 
 // ═══════════════════════════════════════════════════════
@@ -5844,7 +5873,7 @@ function showUpgradePrompt() {
     if (existing) existing.remove();
 
     // Find the cards container and insert prompt after featured sites
-    var container = document.getElementById('cardsContainer') || document.getElementById('billboardCards');
+    var container = document.getElementById('billboardContainer');
     if (!container) return;
 
     var banner = document.createElement('div');
