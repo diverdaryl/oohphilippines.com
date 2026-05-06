@@ -5789,7 +5789,10 @@ searchFromHome = function() {
         _origSearchFromHome(); return;
     }
     if (!hasSearchesLeft()) {
-        openPaywallModal(); return;
+        openPaywallModal();
+        // Still show featured sites even when limit is reached
+        _origSearchFromHome();
+        return;
     }
     incrementFreeSearch();
     _origSearchFromHome();
@@ -5805,7 +5808,10 @@ goToInventory = function(tag) {
         _origGoToInventory(tag); return;
     }
     if (!hasSearchesLeft()) {
-        openPaywallModal(); return;
+        openPaywallModal();
+        // Still show featured sites even when limit is reached
+        _origGoToInventory(tag);
+        return;
     }
     incrementFreeSearch();
     _origGoToInventory(tag);
