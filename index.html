@@ -1832,6 +1832,12 @@
     .results-divider { text-align:center; margin:18px 0 14px; position:relative; }
     .results-divider::before { content:''; position:absolute; top:50%; left:0; right:0; height:1px; background:#e0e0e0; }
     .results-divider span { position:relative; background:#f0f4f8; padding:4px 14px; font-size:12px; font-weight:700; color:#888; border-radius:20px; border:1px solid #e0e0e0; }
+    .upgrade-prompt-banner { background:linear-gradient(135deg,#e3f2fd,#bbdefb); border:2px solid #1565c0; border-radius:16px; padding:28px 24px; text-align:center; margin:24px 0; }
+    .upgrade-prompt-banner h3 { font-size:20px; font-weight:700; color:#1565c0; margin-bottom:8px; }
+    .upgrade-prompt-banner p { font-size:14px; color:#455a64; margin-bottom:20px; line-height:1.6; }
+    .upgrade-prompt-banner .upgrade-btn { display:inline-block; background:linear-gradient(135deg,#e65100,#bf360c); color:white; font-weight:700; font-size:15px; padding:12px 28px; border-radius:10px; text-decoration:none; transition:all 0.2s; border:none; cursor:pointer; font-family:"Segoe UI",sans-serif; }
+    .upgrade-prompt-banner .upgrade-btn:hover { opacity:0.9; transform:translateY(-2px); }
+    .upgrade-prompt-banner .free-note { font-size:12px; color:#90a4ae; margin-top:10px; }
 
 
 
@@ -5789,9 +5795,9 @@ searchFromHome = function() {
         _origSearchFromHome(); return;
     }
     if (!hasSearchesLeft()) {
-        openPaywallModal();
-        // Still show featured sites even when limit is reached
+        // Show featured sites + upgrade prompt instead of paywall modal
         _origSearchFromHome();
+        showUpgradePrompt();
         return;
     }
     incrementFreeSearch();
@@ -5808,9 +5814,9 @@ goToInventory = function(tag) {
         _origGoToInventory(tag); return;
     }
     if (!hasSearchesLeft()) {
-        openPaywallModal();
-        // Still show featured sites even when limit is reached
+        // Show featured sites + upgrade prompt instead of paywall modal
         _origGoToInventory(tag);
+        showUpgradePrompt();
         return;
     }
     incrementFreeSearch();
@@ -5832,6 +5838,34 @@ async function updatePromosBadge() {
         if (badgeMobile) badgeMobile.style.display = 'none';
     }
 }
+function showUpgradePrompt() {
+    // Remove any existing upgrade prompt
+    var existing = document.getElementById('upgradePromptBanner');
+    if (existing) existing.remove();
+
+    // Find the cards container and insert prompt after featured sites
+    var container = document.getElementById('cardsContainer') || document.getElementById('billboardCards');
+    if (!container) return;
+
+    var banner = document.createElement('div');
+    banner.id = 'upgradePromptBanner';
+    banner.className = 'upgrade-prompt-banner';
+    banner.innerHTML = '<h3>🔒 You've reached your 5 free searches</h3>' +
+        '<p>You're seeing <strong>Featured Sites</strong> above. Subscribe to unlock <strong>all ' +
+        (window.allBillboards ? window.allBillboards.length : '') + '+ billboards</strong> — full contact details, ' +
+        'shortlisting, PDF export, and unlimited searches.</p>' +
+        '<a href="pricing.html" class="upgrade-btn">💎 Upgrade to Pro — ₱999/mo →</a>' +
+        '<div class="free-note">Your searches reset every 7 days · Cancel anytime</div>';
+
+    // Insert after the cards container
+    container.parentNode.insertBefore(banner, container.nextSibling);
+
+    // Scroll to show the banner
+    setTimeout(function() {
+        banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 300);
+}
+
 async function updateInquiriesBadge() {
     var now = new Date().toISOString();
     var {data, error} = await _supabase.from('inquiries').select('id').eq('status','active').gt('expires_at',now);
