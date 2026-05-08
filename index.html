@@ -4336,7 +4336,14 @@ document.addEventListener('DOMContentLoaded', function(){
         if (searchEl) {
             searchEl.value = qParam;
             // Wait for billboards to load then search
-            setTimeout(function() { searchFromHome(); }, 1500);
+            function trySearch(attempts) {
+                if (typeof allBillboards !== 'undefined' && allBillboards.length > 0) {
+                    searchFromHome();
+                } else if (attempts > 0) {
+                    setTimeout(function() { trySearch(attempts - 1); }, 500);
+                }
+            }
+            setTimeout(function() { trySearch(10); }, 800);
         }
     }
     loadGlobalAvailCache(function(){
