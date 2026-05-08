@@ -114,7 +114,7 @@ body {
 .bb-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(21,101,192,0.13); }
 
 .bb-card-img {
-  width: 100%; height: 160px; object-fit: cover;
+  width: 100%; height: 220px; object-fit: cover;
   background: #e3f2fd;
   display: flex; align-items: center; justify-content: center;
   font-size: 32px; color: #90a4ae;
@@ -408,7 +408,7 @@ function buildCard(row, index) {
     var rawPitch = pitchMatch ? parseFloat(pitchMatch[1]) : 90;
     // Google Maps "t" value is 90=horizon,0=up,180=down; Street View pitch: 0=horizon
     var pitch = (rawPitch - 90).toFixed(1);
-    return 'https://streetviewpixels-pa.googleapis.com/v1/thumbnail?panoid=' + encodeURIComponent(panoId) + '&cb_client=maps_sv.tactile&w=600&h=300&yaw=' + yaw + '&pitch=' + pitch + '&thumbfov=100';
+    return 'https://streetviewpixels-pa.googleapis.com/v1/thumbnail?panoid=' + encodeURIComponent(panoId) + '&cb_client=maps_sv.tactile&w=600&h=450&yaw=' + yaw + '&pitch=' + pitch + '&thumbfov=75';
   })();
   const phone = row['Phone'] || row['Phone2'] || '';
   const dir = getDirection(tag);
