@@ -388,13 +388,26 @@ function buildCard(row, index) {
   const thumbUrl = (function() {
     if (photo && photo.startsWith('http')) return photo;
     if (!mapsUrl) return '';
-    var panoMatch = mapsUrl.match(/!1s([^!]+)!/);
-    if (!panoMatch) return '';
-    var panoId = panoMatch[1];
-    var yawMatch = mapsUrl.match(/!3f([0-9.]+)/);
+    // Extract all !1s matches; pick the first that looks like a panoid (not a hex place ID like 0x...)
+    var panoId = '';
+    var re = /!1s([^!]+)!/g;
+    var m;
+    while ((m = re.exec(mapsUrl)) !== null) {
+      var candidate = m[1];
+      if (!candidate.startsWith('0x') && !candidate.startsWith('0X')) {
+        panoId = decodeURIComponent(candidate);
+        break;
+      }
+    }
+    if (!panoId) return '';
+    // Yaw: try !3f (heading) in the @lat,lng,3a,FOV,YAW part
+    var yawMatch = mapsUrl.match(/,([0-9.]+)h[,\/]/);
     var yaw = yawMatch ? yawMatch[1] : '0';
-    var pitchMatch = mapsUrl.match(/!4f([0-9.-]+)/);
-    var pitch = pitchMatch ? pitchMatch[1] : '0';
+    // Pitch: try !4f (pitch) or the t value in the URL
+    var pitchMatch = mapsUrl.match(/,([0-9.]+)t[,\/]/);
+    var rawPitch = pitchMatch ? parseFloat(pitchMatch[1]) : 90;
+    // Google Maps "t" value is 90=horizon,0=up,180=down; Street View pitch: 0=horizon
+    var pitch = (rawPitch - 90).toFixed(1);
     return 'https://streetviewpixels-pa.googleapis.com/v1/thumbnail?panoid=' + encodeURIComponent(panoId) + '&cb_client=maps_sv.tactile&w=600&h=300&yaw=' + yaw + '&pitch=' + pitch + '&thumbfov=100';
   })();
   const phone = row['Phone'] || row['Phone2'] || '';
@@ -433,7 +446,8 @@ function buildCard(row, index) {
     ? `<div class="bb-card-img"><img src="${thumbUrl}" alt="${name}" loading="lazy" onerror="this.parentNode.innerHTML='🏙️'"></div>`
     : `<div class="bb-card-img">🏙️</div>`;
 
-  return `<div class="bb-card">
+  console.log('[OOH]', name, '| mapsUrl:', mapsUrl ? mapsUrl.substring(0,80) : 'none', '| thumbUrl:', thumbUrl || 'NONE');
+  return `<div class="bb-card" data-thumb="${thumbUrl}">`
     ${imgHtml}
     <div class="bb-card-body">
       <div class="bb-card-name">${name}</div>
