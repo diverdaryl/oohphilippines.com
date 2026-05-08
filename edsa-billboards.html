@@ -385,6 +385,18 @@ function buildCard(row, index) {
   const price = row['Price'] || '';
   const photo = row['Photo'] || '';
   const mapsUrl = row['Maps URL'] || '';
+  const thumbUrl = (function() {
+    if (photo && photo.startsWith('http')) return photo;
+    if (!mapsUrl) return '';
+    var panoMatch = mapsUrl.match(/!1s([^!]+)!/);
+    if (!panoMatch) return '';
+    var panoId = panoMatch[1];
+    var yawMatch = mapsUrl.match(/!3f([0-9.]+)/);
+    var yaw = yawMatch ? yawMatch[1] : '0';
+    var pitchMatch = mapsUrl.match(/!4f([0-9.-]+)/);
+    var pitch = pitchMatch ? pitchMatch[1] : '0';
+    return 'https://streetviewpixels-pa.googleapis.com/v1/thumbnail?panoid=' + encodeURIComponent(panoId) + '&cb_client=maps_sv.tactile&w=600&h=300&yaw=' + yaw + '&pitch=' + pitch + '&thumbfov=100';
+  })();
   const phone = row['Phone'] || row['Phone2'] || '';
   const dir = getDirection(tag);
 
@@ -417,8 +429,8 @@ function buildCard(row, index) {
     }
   }
 
-  const imgHtml = photo
-    ? `<div class="bb-card-img"><img src="${photo}" alt="${name}" loading="lazy" onerror="this.parentNode.innerHTML='🏙️'"></div>`
+  const imgHtml = thumbUrl
+    ? `<div class="bb-card-img"><img src="${thumbUrl}" alt="${name}" loading="lazy" onerror="this.parentNode.innerHTML='🏙️'"></div>`
     : `<div class="bb-card-img">🏙️</div>`;
 
   return `<div class="bb-card">
