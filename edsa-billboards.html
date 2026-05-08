@@ -433,7 +433,7 @@ function buildCard(row, index) {
     </div>
     <div class="bb-card-footer">
       ${contactHtml}
-      <a href="index.html?q=" + encodeURIComponent(name) + "" class="btn-view">View →</a>
+      <a href="javascript:void(0)" class="btn-view" onclick="handleView('" + encodeURIComponent(name) + "')">View →</a>
     </div>
   </div>`;
 }
@@ -540,6 +540,16 @@ async function loadData() {
   }
 }
 
+function handleView(name) {
+    var sub = isSubscriber();
+    var free = isFreeUser();
+    if (sub || free) {
+        window.location.href = 'index.html?q=' + name;
+    } else {
+        showSignupPrompt();
+    }
+}
+
 loadData();
 
 // Read ?q= param and pre-fill search
@@ -550,6 +560,27 @@ loadData();
     document.getElementById('searchInput').value = q;
   }
 })();
+</script>
+<!-- Signup Prompt Modal -->
+<div id="signupPromptOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);backdrop-filter:blur(6px);z-index:3000;align-items:center;justify-content:center;padding:1rem;" onclick="if(event.target===this)closeSignupPrompt()">
+  <div style="background:white;border-radius:20px;width:100%;max-width:420px;padding:36px 32px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.15);text-align:center;animation:modalIn 0.25s ease;">
+    <button onclick="closeSignupPrompt()" style="position:absolute;top:14px;right:14px;background:#f5f5f5;border:none;border-radius:50%;width:32px;height:32px;font-size:18px;cursor:pointer;color:#607d8b;">×</button>
+    <div style="font-size:48px;margin-bottom:16px;">🔍</div>
+    <h2 style="font-size:24px;font-weight:800;color:#1565c0;margin-bottom:8px;">Sign Up Free to View</h2>
+    <p style="font-size:15px;color:#607d8b;line-height:1.6;margin-bottom:24px;">Create a free account to browse the full billboard directory, view locations, and contact operators.</p>
+    <a href="index.html?signup=1" style="display:block;background:linear-gradient(135deg,#e65100,#bf360c);color:white;font-weight:700;font-size:15px;padding:14px 28px;border-radius:10px;text-decoration:none;margin-bottom:12px;">Sign Up Free →</a>
+    <a href="index.html?login=1" style="display:block;background:white;color:#1565c0;font-weight:700;font-size:14px;padding:12px 28px;border-radius:10px;text-decoration:none;border:2px solid #1565c0;">Already have an account? Log in</a>
+    <div style="margin-top:16px;font-size:12px;color:#90a4ae;">Free plan includes 5 searches/week · No credit card required</div>
+  </div>
+</div>
+
+<script>
+function closeSignupPrompt() {
+  document.getElementById('signupPromptOverlay').style.display = 'none';
+}
+function showSignupPrompt() {
+  document.getElementById('signupPromptOverlay').style.display = 'flex';
+}
 </script>
 </body>
 </html>

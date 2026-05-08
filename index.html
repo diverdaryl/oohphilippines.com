@@ -4105,6 +4105,24 @@ function loadBillboards() {
             }
             if(typeof updatePromosBadge==='function') updatePromosBadge();
             if(typeof updateInquiriesBadge==='function') updateInquiriesBadge();
+
+            // Check for ?signup=1 or ?login=1 URL param
+            var urlParams2 = new URLSearchParams(window.location.search);
+            if (urlParams2.get('signup') === '1') {
+                setTimeout(function() { openSignupModal(); }, 500);
+            } else if (urlParams2.get('login') === '1') {
+                setTimeout(function() { openSignupModal('login'); }, 500);
+            }
+
+            // Check for ?q= URL param and auto-search after data loads
+            var urlParams = new URLSearchParams(window.location.search);
+            var qParam = urlParams.get('q');
+            if (qParam && (isFreeUser() || subCurrentUser)) {
+                var searchEl = document.getElementById('mainSearch');
+                if (searchEl) searchEl.value = qParam;
+                showPage('inventory');
+                setTimeout(function() { filterCards(qParam); }, 300);
+            }
         })
         .catch(function(err){
             var loading = document.getElementById('loadingIndicator');
@@ -4327,23 +4345,6 @@ document.addEventListener('DOMContentLoaded', function(){
     showPage('home');
     window.scrollTo(0,0);
     loadBillboards();
-
-    // Auto-search from URL param ?q= (e.g. from edsa-billboards.html View button)
-    var urlParams = new URLSearchParams(window.location.search);
-    var qParam = urlParams.get('q');
-    if (qParam) {
-        function trySearch(attempts) {
-            if (typeof allBillboards !== 'undefined' && allBillboards.length > 0) {
-                var searchEl = document.getElementById('mainSearch');
-                if (searchEl) searchEl.value = qParam;
-                showPage('inventory');
-                setTimeout(function() { filterCards(qParam); }, 300);
-            } else if (attempts > 0) {
-                setTimeout(function() { trySearch(attempts - 1); }, 500);
-            }
-        }
-        setTimeout(function() { trySearch(10); }, 800);
-    }
     loadGlobalAvailCache(function(){
         // Re-render shortlist if subscriber is logged in
         if (typeof subCurrentUser !== 'undefined' && subCurrentUser) {
