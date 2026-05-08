@@ -433,7 +433,7 @@ function buildCard(row, index) {
     </div>
     <div class="bb-card-footer">
       ${contactHtml}
-      <a href="index.html" class="btn-view" onclick="sessionStorage.setItem('autoSearch','EDSA');">View →</a>
+      <a href="index.html?q=" + encodeURIComponent(name) + "" class="btn-view">View →</a>
     </div>
   </div>`;
 }
@@ -541,6 +541,15 @@ async function loadData() {
 }
 
 loadData();
+
+// Read ?q= param and pre-fill search
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var q = params.get('q');
+  if (q) {
+    document.getElementById('searchInput').value = q;
+  }
+})();
 </script>
 </body>
 </html>

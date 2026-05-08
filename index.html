@@ -4327,6 +4327,18 @@ document.addEventListener('DOMContentLoaded', function(){
     showPage('home');
     window.scrollTo(0,0);
     loadBillboards();
+
+    // Auto-search from URL param ?q= (e.g. from edsa-billboards.html View button)
+    var urlParams = new URLSearchParams(window.location.search);
+    var qParam = urlParams.get('q');
+    if (qParam) {
+        var searchEl = document.getElementById('mainSearch');
+        if (searchEl) {
+            searchEl.value = qParam;
+            // Wait for billboards to load then search
+            setTimeout(function() { searchFromHome(); }, 1500);
+        }
+    }
     loadGlobalAvailCache(function(){
         // Re-render shortlist if subscriber is logged in
         if (typeof subCurrentUser !== 'undefined' && subCurrentUser) {
