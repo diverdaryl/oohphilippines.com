@@ -156,6 +156,18 @@ body {
 .btn-view:hover { background: #0d47a1; }
 
 /* LOADING / EMPTY */
+
+.skeleton-card {
+  background: #fff; border-radius: 12px; overflow: hidden;
+  box-shadow: 0 2px 8px rgba(21,101,192,0.08);
+}
+.skeleton-img { width: 100%; height: 220px; background: linear-gradient(90deg,#e3f2fd 25%,#bbdefb 50%,#e3f2fd 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+.skeleton-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.skeleton-line { height: 12px; border-radius: 6px; background: linear-gradient(90deg,#e3f2fd 25%,#bbdefb 50%,#e3f2fd 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+.skeleton-line.short { width: 60%; }
+.skeleton-line.med { width: 80%; }
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
 .loading-state {
   grid-column: 1/-1; text-align: center; padding: 60px 20px;
   color: #90a4ae;
@@ -293,9 +305,16 @@ body {
 <!-- CARDS -->
 <div class="cards-wrap">
   <div class="cards-grid" id="cardsGrid">
-    <div class="loading-state">
-      <div class="spinner-lg"></div>
-      <p>Loading EDSA billboard inventory...</p>
+    <div id="skeletonLoader" style="display:contents">
+    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line med"></div><div class="skeleton-line short"></div><div class="skeleton-line"></div></div></div>
+    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line med"></div><div class="skeleton-line short"></div><div class="skeleton-line"></div></div></div>
+    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line med"></div><div class="skeleton-line short"></div><div class="skeleton-line"></div></div></div>
+    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line med"></div><div class="skeleton-line short"></div><div class="skeleton-line"></div></div></div>
+    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line med"></div><div class="skeleton-line short"></div><div class="skeleton-line"></div></div></div>
+    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line med"></div><div class="skeleton-line short"></div><div class="skeleton-line"></div></div></div>
+    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line med"></div><div class="skeleton-line short"></div><div class="skeleton-line"></div></div></div>
+    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line med"></div><div class="skeleton-line short"></div><div class="skeleton-line"></div></div></div>
+    <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line med"></div><div class="skeleton-line short"></div><div class="skeleton-line"></div></div></div>
     </div>
   </div>
   <div class="load-more-wrap" id="loadMoreWrap" style="display:none;">
@@ -544,8 +563,24 @@ function updateStats(data) {
 }
 
 // Load data
+const CACHE_KEY = 'ooh_edsa_cache';
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
 async function loadData() {
   try {
+    // Use sessionStorage cache to avoid re-downloading the full sheet every load
+    const cached = sessionStorage.getItem(CACHE_KEY);
+    if (cached) {
+      const { ts, data } = JSON.parse(cached);
+      if (Date.now() - ts < CACHE_TTL) {
+        allData = data;
+        updateStats(allData);
+        filtered = [...allData];
+        renderCards(true);
+        return;
+      }
+    }
+
     const res = await fetch(SHEET_URL);
     const text = await res.text();
     const rows = parseCSV(text);
@@ -557,6 +592,11 @@ async function loadData() {
       const name = (r['Site Name'] || '').toUpperCase();
       return loc.includes('EDSA') || tag.includes('EDSA') || name.includes('EDSA');
     });
+
+    // Cache filtered results for this session
+    try {
+      sessionStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: allData }));
+    } catch(e) {} // ignore storage quota errors
 
     updateStats(allData);
     filtered = [...allData];
