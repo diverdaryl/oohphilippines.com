@@ -1982,7 +1982,7 @@
         </div>
         
         <div class="quick-links">
-            <span class="quick-link" onclick="goToInventory('EDSA')">EDSA Billboards</span>
+            <a href="edsa-billboards.html" class="quick-link">EDSA Billboards</a>
             <span class="quick-link" onclick="goToInventory('C5')">C5 Road</span>
             <span class="quick-link" onclick="goToInventory('SLEX')">SLEX</span>
             <span class="quick-link" onclick="goToInventory('NLEX')">NLEX</span>
@@ -5770,10 +5770,32 @@ async function doFreeLogin() {
         return;
     }
 
-    freeCurrentUser = { name: data.name, email: data.email, company: data.company || '' };
-    try { localStorage.setItem(FREE_USER_KEY, JSON.stringify(freeCurrentUser)); } catch(e) {}
-    closeSignupModal();
-    updateNavForFreeUser();
+    // Check for active subscription
+    var now = new Date().toISOString();
+    var { data: sub } = await _supabase
+        .from('subscriptions')
+        .select('plan, expires_at, status')
+        .eq('user_email', email)
+        .eq('status', 'active')
+        .gt('expires_at', now)
+        .maybeSingle();
+
+    if (sub) {
+        var mgr = (typeof ACCOUNT_MANAGERS !== 'undefined' && ACCOUNT_MANAGERS['default']) ? ACCOUNT_MANAGERS['default'] : null;
+        subCurrentUser = {
+            username: email, name: data.name, company: data.company || '',
+            plan: sub.plan, agencyId: email, seat: 'admin', manager: mgr
+        };
+        try { localStorage.removeItem(FREE_USER_KEY); } catch(e) {}
+        closeSignupModal();
+        subUpdateNavButtons();
+        showPage('subscriberShortlist');
+    } else {
+        freeCurrentUser = { name: data.name, email: data.email, company: data.company || '' };
+        try { localStorage.setItem(FREE_USER_KEY, JSON.stringify(freeCurrentUser)); } catch(e) {}
+        closeSignupModal();
+        updateNavForFreeUser();
+    }
 }
 
 // ═══════════════════════════════════════════════════════
@@ -5811,6 +5833,29 @@ goToInventory = function(tag) {
     _origGoToInventory(tag);
 };
 
+function showUpgradePrompt() {
+    var existing = document.getElementById('upgradePromptBanner');
+    if (existing) existing.remove();
+    var container = document.getElementById('billboardContainer');
+    if (!container) return;
+    var banner = document.createElement('div');
+    banner.id = 'upgradePromptBanner';
+    banner.style.cssText = 'background:linear-gradient(135deg,#e3f2fd,#bbdefb);border:2px solid #1565c0;border-radius:16px;padding:28px 24px;text-align:center;margin:24px 0;';
+    banner.innerHTML = '<h3 style="font-size:20px;font-weight:700;color:#1565c0;margin-bottom:8px;">🔒 You have reached your 5 free searches</h3>' +
+        '<p style="font-size:14px;color:#455a64;margin-bottom:20px;line-height:1.6;">You are seeing <strong>Featured Sites</strong> above. Subscribe to unlock <strong>all billboards</strong> — full contact details, shortlisting, PDF export, and unlimited searches.</p>' +
+        '<a href="pricing.html" style="display:inline-block;background:linear-gradient(135deg,#e65100,#bf360c);color:white;font-weight:700;font-size:15px;padding:12px 28px;border-radius:10px;text-decoration:none;">💎 Upgrade to Pro — ₱999/mo →</a>' +
+        '<div style="font-size:12px;color:#90a4ae;margin-top:10px;">Your searches reset every 7 days · Cancel anytime</div>';
+    container.parentNode.insertBefore(banner, container.nextSibling);
+    // Clear allMatches so Load More has nothing to show
+    allMatches = [];
+    visibleCount = 0;
+    // Hide Load More button
+    var loadMoreBtn = document.getElementById('loadMoreBtn');
+    if (loadMoreBtn) loadMoreBtn.style.display = 'none';
+    // Hide results counter
+    var counter = document.getElementById('resultCount');
+    if (counter) counter.textContent = '';
+}
 
 async function updatePromosBadge() {
     var {data, error} = await _supabase.from('promos').select('id').eq('status','active');
