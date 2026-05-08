@@ -4332,19 +4332,17 @@ document.addEventListener('DOMContentLoaded', function(){
     var urlParams = new URLSearchParams(window.location.search);
     var qParam = urlParams.get('q');
     if (qParam) {
-        var searchEl = document.getElementById('mainSearch');
-        if (searchEl) {
-            searchEl.value = qParam;
-            // Wait for billboards to load then search
-            function trySearch(attempts) {
-                if (typeof allBillboards !== 'undefined' && allBillboards.length > 0) {
-                    searchFromHome();
-                } else if (attempts > 0) {
-                    setTimeout(function() { trySearch(attempts - 1); }, 500);
-                }
+        function trySearch(attempts) {
+            if (typeof allBillboards !== 'undefined' && allBillboards.length > 0) {
+                var searchEl = document.getElementById('mainSearch');
+                if (searchEl) searchEl.value = qParam;
+                showPage('inventory');
+                setTimeout(function() { filterCards(qParam); }, 300);
+            } else if (attempts > 0) {
+                setTimeout(function() { trySearch(attempts - 1); }, 500);
             }
-            setTimeout(function() { trySearch(10); }, 800);
         }
+        setTimeout(function() { trySearch(10); }, 800);
     }
     loadGlobalAvailCache(function(){
         // Re-render shortlist if subscriber is logged in
