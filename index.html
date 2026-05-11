@@ -1845,6 +1845,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script>emailjs.init("Q1mCYPTXh0omKhAec");</script>
 </head>
 <body>
@@ -6013,7 +6014,7 @@ async function updateInquiriesBadge() {
                 <div class="spinner"></div>
                 <span style="font-size:13px;">Generating QR code…</span>
             </div>
-            <img id="paymongoQRImg" alt="Payment QR Code" />
+            <canvas id="paymongoQRCanvas" style="display:none;border-radius:8px;"></canvas>
             <div id="paymongoQRPlaceholder">
                 <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="4" y="4" width="24" height="24" rx="3" stroke="#90a4ae" stroke-width="3" fill="none"/>
@@ -6087,8 +6088,7 @@ function pmReset() {
     clearInterval(_pmPollInterval);
     _pmSourceId = null;
     _pmTab = null;
-    document.getElementById('paymongoQRImg').style.display = 'none';
-    document.getElementById('paymongoQRImg').src = '';
+    var _cv = document.getElementById('paymongoQRCanvas'); if(_cv){_cv.style.display='none'; var ctx=_cv.getContext('2d'); ctx.clearRect(0,0,_cv.width,_cv.height);}
     document.getElementById('paymongoQRPlaceholder').style.display = 'flex';
     document.getElementById('paymongoQRLoading').style.display = 'none';
     document.getElementById('paymongoInstructions').style.display = 'none';
@@ -6147,7 +6147,6 @@ async function pmCreateQRSource() {
             })
         });
         var json = await res.json();
-<<<<<<< HEAD
         console.log('[PayMongo] Source response:', JSON.stringify(json, null, 2));
 
         if (!res.ok || !json.data) {
@@ -6161,28 +6160,43 @@ async function pmCreateQRSource() {
 
         document.getElementById('paymongoQRLoading').style.display = 'none';
 
-        // PayMongo may return qr_image, qr_code, or just a checkout_url
+        // PayMongo may return qr_image (base64), qr_code, or just a checkout_url
         var qrDataUrl = attrs.qr_image || attrs.qr_code || null;
         var checkoutUrl = (attrs.redirect && attrs.redirect.checkout_url) || null;
-        var imgEl = document.getElementById('paymongoQRImg');
+        var canvas = document.getElementById('paymongoQRCanvas');
 
-        if (qrDataUrl) {
-            // Direct QR image (base64 or URL)
-            imgEl.src = qrDataUrl;
-            imgEl.style.display = 'block';
+        // Determine the data to encode in the QR
+        var qrContent = null;
+        if (qrDataUrl && qrDataUrl.startsWith('data:')) {
+            // It's a base64 image — draw directly onto canvas
+            var img = new Image();
+            img.onload = function() {
+                canvas.width = 180; canvas.height = 180;
+                canvas.getContext('2d').drawImage(img, 0, 0, 180, 180);
+                canvas.style.display = 'block';
+            };
+            img.src = qrDataUrl;
+        } else if (qrDataUrl) {
+            // It's a raw string — treat as QR content to encode
+            qrContent = qrDataUrl;
         } else if (checkoutUrl) {
-            // Generate scannable QR from the checkout URL
-            imgEl.src = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=8&data=' + encodeURIComponent(checkoutUrl);
-            imgEl.style.display = 'block';
+            qrContent = checkoutUrl;
         } else {
             throw new Error('No QR code data returned from PayMongo. Check console for details.');
         }
 
-        imgEl.onerror = function() {
-            imgEl.style.display = 'none';
-            document.getElementById('paymongoError').textContent = 'QR image failed to load. Try refreshing.';
-            document.getElementById('paymongoError').style.display = 'block';
-        };
+        if (qrContent) {
+            // Render QR code client-side using qrcode.js
+            QRCode.toCanvas(canvas, qrContent, { width: 180, margin: 1, color: { dark: '#000000', light: '#ffffff' } }, function(err) {
+                if (err) {
+                    console.error('[PayMongo] QR render error:', err);
+                    document.getElementById('paymongoError').textContent = 'Failed to render QR code. Try refreshing.';
+                    document.getElementById('paymongoError').style.display = 'block';
+                } else {
+                    canvas.style.display = 'block';
+                }
+            });
+        }
 
         document.getElementById('paymongoInstructions').style.display = 'block';
         document.getElementById('paymongoExpiry').style.display = 'inline-block';
@@ -6193,38 +6207,6 @@ async function pmCreateQRSource() {
 
     } catch (err) {
         console.error('[PayMongo] Error:', err);
-=======
-        if (!res.ok || !json.data) throw new Error((json.errors && json.errors[0] && json.errors[0].detail) || 'Failed to create QR source.');
-
-        var attrs = json.data.attributes;
-        _pmSourceId = json.data.id;
-
-        // Show QR image
-        var qrUrl = attrs.qr_image || (attrs.redirect && attrs.redirect.checkout_url);
-        var imgEl = document.getElementById('paymongoQRImg');
-        document.getElementById('paymongoQRLoading').style.display = 'none';
-
-        if (attrs.qr_image) {
-            imgEl.src = attrs.qr_image;
-            imgEl.style.display = 'block';
-        } else if (attrs.redirect && attrs.redirect.checkout_url) {
-            // Fallback: generate QR from checkout URL using a QR library
-            imgEl.src = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(attrs.redirect.checkout_url);
-            imgEl.style.display = 'block';
-        }
-
-        document.getElementById('paymongoInstructions').style.display = 'block';
-        document.getElementById('paymongoExpiry').style.display = 'inline-block';
-
-        // Countdown timer (PayMongo QR sources expire in 5 minutes)
-        var expiresAt = attrs.expires_at ? new Date(attrs.expires_at * 1000) : new Date(Date.now() + 5 * 60 * 1000);
-        pmStartCountdown(expiresAt);
-
-        // Poll for payment
-        pmStartPolling(_pmSourceId);
-
-    } catch (err) {
->>>>>>> 6b03e5b27a7e37c00cb51887891b338288813e6f
         document.getElementById('paymongoQRLoading').style.display = 'none';
         document.getElementById('paymongoQRPlaceholder').style.display = 'flex';
         var errEl = document.getElementById('paymongoError');
