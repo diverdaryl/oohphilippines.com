@@ -1949,7 +1949,7 @@
         <div class="paywall-icon">🔍</div>
         <h2>You've Used Your 5 Free Searches</h2>
         <p>Your searches reset every 7 days. Subscribe for <strong>unlimited access</strong> to all billboard inventory, full contact details, shortlisting, and campaign planning.</p>
-        <button class="paywall-subscribe-btn" onclick="closePaywallModal(); window.location.href='pricing.html'">💎 View Subscription Plans</button>
+        <button class="paywall-subscribe-btn" onclick="closePaywallModal(); openPaymongoModal('pro')">💎 View Subscription Plans</button>
         <button class="paywall-dismiss-btn" onclick="closePaywallModal()">Maybe later</button>
     </div>
 </div>
@@ -4529,11 +4529,16 @@ async function opLogin() {
         .select('*')
         .eq('id', data.user.id)
         .single();
+    if (!profile || !profile.operator_name) {
+        await _supabase.auth.signOut();
+        errEl.textContent = 'This account is not registered as an operator. If you are a subscriber, please use the Subscriber Login instead.';
+        errEl.style.display = 'block'; return;
+    }
     var username = profile.operator_name ? profile.operator_name.toLowerCase().replace(/\s+/g,'') : email.split('@')[0];
     var account = OP_ACCOUNTS[username] || OP_ACCOUNTS[profile.operator_name] || {};
     opCurrentUser = {
         username: username,
-        name: profile.operator_name || account.name || username,
+        name: account.name || profile.operator_name || username,
         company: profile.operator_name || account.company || username,
         emails: account.emails || [],
         websites: account.websites || []
@@ -4881,6 +4886,11 @@ async function subLogin() {
         .select('*')
         .eq('id', data.user.id)
         .single();
+    if (!profile || !profile.plan) {
+        await _supabase.auth.signOut();
+        errEl.textContent = 'This account is not registered as a subscriber. Operators must sign up for a separate subscriber account to access this portal.';
+        errEl.style.display = 'block'; return;
+    }
     var mgr = ACCOUNT_MANAGERS['default'];
     subCurrentUser = {
         username:  email,
@@ -5861,7 +5871,7 @@ function showUpgradePrompt() {
     banner.style.cssText = 'background:linear-gradient(135deg,#e3f2fd,#bbdefb);border:2px solid #1565c0;border-radius:16px;padding:28px 24px;text-align:center;margin:24px 0;';
     banner.innerHTML = '<h3 style="font-size:20px;font-weight:700;color:#1565c0;margin-bottom:8px;">🔒 You have reached your 5 free searches</h3>' +
         '<p style="font-size:14px;color:#455a64;margin-bottom:20px;line-height:1.6;">You are seeing <strong>Featured Sites</strong> above. Subscribe to unlock <strong>all billboards</strong> — full contact details, shortlisting, PDF export, and unlimited searches.</p>' +
-        '<a href="pricing.html" style="display:inline-block;background:linear-gradient(135deg,#e65100,#bf360c);color:white;font-weight:700;font-size:15px;padding:12px 28px;border-radius:10px;text-decoration:none;">💎 Upgrade to Pro — ₱999/mo →</a>' +
+        '<button onclick="openPaymongoModal(\'pro\')" style="display:inline-block;background:linear-gradient(135deg,#e65100,#bf360c);color:white;font-weight:700;font-size:15px;padding:12px 28px;border-radius:10px;text-decoration:none;border:none;cursor:pointer;font-family:Segoe UI,sans-serif;">💎 Upgrade to Pro — ₱999/mo →</button>' +
         '<div style="font-size:12px;color:#90a4ae;margin-top:10px;">Your searches reset every 7 days · Cancel anytime</div>';
     container.parentNode.insertBefore(banner, container.nextSibling);
     // Clear allMatches so Load More has nothing to show
@@ -5905,6 +5915,411 @@ async function updateInquiriesBadge() {
     }
 }
 
+</script>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PAYMONGO QR PAYMENT MODAL                               -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<style>
+#paymongoModal {
+    display: none; position: fixed; inset: 0; z-index: 9999;
+    background: rgba(0,0,0,0.55); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center;
+}
+#paymongoModal.open { display: flex; }
+#paymongoBox {
+    background: #fff; border-radius: 24px; padding: 36px 32px 28px;
+    width: 100%; max-width: 420px; margin: 16px;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.22); position: relative;
+    text-align: center; font-family: 'Segoe UI', sans-serif;
+}
+#paymongoClose {
+    position: absolute; top: 14px; right: 18px;
+    background: #f0f0f0; border: none; border-radius: 50%;
+    width: 32px; height: 32px; font-size: 18px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: #555; line-height: 1;
+}
+#paymongoClose:hover { background: #e0e0e0; }
+#paymongoTitle {
+    font-size: 22px; font-weight: 800; color: #1565c0; margin-bottom: 20px;
+}
+#paymongoQRWrap {
+    border: 2px dashed #bbdefb; border-radius: 16px;
+    padding: 20px; margin-bottom: 16px; background: #f8fbff;
+    min-height: 220px; display: flex; align-items: center; justify-content: center; flex-direction: column;
+}
+#paymongoQRImg {
+    width: 180px; height: 180px; object-fit: contain; border-radius: 8px;
+    display: none;
+}
+#paymongoQRPlaceholder {
+    color: #90a4ae; font-size: 14px; display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+#paymongoQRPlaceholder svg { opacity: 0.35; }
+#paymongoQRLoading {
+    display: none; flex-direction: column; align-items: center; gap: 10px; color: #1565c0;
+}
+#paymongoQRLoading .spinner {
+    width: 36px; height: 36px; border: 4px solid #bbdefb;
+    border-top-color: #1565c0; border-radius: 50%;
+    animation: pmSpin 0.8s linear infinite;
+}
+@keyframes pmSpin { to { transform: rotate(360deg); } }
+#paymongoInstructions {
+    font-size: 13px; color: #546e7a; line-height: 1.6; margin-bottom: 14px;
+}
+#paymongoExpiry {
+    display: inline-block; background: #fff3e0; color: #e65100;
+    font-size: 13px; font-weight: 700; padding: 6px 18px;
+    border-radius: 20px; margin-bottom: 18px;
+}
+#paymongoTabs {
+    display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+}
+.pm-tab {
+    padding: 8px 18px; border-radius: 50px; border: 2px solid #e0e0e0;
+    background: white; font-size: 13px; font-weight: 700; cursor: pointer;
+    color: #546e7a; transition: all 0.2s; font-family: 'Segoe UI', sans-serif;
+}
+.pm-tab:hover { border-color: #1565c0; color: #1565c0; }
+.pm-tab.active { background: #1565c0; color: white; border-color: #1565c0; }
+#paymongoRedirectMsg {
+    display: none; font-size: 13px; color: #546e7a;
+    background: #f8f9fa; border-radius: 12px; padding: 16px;
+    margin-bottom: 14px; line-height: 1.6;
+}
+#paymongoRedirectBtn {
+    display: none; padding: 12px 28px; border-radius: 10px;
+    background: linear-gradient(135deg, #e65100, #bf360c);
+    color: white; font-size: 15px; font-weight: 700;
+    border: none; cursor: pointer; font-family: 'Segoe UI', sans-serif;
+    text-decoration: none; margin-bottom: 14px;
+}
+#paymongoError {
+    display: none; color: #c62828; font-size: 13px;
+    background: #ffebee; border-radius: 10px; padding: 12px;
+    margin-bottom: 12px;
+}
+</style>
+
+<div id="paymongoModal">
+    <div id="paymongoBox">
+        <button id="paymongoClose" onclick="closePaymongoModal()">×</button>
+        <div id="paymongoTitle">Scan to Pay ₱999 / month</div>
+
+        <div id="paymongoQRWrap">
+            <div id="paymongoQRLoading">
+                <div class="spinner"></div>
+                <span style="font-size:13px;">Generating QR code…</span>
+            </div>
+            <img id="paymongoQRImg" alt="Payment QR Code" />
+            <div id="paymongoQRPlaceholder">
+                <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="4" width="24" height="24" rx="3" stroke="#90a4ae" stroke-width="3" fill="none"/>
+                    <rect x="10" y="10" width="12" height="12" rx="1" fill="#90a4ae"/>
+                    <rect x="36" y="4" width="24" height="24" rx="3" stroke="#90a4ae" stroke-width="3" fill="none"/>
+                    <rect x="42" y="10" width="12" height="12" rx="1" fill="#90a4ae"/>
+                    <rect x="4" y="36" width="24" height="24" rx="3" stroke="#90a4ae" stroke-width="3" fill="none"/>
+                    <rect x="10" y="42" width="12" height="12" rx="1" fill="#90a4ae"/>
+                    <rect x="36" y="36" width="6" height="6" rx="1" fill="#90a4ae"/>
+                    <rect x="46" y="36" width="6" height="6" rx="1" fill="#90a4ae"/>
+                    <rect x="56" y="36" width="4" height="6" rx="1" fill="#90a4ae"/>
+                    <rect x="36" y="46" width="6" height="6" rx="1" fill="#90a4ae"/>
+                    <rect x="46" y="46" width="14" height="4" rx="1" fill="#90a4ae"/>
+                    <rect x="36" y="56" width="24" height="4" rx="1" fill="#90a4ae"/>
+                </svg>
+                <span>Select a payment method below</span>
+            </div>
+        </div>
+
+        <div id="paymongoError"></div>
+
+        <div id="paymongoInstructions" style="display:none;">
+            Open <strong>GCash, Maya, BPI</strong>, or any banking app and tap <strong>Scan QR</strong>.<br>
+            Your subscription activates automatically after payment.
+        </div>
+
+        <div id="paymongoRedirectMsg"></div>
+        <a id="paymongoRedirectBtn" target="_blank">Open Payment Page →</a>
+
+        <div id="paymongoExpiry" style="display:none;">Expires in –:––</div>
+
+        <div id="paymongoTabs">
+            <button class="pm-tab" onclick="pmSelectTab('qrph')">QR Ph</button>
+            <button class="pm-tab" onclick="pmSelectTab('gcash')">GCash</button>
+            <button class="pm-tab" onclick="pmSelectTab('paymaya')">Maya</button>
+            <button class="pm-tab" onclick="pmSelectTab('bpi')">BPI</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ── PayMongo config ──────────────────────────────────────
+// Replace with your actual PayMongo public key
+var PAYMONGO_PUBLIC_KEY = 'pk_live_A8QWuWVQPKTWwScToo6ChAoD';
+var PAYMONGO_AMOUNT_CENTAVOS = 99900; // ₱999.00
+var PAYMONGO_DESCRIPTION = 'OOHPhilippines.com Pro Subscription – 1 Month';
+
+var _pmTab = null;
+var _pmExpiryInterval = null;
+var _pmPollInterval = null;
+var _pmSourceId = null;
+
+function openPaymongoModal(plan) {
+    if (plan === 'agency') {
+        // Agency plan — redirect to email instead
+        window.location.href = 'mailto:info@oohphilippines.com?subject=Agency Plan Inquiry';
+        return;
+    }
+    document.getElementById('paymongoModal').classList.add('open');
+    pmReset();
+    pmSelectTab('qrph');
+}
+
+function closePaymongoModal() {
+    document.getElementById('paymongoModal').classList.remove('open');
+    pmReset();
+}
+
+function pmReset() {
+    clearInterval(_pmExpiryInterval);
+    clearInterval(_pmPollInterval);
+    _pmSourceId = null;
+    _pmTab = null;
+    document.getElementById('paymongoQRImg').style.display = 'none';
+    document.getElementById('paymongoQRImg').src = '';
+    document.getElementById('paymongoQRPlaceholder').style.display = 'flex';
+    document.getElementById('paymongoQRLoading').style.display = 'none';
+    document.getElementById('paymongoInstructions').style.display = 'none';
+    document.getElementById('paymongoExpiry').style.display = 'none';
+    document.getElementById('paymongoRedirectMsg').style.display = 'none';
+    document.getElementById('paymongoRedirectBtn').style.display = 'none';
+    document.getElementById('paymongoError').style.display = 'none';
+    document.querySelectorAll('.pm-tab').forEach(function(t) { t.classList.remove('active'); });
+}
+
+async function pmSelectTab(type) {
+    if (_pmTab === type) return;
+    pmReset();
+    _pmTab = type;
+    document.querySelectorAll('.pm-tab').forEach(function(t) {
+        t.classList.toggle('active', t.textContent.toLowerCase().replace(' ','') === type.replace('paymaya','maya').replace('qrph','qrph'));
+    });
+    // Fix tab active matching
+    var tabMap = { qrph: 'QR Ph', gcash: 'GCash', paymaya: 'Maya', bpi: 'BPI' };
+    document.querySelectorAll('.pm-tab').forEach(function(t) {
+        t.classList.toggle('active', t.textContent.trim() === tabMap[type]);
+    });
+
+    if (type === 'qrph') {
+        await pmCreateQRSource();
+    } else {
+        await pmCreateRedirectSource(type);
+    }
+}
+
+async function pmCreateQRSource() {
+    document.getElementById('paymongoQRPlaceholder').style.display = 'none';
+    document.getElementById('paymongoQRLoading').style.display = 'flex';
+    document.getElementById('paymongoError').style.display = 'none';
+
+    try {
+        var res = await fetch('https://api.paymongo.com/v1/sources', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Basic ' + btoa(PAYMONGO_PUBLIC_KEY + ':')
+            },
+            body: JSON.stringify({
+                data: {
+                    attributes: {
+                        amount: PAYMONGO_AMOUNT_CENTAVOS,
+                        currency: 'PHP',
+                        type: 'qrph',
+                        description: PAYMONGO_DESCRIPTION,
+                        redirect: {
+                            success: window.location.origin + '/?payment=success',
+                            failed: window.location.origin + '/?payment=failed'
+                        }
+                    }
+                }
+            })
+        });
+        var json = await res.json();
+        console.log('[PayMongo] Source response:', JSON.stringify(json, null, 2));
+
+        if (!res.ok || !json.data) {
+            var errMsg = (json.errors && json.errors[0] && json.errors[0].detail) || ('HTTP ' + res.status + ': Failed to create QR source.');
+            throw new Error(errMsg);
+        }
+
+        var attrs = json.data.attributes;
+        _pmSourceId = json.data.id;
+        console.log('[PayMongo] Source ID:', _pmSourceId, 'Attrs keys:', Object.keys(attrs));
+
+        document.getElementById('paymongoQRLoading').style.display = 'none';
+
+        // PayMongo may return qr_image, qr_code, or just a checkout_url
+        var qrDataUrl = attrs.qr_image || attrs.qr_code || null;
+        var checkoutUrl = (attrs.redirect && attrs.redirect.checkout_url) || null;
+        var imgEl = document.getElementById('paymongoQRImg');
+
+        if (qrDataUrl) {
+            // Direct QR image (base64 or URL)
+            imgEl.src = qrDataUrl;
+            imgEl.style.display = 'block';
+        } else if (checkoutUrl) {
+            // Generate scannable QR from the checkout URL
+            imgEl.src = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=8&data=' + encodeURIComponent(checkoutUrl);
+            imgEl.style.display = 'block';
+        } else {
+            throw new Error('No QR code data returned from PayMongo. Check console for details.');
+        }
+
+        imgEl.onerror = function() {
+            imgEl.style.display = 'none';
+            document.getElementById('paymongoError').textContent = 'QR image failed to load. Try refreshing.';
+            document.getElementById('paymongoError').style.display = 'block';
+        };
+
+        document.getElementById('paymongoInstructions').style.display = 'block';
+        document.getElementById('paymongoExpiry').style.display = 'inline-block';
+
+        var expiresAt = attrs.expires_at ? new Date(attrs.expires_at * 1000) : new Date(Date.now() + 5 * 60 * 1000);
+        pmStartCountdown(expiresAt);
+        pmStartPolling(_pmSourceId);
+
+    } catch (err) {
+        console.error('[PayMongo] Error:', err);
+        document.getElementById('paymongoQRLoading').style.display = 'none';
+        document.getElementById('paymongoQRPlaceholder').style.display = 'flex';
+        var errEl = document.getElementById('paymongoError');
+        errEl.textContent = err.message || 'Something went wrong. Please try again.';
+        errEl.style.display = 'block';
+    }
+}
+
+async function pmCreateRedirectSource(type) {
+    document.getElementById('paymongoQRPlaceholder').style.display = 'none';
+    document.getElementById('paymongoQRLoading').style.display = 'flex';
+    document.getElementById('paymongoError').style.display = 'none';
+
+    var labelMap = { gcash: 'GCash', paymaya: 'Maya', bpi: 'BPI Online' };
+
+    try {
+        var res = await fetch('https://api.paymongo.com/v1/sources', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Basic ' + btoa(PAYMONGO_PUBLIC_KEY + ':')
+            },
+            body: JSON.stringify({
+                data: {
+                    attributes: {
+                        amount: PAYMONGO_AMOUNT_CENTAVOS,
+                        currency: 'PHP',
+                        type: type,
+                        description: PAYMONGO_DESCRIPTION,
+                        redirect: {
+                            success: window.location.origin + '/?payment=success',
+                            failed: window.location.origin + '/?payment=failed'
+                        }
+                    }
+                }
+            })
+        });
+        var json = await res.json();
+        if (!res.ok || !json.data) throw new Error((json.errors && json.errors[0] && json.errors[0].detail) || 'Failed to generate payment link.');
+
+        var checkoutUrl = json.data.attributes.redirect.checkout_url;
+        _pmSourceId = json.data.id;
+
+        document.getElementById('paymongoQRLoading').style.display = 'none';
+
+        var msgEl = document.getElementById('paymongoRedirectMsg');
+        msgEl.innerHTML = 'You will be redirected to <strong>' + labelMap[type] + '</strong> to complete your payment.<br>After paying, your subscription activates automatically.';
+        msgEl.style.display = 'block';
+
+        var btnEl = document.getElementById('paymongoRedirectBtn');
+        btnEl.href = checkoutUrl;
+        btnEl.textContent = 'Pay via ' + labelMap[type] + ' →';
+        btnEl.style.display = 'inline-block';
+
+        pmStartPolling(_pmSourceId);
+
+    } catch (err) {
+        document.getElementById('paymongoQRLoading').style.display = 'none';
+        document.getElementById('paymongoQRPlaceholder').style.display = 'flex';
+        var errEl = document.getElementById('paymongoError');
+        errEl.textContent = err.message || 'Something went wrong. Please try again.';
+        errEl.style.display = 'block';
+    }
+}
+
+function pmStartCountdown(expiresAt) {
+    clearInterval(_pmExpiryInterval);
+    var el = document.getElementById('paymongoExpiry');
+    function update() {
+        var diff = Math.max(0, expiresAt - Date.now());
+        var m = Math.floor(diff / 60000);
+        var s = Math.floor((diff % 60000) / 1000);
+        el.textContent = 'Expires in ' + m + ':' + (s < 10 ? '0' : '') + s;
+        if (diff <= 0) {
+            clearInterval(_pmExpiryInterval);
+            el.textContent = 'QR code expired';
+            el.style.color = '#c62828';
+        }
+    }
+    update();
+    _pmExpiryInterval = setInterval(update, 1000);
+}
+
+function pmStartPolling(sourceId) {
+    clearInterval(_pmPollInterval);
+    _pmPollInterval = setInterval(async function() {
+        try {
+            var res = await fetch('https://api.paymongo.com/v1/sources/' + sourceId, {
+                headers: { 'Authorization': 'Basic ' + btoa(PAYMONGO_PUBLIC_KEY + ':') }
+            });
+            var json = await res.json();
+            var status = json.data && json.data.attributes && json.data.attributes.status;
+            if (status === 'chargeable' || status === 'paid') {
+                clearInterval(_pmPollInterval);
+                clearInterval(_pmExpiryInterval);
+                closePaymongoModal();
+                pmOnPaymentSuccess();
+            }
+        } catch(e) { /* keep polling */ }
+    }, 3000);
+}
+
+async function pmOnPaymentSuccess() {
+    // Show a success message and prompt user to log in as subscriber
+    var box = document.createElement('div');
+    box.style.cssText = 'position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;';
+    box.innerHTML = '<div style="background:white;border-radius:24px;padding:40px 32px;max-width:380px;width:90%;text-align:center;font-family:Segoe UI,sans-serif;">' +
+        '<div style="font-size:48px;margin-bottom:16px;">🎉</div>' +
+        '<h2 style="color:#1565c0;font-size:22px;font-weight:800;margin-bottom:10px;">Payment Received!</h2>' +
+        '<p style="color:#546e7a;font-size:14px;line-height:1.6;margin-bottom:24px;">Your Pro subscription is now active. Log in with your subscriber account to get started.</p>' +
+        '<button onclick="this.closest(\'div\').parentNode.remove(); showPage(\'subscriberLogin\');" style="background:linear-gradient(135deg,#e65100,#bf360c);color:white;border:none;padding:14px 28px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:Segoe UI,sans-serif;">Log In to My Account →</button>' +
+        '</div>';
+    document.body.appendChild(box);
+}
+
+// Close modal on backdrop click
+document.getElementById('paymongoModal').addEventListener('click', function(e) {
+    if (e.target === this) closePaymongoModal();
+});
+
+// Handle ?payment=success redirect from PayMongo
+(function() {
+    var p = new URLSearchParams(window.location.search);
+    if (p.get('payment') === 'success') {
+        window.history.replaceState({}, '', window.location.pathname);
+        setTimeout(pmOnPaymentSuccess, 800);
+    }
+})();
 </script>
 </body>
 </html>
