@@ -1949,7 +1949,7 @@
         <div class="paywall-icon">🔍</div>
         <h2>You've Used Your 5 Free Searches</h2>
         <p>Your searches reset every 7 days. Subscribe for <strong>unlimited access</strong> to all billboard inventory, full contact details, shortlisting, and campaign planning.</p>
-        <button class="paywall-subscribe-btn" onclick="closePaywallModal(); window.location.href='pricing.html'">💎 View Subscription Plans</button>
+        <button class="paywall-subscribe-btn" onclick="closePaywallModal(); if(freeCurrentUser){ openPaymongoModal('pro'); } else { window.location.href='pricing.html'; }">💎 View Subscription Plans</button>
         <button class="paywall-dismiss-btn" onclick="closePaywallModal()">Maybe later</button>
     </div>
 </div>
@@ -4415,7 +4415,7 @@ var OP_ACCOUNTS = {
     'manolostarads':    { name: 'Manolo Star Ads',       company: 'Manolo Star Ads',      emails: [],        websites: [] },
     'mastersignnaga':   { name: 'Master Sign Naga',      company: 'Master Sign Naga',     emails: [],        websites: [] },
     'mgiads':           { name: 'MGI Ads',               company: 'MGI Ads',              emails: [],        websites: [] },
-    'adconcebu':        { name: 'AdCon Cebu',            company: 'AdCon Cebu',           emails: [],        websites: [] },
+    'adconcebu':        { name: 'AdCons (Cebu)',          company: 'AdCon Cebu',           emails: [],        websites: [] },
     'mlgadvertising':   { name: 'MLG Advertising',       company: 'MLG Advertising',      emails: [],        websites: [] },
     'nyxsys':           { name: 'Nyxsys',                company: 'Nyxsys',               emails: [],        websites: [] },
     'qcreativs':        { name: 'Q-Creativs',            company: 'Q-Creativs',           emails: [],        websites: [] },
@@ -5524,7 +5524,7 @@ function updateNavForFreeUser() {
         var navWrapper = document.querySelector('.nav-wrapper');
         if (navWrapper) navWrapper.insertAdjacentElement('afterend', infoBar);
     }
-    infoBar.innerHTML = '👋 Hi, <strong>' + (freeCurrentUser.name || freeCurrentUser.email) + '</strong> &nbsp;|&nbsp; <a href="pricing.html" style="display:inline-block;background:#e65100;color:white;font-weight:700;padding:5px 14px;border-radius:20px;text-decoration:none;font-size:13px;">💎 Upgrade to Pro →</a> &nbsp;|&nbsp; <a href="javascript:void(0)" onclick="doFreeLogout()" style="color:#999;font-size:12px;">Log out</a>';
+    infoBar.innerHTML = '👋 Hi, <strong>' + (freeCurrentUser.name || freeCurrentUser.email) + '</strong> &nbsp;|&nbsp; <button onclick="openPaymongoModal(\'pro\')" style="display:inline-block;background:#e65100;color:white;font-weight:700;padding:5px 14px;border-radius:20px;border:none;cursor:pointer;font-size:13px;font-family:Segoe UI,sans-serif;">💎 Upgrade to Pro →</button> &nbsp;|&nbsp; <a href="javascript:void(0)" onclick="doFreeLogout()" style="color:#999;font-size:12px;">Log out</a>';
 }
 
 function doFreeLogout() {
