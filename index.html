@@ -5524,7 +5524,7 @@ function updateNavForFreeUser() {
         var navWrapper = document.querySelector('.nav-wrapper');
         if (navWrapper) navWrapper.insertAdjacentElement('afterend', infoBar);
     }
-    infoBar.innerHTML = '👋 Hi, <strong>' + (freeCurrentUser.name || freeCurrentUser.email) + '</strong> &nbsp;|&nbsp; <button onclick="openPaymongoModal(\'pro\')" style="display:inline-block;background:#e65100;color:white;font-weight:700;padding:5px 14px;border-radius:20px;border:none;cursor:pointer;font-size:13px;font-family:Segoe UI,sans-serif;">💎 Upgrade to Pro →</button> &nbsp;|&nbsp; <a href="javascript:void(0)" onclick="doFreeLogout()" style="color:#999;font-size:12px;">Log out</a>';
+    infoBar.innerHTML = "👋 Hi, <strong>" + (freeCurrentUser.name || freeCurrentUser.email) + "</strong> &nbsp;|&nbsp; <button onclick="openPaymongoModal('pro')" style="display:inline-block;background:#e65100;color:white;font-weight:700;padding:5px 14px;border-radius:20px;border:none;cursor:pointer;font-size:13px;font-family:Segoe UI,sans-serif;">💎 Upgrade to Pro →</button> &nbsp;|&nbsp; <a href="javascript:void(0)" onclick="doFreeLogout()" style="color:#999;font-size:12px;">Log out</a>";
 }
 
 function doFreeLogout() {
