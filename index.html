@@ -6036,7 +6036,7 @@ async function updateInquiriesBadge() {
         <div id="paymongoError"></div>
 
         <div id="paymongoInstructions" style="display:none;">
-            Open <strong>GCash, Maya, BPI</strong>, or any banking app and tap <strong>Scan QR</strong>.<br>
+            Choose your payment method below. You'll be redirected to a secure PayMongo checkout page.<br>
             Your subscription activates automatically after payment.
         </div>
 
@@ -6106,89 +6106,85 @@ async function pmSelectTab(type) {
     if (_pmTab === type) return;
     pmReset();
     _pmTab = type;
-    document.querySelectorAll('.pm-tab').forEach(function(t) {
-        t.classList.toggle('active', t.textContent.toLowerCase().replace(' ','') === type.replace('paymaya','maya').replace('qrph','qrph'));
-    });
-    // Fix tab active matching
     var tabMap = { qrph: 'QR Ph', gcash: 'GCash', paymaya: 'Maya', bpi: 'BPI' };
     document.querySelectorAll('.pm-tab').forEach(function(t) {
         t.classList.toggle('active', t.textContent.trim() === tabMap[type]);
     });
-
     if (type === 'qrph') {
-        await pmCreateQRSource();
+        await pmCreateQRViaEdgeFunction();
     } else {
         await pmCreateRedirectSource(type);
     }
 }
 
-async function pmCreateQRSource() {
-    document.getElementById('paymongoQRPlaceholder').style.display = 'none';
-    document.getElementById('paymongoQRLoading').style.display = 'flex';
+async function pmCreateQRViaEdgeFunction() {
+    var wrap = document.getElementById('paymongoQRWrap');
+    wrap.innerHTML =
+        '<div id="paymongoQRLoading" style="display:flex;flex-direction:column;align-items:center;gap:10px;color:#1565c0;">' +
+        '<div class="spinner"></div><span style="font-size:13px;">Generating QR code…</span></div>';
+
     document.getElementById('paymongoError').style.display = 'none';
 
     try {
-        var res = await fetch('https://api.paymongo.com/v1/sources', {
+        var SUPABASE_URL = 'https://xecxfkuzexshafwuuizf.supabase.co';
+        var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlY3hma3V6ZXhzaGFmd3V1aXpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTk1MTIsImV4cCI6MjA5MTMzNTUxMn0.sZrRmesCDn0DsuldUD8zIhi1gX1ajIKX0aULqNBX_To';
+
+        var res = await fetch(SUPABASE_URL + '/functions/v1/create-payment', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Basic ' + btoa(PAYMONGO_PUBLIC_KEY + ':')
+                'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
             },
             body: JSON.stringify({
-                data: {
-                    attributes: {
-                        amount: PAYMONGO_AMOUNT_CENTAVOS,
-                        currency: 'PHP',
-                        type: 'qrph',
-                        description: PAYMONGO_DESCRIPTION,
-                        redirect: {
-                            success: window.location.origin + '/?payment=success',
-                            failed: window.location.origin + '/?payment=failed'
-                        }
-                    }
+                amount: PAYMONGO_AMOUNT_CENTAVOS,
+                currency: 'PHP',
+                type: 'qrph',
+                description: PAYMONGO_DESCRIPTION,
+                redirect: {
+                    success: window.location.origin + '/?payment=success',
+                    failed: window.location.origin + '/?payment=failed'
                 }
             })
         });
-        var json = await res.json();
-        console.log('[PayMongo] QRPh response:', JSON.stringify(json, null, 2));
 
-        if (!res.ok || !json.data) {
-            var errMsg = (json.errors && json.errors[0] && json.errors[0].detail) || ('HTTP ' + res.status + ': Failed to create payment.');
-            throw new Error(errMsg);
+        var json = await res.json();
+        console.log('[PayMongo Edge] Response:', JSON.stringify(json, null, 2));
+
+        if (!res.ok) throw new Error(json.error || json.message || 'Edge function error: ' + res.status);
+
+        var checkoutUrl = json.checkout_url || json.redirect_url || (json.data && json.data.attributes && json.data.attributes.redirect && json.data.attributes.redirect.checkout_url);
+        var qrImage = json.qr_image || json.qr_code || null;
+        _pmSourceId = json.source_id || json.id || (json.data && json.data.id) || null;
+
+        console.log('[PayMongo Edge] checkout_url:', checkoutUrl, 'qr_image:', qrImage ? 'present' : 'none');
+
+        if (qrImage) {
+            wrap.innerHTML =
+                '<img src="' + qrImage + '" style="width:180px;height:180px;border-radius:8px;" ' +
+                'onerror="this.style.display='none';document.getElementById('paymongoError').textContent='QR image failed to load.';document.getElementById('paymongoError').style.display='block';" />';
+        } else if (checkoutUrl) {
+            wrap.innerHTML =
+                '<div style="display:flex;flex-direction:column;align-items:center;gap:14px;">' +
+                '<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=8&format=png&data=' + encodeURIComponent(checkoutUrl) + '" ' +
+                'style="width:180px;height:180px;border-radius:8px;" />' +
+                '<a href="' + checkoutUrl + '" target="_blank" style="font-size:12px;color:#1565c0;">Can't scan? Open payment page →</a>' +
+                '</div>';
+        } else {
+            throw new Error('No QR code or checkout URL returned from server.');
         }
 
-        var attrs = json.data.attributes;
-        _pmSourceId = json.data.id;
-
-        var checkoutUrl = (attrs.redirect && attrs.redirect.checkout_url) || null;
-        console.log('[PayMongo] checkout_url:', checkoutUrl, 'source id:', _pmSourceId);
-
-        document.getElementById('paymongoQRLoading').style.display = 'none';
-
-        if (!checkoutUrl) throw new Error('No checkout URL returned from PayMongo.');
-
-        // Show the QR wrap as a big "Pay Now" button pointing to PayMongo's hosted checkout page
-        // PayMongo's checkout page itself displays the QR code for QRPh
-        var wrap = document.getElementById('paymongoQRWrap');
-        wrap.innerHTML =
-            '<div style="display:flex;flex-direction:column;align-items:center;gap:14px;">' +
-            '<div style="font-size:48px;">📱</div>' +
-            '<p style="font-size:13px;color:#546e7a;margin:0;line-height:1.6;">Tap the button below to open the<br><strong>QR Ph payment page</strong> — scan it with<br>GCash, Maya, BPI, or any banking app.</p>' +
-            '<a href="' + checkoutUrl + '" target="_blank" ' +
-            'style="display:inline-block;background:linear-gradient(135deg,#1565c0,#0d47a1);color:white;font-weight:700;font-size:15px;padding:14px 28px;border-radius:12px;text-decoration:none;">' +
-            '🔗 Open QR Payment Page →</a>' +
-            '<p style="font-size:11px;color:#90a4ae;margin:0;">Opens in a new tab · Hosted securely by PayMongo</p>' +
-            '</div>';
-
+        document.getElementById('paymongoInstructions').style.display = 'block';
         document.getElementById('paymongoExpiry').style.display = 'inline-block';
-        var expiresAt = attrs.expires_at ? new Date(attrs.expires_at * 1000) : new Date(Date.now() + 5 * 60 * 1000);
+
+        var expiresAt = json.expires_at ? new Date(json.expires_at * 1000) : new Date(Date.now() + 5 * 60 * 1000);
         pmStartCountdown(expiresAt);
-        pmStartPolling(_pmSourceId);
+        if (_pmSourceId) pmStartPolling(_pmSourceId);
 
     } catch (err) {
-        console.error('[PayMongo] Error:', err);
-        document.getElementById('paymongoQRLoading').style.display = 'none';
-        document.getElementById('paymongoQRPlaceholder').style.display = 'flex';
+        console.error('[PayMongo Edge] Error:', err);
+        document.getElementById('paymongoQRWrap').innerHTML =
+            '<div id="paymongoQRPlaceholder" style="color:#90a4ae;font-size:14px;display:flex;flex-direction:column;align-items:center;gap:10px;">' +
+            '<span>Select a payment method below</span></div>';
         var errEl = document.getElementById('paymongoError');
         errEl.textContent = err.message || 'Something went wrong. Please try again.';
         errEl.style.display = 'block';
@@ -6200,7 +6196,7 @@ async function pmCreateRedirectSource(type) {
     document.getElementById('paymongoQRLoading').style.display = 'flex';
     document.getElementById('paymongoError').style.display = 'none';
 
-    var labelMap = { gcash: 'GCash', paymaya: 'Maya', bpi: 'BPI Online' };
+    var labelMap = { gcash: 'GCash', paymaya: 'Maya', grab_pay: 'GrabPay', bpi: 'BPI Online' };
 
     try {
         var res = await fetch('https://api.paymongo.com/v1/sources', {
