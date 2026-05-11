@@ -6147,6 +6147,7 @@ async function pmCreateQRSource() {
             })
         });
         var json = await res.json();
+<<<<<<< HEAD
         console.log('[PayMongo] Source response:', JSON.stringify(json, null, 2));
 
         if (!res.ok || !json.data) {
@@ -6192,6 +6193,38 @@ async function pmCreateQRSource() {
 
     } catch (err) {
         console.error('[PayMongo] Error:', err);
+=======
+        if (!res.ok || !json.data) throw new Error((json.errors && json.errors[0] && json.errors[0].detail) || 'Failed to create QR source.');
+
+        var attrs = json.data.attributes;
+        _pmSourceId = json.data.id;
+
+        // Show QR image
+        var qrUrl = attrs.qr_image || (attrs.redirect && attrs.redirect.checkout_url);
+        var imgEl = document.getElementById('paymongoQRImg');
+        document.getElementById('paymongoQRLoading').style.display = 'none';
+
+        if (attrs.qr_image) {
+            imgEl.src = attrs.qr_image;
+            imgEl.style.display = 'block';
+        } else if (attrs.redirect && attrs.redirect.checkout_url) {
+            // Fallback: generate QR from checkout URL using a QR library
+            imgEl.src = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(attrs.redirect.checkout_url);
+            imgEl.style.display = 'block';
+        }
+
+        document.getElementById('paymongoInstructions').style.display = 'block';
+        document.getElementById('paymongoExpiry').style.display = 'inline-block';
+
+        // Countdown timer (PayMongo QR sources expire in 5 minutes)
+        var expiresAt = attrs.expires_at ? new Date(attrs.expires_at * 1000) : new Date(Date.now() + 5 * 60 * 1000);
+        pmStartCountdown(expiresAt);
+
+        // Poll for payment
+        pmStartPolling(_pmSourceId);
+
+    } catch (err) {
+>>>>>>> 6b03e5b27a7e37c00cb51887891b338288813e6f
         document.getElementById('paymongoQRLoading').style.display = 'none';
         document.getElementById('paymongoQRPlaceholder').style.display = 'flex';
         var errEl = document.getElementById('paymongoError');
