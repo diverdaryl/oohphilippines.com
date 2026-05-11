@@ -6120,12 +6120,17 @@ async function pmSelectTab(type) {
 async function pmCreateQRViaEdgeFunction() {
     var wrap = document.getElementById('paymongoQRWrap');
     wrap.innerHTML =
-        '<div id="paymongoQRLoading" style="display:flex;flex-direction:column;align-items:center;gap:10px;color:#1565c0;">' +
+        '<div style="display:flex;flex-direction:column;align-items:center;gap:10px;color:#1565c0;">' +
         '<div class="spinner"></div><span style="font-size:13px;">Generating QR code…</span></div>';
-
     document.getElementById('paymongoError').style.display = 'none';
 
     try {
+        // Get user email from current session
+        var userEmail = (freeCurrentUser && freeCurrentUser.email)
+            || (subCurrentUser && subCurrentUser.username)
+            || '';
+        if (!userEmail) throw new Error('Please log in before subscribing.');
+
         var SUPABASE_URL = 'https://xecxfkuzexshafwuuizf.supabase.co';
         var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlY3hma3V6ZXhzaGFmd3V1aXpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTk1MTIsImV4cCI6MjA5MTMzNTUxMn0.sZrRmesCDn0DsuldUD8zIhi1gX1ajIKX0aULqNBX_To';
 
@@ -6136,54 +6141,51 @@ async function pmCreateQRViaEdgeFunction() {
                 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
             },
             body: JSON.stringify({
-                amount: PAYMONGO_AMOUNT_CENTAVOS,
-                currency: 'PHP',
-                type: 'qrph',
-                description: PAYMONGO_DESCRIPTION,
-                redirect: {
-                    success: window.location.origin + '/?payment=success',
-                    failed: window.location.origin + '/?payment=failed'
-                }
+                email: userEmail,
+                payment_type: 'subscription',
+                plan: 'pro'
             })
         });
 
         var json = await res.json();
         console.log('[PayMongo Edge] Response:', JSON.stringify(json, null, 2));
 
-        if (!res.ok) throw new Error(json.error || json.message || 'Edge function error: ' + res.status);
+        if (!res.ok || !json.success) {
+            throw new Error(json.error || 'Payment creation failed. Please try again.');
+        }
 
-        var checkoutUrl = json.checkout_url || json.redirect_url || (json.data && json.data.attributes && json.data.attributes.redirect && json.data.attributes.redirect.checkout_url);
-        var qrImage = json.qr_image || json.qr_code || null;
-        _pmSourceId = json.source_id || json.id || (json.data && json.data.id) || null;
+        _pmSourceId = json.source_id || null;
+        var qrUrl = json.qr_url || null;
 
-        console.log('[PayMongo Edge] checkout_url:', checkoutUrl, 'qr_image:', qrImage ? 'present' : 'none');
+        console.log('[PayMongo Edge] source_id:', _pmSourceId, 'qr_url:', qrUrl);
 
-        if (qrImage) {
+        if (!qrUrl) throw new Error('No QR code returned. Please try again.');
+
+        // qr_url may be a direct QR image or a redirect URL — handle both
+        if (qrUrl.startsWith('data:image') || qrUrl.match(/\.(png|jpg|gif|svg)(\?|$)/i)) {
+            // Direct QR image
             wrap.innerHTML =
-                '<img src="' + qrImage + '" style="width:180px;height:180px;border-radius:8px;" ' +
-                'onerror="this.style.display='none';document.getElementById('paymongoError').textContent='QR image failed to load.';document.getElementById('paymongoError').style.display='block';" />';
-        } else if (checkoutUrl) {
-            wrap.innerHTML =
-                '<div style="display:flex;flex-direction:column;align-items:center;gap:14px;">' +
-                '<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=8&format=png&data=' + encodeURIComponent(checkoutUrl) + '" ' +
-                'style="width:180px;height:180px;border-radius:8px;" />' +
-                '<a href="' + checkoutUrl + '" target="_blank" style="font-size:12px;color:#1565c0;">Can't scan? Open payment page →</a>' +
-                '</div>';
+                '<img src="' + qrUrl + '" style="width:180px;height:180px;border-radius:8px;" />';
         } else {
-            throw new Error('No QR code or checkout URL returned from server.');
+            // It's a redirect URL — generate scannable QR from it
+            wrap.innerHTML =
+                '<div style="display:flex;flex-direction:column;align-items:center;gap:12px;">' +
+                '<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=8&format=png&data=' +
+                encodeURIComponent(qrUrl) + '" style="width:180px;height:180px;border-radius:8px;" ' +
+                'onerror="this.parentNode.innerHTML='<a href=\'' + qrUrl.replace(/'/g,"\'") + '\' target=\'_blank\' style=\'color:#1565c0;\'>Open Payment Page →</a>';" />' +
+                '<a href="' + qrUrl + '" target="_blank" style="font-size:12px;color:#1565c0;text-decoration:none;">Can't scan? Open payment page →</a>' +
+                '</div>';
         }
 
         document.getElementById('paymongoInstructions').style.display = 'block';
         document.getElementById('paymongoExpiry').style.display = 'inline-block';
-
-        var expiresAt = json.expires_at ? new Date(json.expires_at * 1000) : new Date(Date.now() + 5 * 60 * 1000);
-        pmStartCountdown(expiresAt);
+        pmStartCountdown(new Date(Date.now() + 10 * 60 * 1000));
         if (_pmSourceId) pmStartPolling(_pmSourceId);
 
     } catch (err) {
         console.error('[PayMongo Edge] Error:', err);
         document.getElementById('paymongoQRWrap').innerHTML =
-            '<div id="paymongoQRPlaceholder" style="color:#90a4ae;font-size:14px;display:flex;flex-direction:column;align-items:center;gap:10px;">' +
+            '<div style="color:#90a4ae;font-size:14px;display:flex;flex-direction:column;align-items:center;gap:10px;">' +
             '<span>Select a payment method below</span></div>';
         var errEl = document.getElementById('paymongoError');
         errEl.textContent = err.message || 'Something went wrong. Please try again.';
