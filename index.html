@@ -6087,10 +6087,14 @@ function pmReset() {
     clearInterval(_pmPollInterval);
     _pmSourceId = null;
     _pmTab = null;
-    var _qi = document.getElementById('paymongoQRImg'); if(_qi){_qi.style.display='none'; _qi.src='';}
-    document.getElementById('paymongoQRPlaceholder').style.display = 'flex';
-    document.getElementById('paymongoQRLoading').style.display = 'none';
-    document.getElementById('paymongoInstructions').style.display = 'none';
+    // Restore QR wrap to original state
+    document.getElementById('paymongoQRWrap').innerHTML =
+        '<div id="paymongoQRLoading" style="display:none;flex-direction:column;align-items:center;gap:10px;color:#1565c0;">' +
+        '<div class="spinner"></div><span style="font-size:13px;">Generating payment link…</span></div>' +
+        '<img id="paymongoQRImg" alt="Payment QR Code" style="display:none;width:180px;height:180px;border-radius:8px;" />' +
+        '<div id="paymongoQRPlaceholder" style="color:#90a4ae;font-size:14px;display:flex;flex-direction:column;align-items:center;gap:10px;">' +
+        '<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="24" height="24" rx="3" stroke="#90a4ae" stroke-width="3" fill="none"/><rect x="10" y="10" width="12" height="12" rx="1" fill="#90a4ae"/><rect x="36" y="4" width="24" height="24" rx="3" stroke="#90a4ae" stroke-width="3" fill="none"/><rect x="42" y="10" width="12" height="12" rx="1" fill="#90a4ae"/><rect x="4" y="36" width="24" height="24" rx="3" stroke="#90a4ae" stroke-width="3" fill="none"/><rect x="10" y="42" width="12" height="12" rx="1" fill="#90a4ae"/><rect x="36" y="36" width="6" height="6" rx="1" fill="#90a4ae"/><rect x="46" y="36" width="6" height="6" rx="1" fill="#90a4ae"/><rect x="56" y="36" width="4" height="6" rx="1" fill="#90a4ae"/><rect x="36" y="46" width="6" height="6" rx="1" fill="#90a4ae"/><rect x="46" y="46" width="14" height="4" rx="1" fill="#90a4ae"/><rect x="36" y="56" width="24" height="4" rx="1" fill="#90a4ae"/></svg>' +
+        '<span>Select a payment method below</span></div>';
     document.getElementById('paymongoExpiry').style.display = 'none';
     document.getElementById('paymongoRedirectMsg').style.display = 'none';
     document.getElementById('paymongoRedirectBtn').style.display = 'none';
@@ -6146,61 +6150,37 @@ async function pmCreateQRSource() {
             })
         });
         var json = await res.json();
-        console.log('[PayMongo] Source response:', JSON.stringify(json, null, 2));
+        console.log('[PayMongo] QRPh response:', JSON.stringify(json, null, 2));
 
         if (!res.ok || !json.data) {
-            var errMsg = (json.errors && json.errors[0] && json.errors[0].detail) || ('HTTP ' + res.status + ': Failed to create QR source.');
+            var errMsg = (json.errors && json.errors[0] && json.errors[0].detail) || ('HTTP ' + res.status + ': Failed to create payment.');
             throw new Error(errMsg);
         }
 
         var attrs = json.data.attributes;
         _pmSourceId = json.data.id;
-        console.log('[PayMongo] Source ID:', _pmSourceId, 'Attrs keys:', Object.keys(attrs));
+
+        var checkoutUrl = (attrs.redirect && attrs.redirect.checkout_url) || null;
+        console.log('[PayMongo] checkout_url:', checkoutUrl, 'source id:', _pmSourceId);
 
         document.getElementById('paymongoQRLoading').style.display = 'none';
 
-        var imgEl = document.getElementById('paymongoQRImg');
-        var checkoutUrl = (attrs.redirect && attrs.redirect.checkout_url) || null;
-        var qrDirect = attrs.qr_image || attrs.qr_code || null;
+        if (!checkoutUrl) throw new Error('No checkout URL returned from PayMongo.');
 
-        console.log('[PayMongo] qr_image:', qrDirect, 'checkout_url:', checkoutUrl);
+        // Show the QR wrap as a big "Pay Now" button pointing to PayMongo's hosted checkout page
+        // PayMongo's checkout page itself displays the QR code for QRPh
+        var wrap = document.getElementById('paymongoQRWrap');
+        wrap.innerHTML =
+            '<div style="display:flex;flex-direction:column;align-items:center;gap:14px;">' +
+            '<div style="font-size:48px;">📱</div>' +
+            '<p style="font-size:13px;color:#546e7a;margin:0;line-height:1.6;">Tap the button below to open the<br><strong>QR Ph payment page</strong> — scan it with<br>GCash, Maya, BPI, or any banking app.</p>' +
+            '<a href="' + checkoutUrl + '" target="_blank" ' +
+            'style="display:inline-block;background:linear-gradient(135deg,#1565c0,#0d47a1);color:white;font-weight:700;font-size:15px;padding:14px 28px;border-radius:12px;text-decoration:none;">' +
+            '🔗 Open QR Payment Page →</a>' +
+            '<p style="font-size:11px;color:#90a4ae;margin:0;">Opens in a new tab · Hosted securely by PayMongo</p>' +
+            '</div>';
 
-        if (qrDirect && (qrDirect.startsWith('data:') || qrDirect.startsWith('http'))) {
-            // PayMongo returned a direct QR image
-            imgEl.src = qrDirect;
-            imgEl.style.display = 'block';
-        } else if (checkoutUrl) {
-            // Generate QR from checkout URL
-            imgEl.src = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=8&format=png&data=' + encodeURIComponent(checkoutUrl);
-            imgEl.style.display = 'block';
-            // Also show Pay Now button as backup
-            var btnEl = document.getElementById('paymongoRedirectBtn');
-            btnEl.href = checkoutUrl;
-            btnEl.textContent = 'Open Payment Page →';
-            btnEl.style.display = 'inline-block';
-        } else {
-            throw new Error('PayMongo did not return a QR code or checkout URL.');
-        }
-
-        imgEl.onerror = function() {
-            console.error('[PayMongo] QR image failed to load, src was:', imgEl.src);
-            imgEl.style.display = 'none';
-            // Show Pay Now button as fallback
-            if (checkoutUrl) {
-                var btnEl = document.getElementById('paymongoRedirectBtn');
-                btnEl.href = checkoutUrl;
-                btnEl.textContent = 'Open Payment Page →';
-                btnEl.style.display = 'inline-block';
-                document.getElementById('paymongoError').textContent = 'QR image failed to load — use the button below instead.';
-            } else {
-                document.getElementById('paymongoError').textContent = 'QR image failed to load. Please try again.';
-            }
-            document.getElementById('paymongoError').style.display = 'block';
-        };
-
-        document.getElementById('paymongoInstructions').style.display = 'block';
         document.getElementById('paymongoExpiry').style.display = 'inline-block';
-
         var expiresAt = attrs.expires_at ? new Date(attrs.expires_at * 1000) : new Date(Date.now() + 5 * 60 * 1000);
         pmStartCountdown(expiresAt);
         pmStartPolling(_pmSourceId);
