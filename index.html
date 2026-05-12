@@ -3744,6 +3744,29 @@
     </div>
 </div>
 
+<!-- OPERATOR PHOTO UPLOAD MODAL -->
+<div id="opPhotoModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:2000;justify-content:center;align-items:center;">
+    <div style="background:white;border-radius:16px;padding:28px;width:90%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+        <h3 style="font-size:18px;color:#1565c0;margin-bottom:6px;">📷 Update Billboard Photo</h3>
+        <p id="opPhotoModalSite" style="font-size:13px;color:#888;margin-bottom:16px;"></p>
+        <input type="hidden" id="opPhotoSiteName">
+        <div id="opPhotoPreviewWrap" style="width:100%;height:180px;background:#f0f7ff;border-radius:10px;overflow:hidden;margin-bottom:14px;display:flex;align-items:center;justify-content:center;">
+            <img id="opPhotoPreview" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:none;">
+            <span id="opPhotoPreviewPlaceholder" style="color:#90a4ae;font-size:13px;">No photo yet — Street View is currently shown</span>
+        </div>
+        <label style="display:block;font-size:12px;font-weight:700;color:#555;margin-bottom:6px;">📁 Choose Photo (JPG, PNG, WebP — max 5MB)</label>
+        <input type="file" id="opPhotoFileInput" accept="image/jpeg,image/png,image/webp"
+            style="width:100%;padding:10px;border:2px dashed #bbdefb;border-radius:8px;font-size:13px;background:#f8fbff;margin-bottom:8px;box-sizing:border-box;cursor:pointer;"
+            onchange="opPhotoPreviewSelected(this)">
+        <p id="opPhotoError" style="color:#c62828;font-size:12px;display:none;margin-bottom:8px;"></p>
+        <p id="opPhotoProgress" style="color:#1565c0;font-size:12px;display:none;margin-bottom:8px;"></p>
+        <div style="display:flex;gap:10px;margin-top:8px;">
+            <button onclick="opClosePhotoModal()" style="flex:1;padding:12px;background:#f5f5f5;color:#666;border:none;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;font-family:'Segoe UI',sans-serif;">Cancel</button>
+            <button id="opPhotoUploadBtn" onclick="opUploadPhoto()" style="flex:1;padding:12px;background:#1565c0;color:white;border:none;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;font-family:'Segoe UI',sans-serif;">📤 Upload Photo</button>
+        </div>
+        <p style="font-size:11px;color:#aaa;text-align:center;margin-top:12px;">Photo will replace the Street View on the public listing. Use a clear, well-lit photo for best results.</p>
+    </div>
+</div>
 
 <!-- FOOTER - APPEARS ON ALL PAGES -->
 <footer class="site-footer">
@@ -4676,6 +4699,7 @@ function opRenderCards() {
                     ' data-sn="' + sn.replace(/"/g,'&quot;') + '" data-snid="' + snId + '">&#x1F4BE; Save Changes</button>' +
                 '<hr class="op-divider">' +
                 '<button class="op-save-rate-btn" style="width:100%;margin-bottom:8px;background:#e3f2fd;color:#1565c0;" data-sn="' + sn.replace(/"/g,'&quot;') + '">&#x270F;&#xFE0F; Edit Contact Info</button>' +
+                '<button class="op-photo-btn" style="width:100%;margin-bottom:8px;padding:10px;background:#e8f5e9;color:#2e7d32;border:none;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;font-family:\'Segoe UI\',sans-serif;" data-sn="' + sn.replace(/"/g,'&quot;') + '">&#x1F4F7; Update Photo</button>' +
                 '<hr class="op-divider">' +
                 '<button class="op-toggle-btn ' + (avail ? 'mark-unavail' : 'mark-avail') + '"' +
                     ' id="opToggleBtn_' + snId + '"' +
@@ -4697,6 +4721,12 @@ function opRenderCards() {
     for (var ti = 0; ti < toggleBtns.length; ti++) {
         toggleBtns[ti].addEventListener('click', function() {
             opToggleCard(this.getAttribute('data-sn'), this.getAttribute('data-snid'));
+        });
+    }
+    var photoBtns = grid.querySelectorAll('.op-photo-btn');
+    for (var pi = 0; pi < photoBtns.length; pi++) {
+        photoBtns[pi].addEventListener('click', function() {
+            opOpenPhotoModal(this.getAttribute('data-sn'));
         });
     }
 }
@@ -5462,6 +5492,124 @@ function opSaveContactInfo() {
 
     opCloseContactModal();
     alert('\u2705 Contact info saved! Changes will reflect on the site shortly.');
+}
+
+// ── OPERATOR PHOTO UPLOAD ──────────────────────────────
+function opOpenPhotoModal(siteName) {
+    var b = allBillboards.filter(function(x){ return x['Site Name'] === siteName; })[0];
+    if (!b) return;
+    document.getElementById('opPhotoSiteName').value = siteName;
+    document.getElementById('opPhotoModalSite').textContent = siteName;
+    document.getElementById('opPhotoFileInput').value = '';
+    document.getElementById('opPhotoError').style.display = 'none';
+    document.getElementById('opPhotoProgress').style.display = 'none';
+    document.getElementById('opPhotoUploadBtn').disabled = false;
+    document.getElementById('opPhotoUploadBtn').textContent = '📤 Upload Photo';
+
+    var preview = document.getElementById('opPhotoPreview');
+    var placeholder = document.getElementById('opPhotoPreviewPlaceholder');
+    if (b['Photo'] && !b['Photo'].toLowerCase().endsWith('.pdf')) {
+        preview.src = b['Photo'];
+        preview.style.display = 'block';
+        placeholder.style.display = 'none';
+    } else {
+        preview.src = '';
+        preview.style.display = 'none';
+        placeholder.style.display = 'block';
+    }
+    document.getElementById('opPhotoModal').style.display = 'flex';
+}
+
+function opClosePhotoModal() {
+    document.getElementById('opPhotoModal').style.display = 'none';
+}
+
+function opPhotoPreviewSelected(input) {
+    var file = input.files[0];
+    var errEl = document.getElementById('opPhotoError');
+    errEl.style.display = 'none';
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+        errEl.textContent = 'File is too large. Please choose a photo under 5MB.';
+        errEl.style.display = 'block';
+        input.value = '';
+        return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var preview = document.getElementById('opPhotoPreview');
+        var placeholder = document.getElementById('opPhotoPreviewPlaceholder');
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+        placeholder.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+}
+
+async function opUploadPhoto() {
+    var siteName = document.getElementById('opPhotoSiteName').value;
+    var fileInput = document.getElementById('opPhotoFileInput');
+    var errEl = document.getElementById('opPhotoError');
+    var progressEl = document.getElementById('opPhotoProgress');
+    var uploadBtn = document.getElementById('opPhotoUploadBtn');
+
+    errEl.style.display = 'none';
+    if (!fileInput.files || !fileInput.files[0]) {
+        errEl.textContent = 'Please choose a photo file first.';
+        errEl.style.display = 'block';
+        return;
+    }
+
+    var file = fileInput.files[0];
+    var ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+    var safeName = siteName.replace(/[^a-zA-Z0-9]/g, '_');
+    var filePath = safeName + '_' + Date.now() + '.' + ext;
+
+    progressEl.textContent = '⏳ Uploading photo…';
+    progressEl.style.display = 'block';
+    uploadBtn.disabled = true;
+    uploadBtn.textContent = 'Uploading…';
+
+    try {
+        var { error: uploadErr } = await _supabase
+            .storage
+            .from('billboard-photos')
+            .upload(filePath, file, { upsert: true, contentType: file.type });
+
+        if (uploadErr) throw new Error(uploadErr.message);
+
+        var { data: urlData } = _supabase
+            .storage
+            .from('billboard-photos')
+            .getPublicUrl(filePath);
+
+        var publicUrl = urlData && urlData.publicUrl;
+        if (!publicUrl) throw new Error('Could not retrieve public URL from storage.');
+
+        opWriteToSheet({ site: siteName, photo: publicUrl });
+
+        for (var i = 0; i < allBillboards.length; i++) {
+            if (allBillboards[i]['Site Name'] === siteName) {
+                allBillboards[i]['Photo'] = publicUrl;
+                break;
+            }
+        }
+
+        progressEl.textContent = '✅ Photo uploaded successfully!';
+        uploadBtn.textContent = '✅ Done';
+
+        setTimeout(function() {
+            opClosePhotoModal();
+            opRenderCards();
+        }, 1200);
+
+    } catch (err) {
+        progressEl.style.display = 'none';
+        uploadBtn.disabled = false;
+        uploadBtn.textContent = '📤 Upload Photo';
+        errEl.textContent = '❌ Upload failed: ' + (err.message || 'Unknown error. Please try again.');
+        errEl.style.display = 'block';
+    }
 }
 
 // Bind Edit Contact buttons after render
