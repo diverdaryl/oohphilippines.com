@@ -3940,7 +3940,7 @@ function buildCard(b) {
         '<span class="tag">' + b['Tag'] + '</span>' +
         (featuredPos > 0 ? '<span class="sponsored-badge">⭐ Featured</span><br>' : '') +
         availBadge +
-        '<h2>Site: ' + b['Site Name'] + '</h2>' +
+        '<h2>Site: ' + (b['Display Name'] || b['Site Name']) + '</h2>' +
         '<div class="spec-grid">' +
         '<div class="spec-item"><strong>Size</strong> ' + (liveSize || b['Size']) + '</div>' +
         '<div class="spec-item"><strong>Type</strong> ' + b['Type'] + '</div>' +
@@ -4680,6 +4680,32 @@ function opRenderCards() {
                     '<div><strong>Illumination</strong>' + (b['Illumination']||'&mdash;') + '</div>' +
                 '</div>' +
                 '<hr class="op-divider">' +
+                '<hr class="op-divider">' +
+                '<div class="op-rate-row">' +
+                    '<label>&#x1F3F7; Display Name:</label>' +
+                    '<input type="text" class="op-rate-input" id="opDisplayName_' + snId + '" ' +
+                        'value="' + (b['Display Name']||'').replace(/"/g,'&quot;') + '" placeholder="e.g. EDSA Northbound, Ortigas">' +
+                '</div>' +
+                '<div class="op-rate-row">' +
+                    '<label>&#x1F4CD; Location:</label>' +
+                    '<input type="text" class="op-rate-input" id="opLocation_' + snId + '" ' +
+                        'value="' + (b['Location']||'').replace(/"/g,'&quot;') + '" placeholder="e.g. EDSA cor. Ortigas Ave.">' +
+                '</div>' +
+                '<div class="op-rate-row">' +
+                    '<label>&#x1F3E2; Tag (City/Area):</label>' +
+                    '<input type="text" class="op-rate-input" id="opTag_' + snId + '" ' +
+                        'value="' + (b['Tag']||'').replace(/"/g,'&quot;') + '" placeholder="e.g. Ortigas">' +
+                '</div>' +
+                '<div class="op-rate-row">' +
+                    '<label>&#x1F4FA; Type:</label>' +
+                    '<input type="text" class="op-rate-input" id="opType_' + snId + '" ' +
+                        'value="' + (b['Type']||'').replace(/"/g,'&quot;') + '" placeholder="e.g. Static, Digital">' +
+                '</div>' +
+                '<div class="op-rate-row">' +
+                    '<label>&#x1F4A1; Illumination:</label>' +
+                    '<input type="text" class="op-rate-input" id="opIllumination_' + snId + '" ' +
+                        'value="' + (b['Illumination']||'').replace(/"/g,'&quot;') + '" placeholder="e.g. Backlit, LED">' +
+                '</div>' +
                 '<div class="op-rate-row">' +
                     '<label>&#x1F4CF; Size:</label>' +
                     '<input type="text" class="op-rate-input" id="opSize_' + snId + '" ' +
@@ -4778,20 +4804,53 @@ function opSaveRate(siteName, snId) {
         setTimeout(function(){ btn.textContent = 'Save'; btn.classList.remove('saved'); }, 2000); }
 }
 
-// --- Save editable fields (size + rate) ---
 function opSaveAll(siteName, snId) {
-    var sizeInput = document.getElementById('opSize_' + snId);
-    var rateInput = document.getElementById('opRate_' + snId);
-    var descInput = document.getElementById('opDesc_' + snId);
-    var size = sizeInput ? sizeInput.value.trim() : '';
-    var rate = rateInput ? rateInput.value.trim() : '';
-    var desc = descInput ? descInput.value.trim() : '';
+    var sizeInput        = document.getElementById('opSize_' + snId);
+    var rateInput        = document.getElementById('opRate_' + snId);
+    var descInput        = document.getElementById('opDesc_' + snId);
+    var displayNameInput = document.getElementById('opDisplayName_' + snId);
+    var locationInput    = document.getElementById('opLocation_' + snId);
+    var tagInput         = document.getElementById('opTag_' + snId);
+    var typeInput        = document.getElementById('opType_' + snId);
+    var illumInput       = document.getElementById('opIllumination_' + snId);
+
+    var size        = sizeInput        ? sizeInput.value.trim()        : '';
+    var rate        = rateInput        ? rateInput.value.trim()        : '';
+    var desc        = descInput        ? descInput.value.trim()        : '';
+    var displayName = displayNameInput ? displayNameInput.value.trim() : '';
+    var location    = locationInput    ? locationInput.value.trim()    : '';
+    var tag         = tagInput         ? tagInput.value.trim()         : '';
+    var type        = typeInput        ? typeInput.value.trim()        : '';
+    var illumination= illumInput       ? illumInput.value.trim()       : '';
+
     var params = { site: siteName };
-    if (size) params.size = size;
-    if (rate) params.rate = rate;
-    if (desc) params.description = desc;
-    if (size || rate || desc) opWriteToSheet(params);
+    if (size)         params.size         = size;
+    if (rate)         params.rate         = rate;
+    if (desc)         params.description  = desc;
+    if (displayName)  params.displayName  = displayName;
+    if (location)     params.location     = location;
+    if (tag)          params.tag          = tag;
+    if (type)         params.type         = type;
+    if (illumination) params.illumination = illumination;
+
+    if (Object.keys(params).length > 1) opWriteToSheet(params);
     if (rate) opWriteRate(siteName, rate);
+
+    // Update allBillboards in memory so card reflects immediately
+    for (var i = 0; i < allBillboards.length; i++) {
+        if (allBillboards[i]['Site Name'] === siteName) {
+            if (size)         allBillboards[i]['Size']         = size;
+            if (rate)         allBillboards[i]['Price']        = rate;
+            if (desc)         allBillboards[i]['Description']  = desc;
+            if (displayName)  allBillboards[i]['Display Name'] = displayName;
+            if (location)     allBillboards[i]['Location']     = location;
+            if (tag)          allBillboards[i]['Tag']          = tag;
+            if (type)         allBillboards[i]['Type']         = type;
+            if (illumination) allBillboards[i]['Illumination'] = illumination;
+            break;
+        }
+    }
+
     var btn = document.getElementById('opRateBtn_' + snId);
     if (btn) {
         var orig = btn.innerHTML;
