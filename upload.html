@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Your Billboard Site — OOHPhilippines.com</title>
+    <meta name="description" content="List your billboard site on OOHPhilippines.com and reach hundreds of advertisers across the Philippines.">
+    <link rel="icon" href="favicon.ico">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f7ff;
+            color: #202124;
+            min-height: 100vh;
+        }
+
+        /* NAV */
+        .nav {
+            background: white;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-logo {
+            font-size: 20px;
+            font-weight: 800;
+            color: #1565c0;
+            text-decoration: none;
+        }
+        .nav-back {
+            font-size: 14px;
+            color: #1565c0;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .nav-back:hover { text-decoration: underline; }
+
+        /* HERO */
+        .hero {
+            background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+            color: white;
+            text-align: center;
+            padding: 48px 24px 40px;
+        }
+        .hero h1 { font-size: 28px; font-weight: 800; margin-bottom: 10px; }
+        .hero p  { font-size: 15px; opacity: 0.85; max-width: 500px; margin: 0 auto; }
+
+        /* FORM CARD */
+        .form-wrap {
+            max-width: 680px;
+            margin: 40px auto 60px;
+            padding: 0 20px;
+        }
+        .form-card {
+            background: white;
+            border-radius: 16px;
+            padding: 36px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #1565c0;
+            margin: 28px 0 16px;
+        }
+        .section-label:first-child { margin-top: 0; }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: #444;
+            margin-bottom: 6px;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Segoe UI', sans-serif;
+            color: #202124;
+            background: #fafafa;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus { border-color: #1565c0; background: white; }
+        .form-group textarea { min-height: 100px; resize: vertical; }
+        .form-group small { display: block; color: #999; font-size: 12px; margin-top: 5px; }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        @media (max-width: 540px) { .form-row { grid-template-columns: 1fr; } }
+
+        /* PHOTO INPUT */
+        .photo-input-wrap {
+            border: 2px dashed #bbdefb;
+            border-radius: 10px;
+            padding: 16px;
+            background: #f8fbff;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .photo-input-wrap:hover { border-color: #1565c0; }
+        .photo-input-wrap input { display: none; }
+        .photo-input-label {
+            font-size: 14px;
+            color: #1565c0;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        #photoPreviewWrap {
+            display: none;
+            margin-top: 12px;
+            border-radius: 8px;
+            overflow: hidden;
+            max-height: 220px;
+        }
+        #photoPreviewWrap img { width: 100%; object-fit: cover; }
+        #photoMsg { font-size: 12px; color: #888; margin-top: 8px; }
+
+        /* SUBMIT */
+        .submit-section { margin-top: 28px; }
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: #1565c0;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Segoe UI', sans-serif;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .btn-submit:hover { background: #0d47a1; }
+        .btn-submit:active { transform: scale(0.99); }
+        .btn-submit:disabled { background: #90a4ae; cursor: not-allowed; }
+        .btn-cancel {
+            display: block;
+            text-align: center;
+            margin-top: 12px;
+            color: #888;
+            font-size: 13px;
+            text-decoration: none;
+        }
+        .btn-cancel:hover { color: #1565c0; }
+
+        #errorMsg {
+            color: #c62828;
+            font-size: 13px;
+            margin-bottom: 12px;
+            display: none;
+            background: #fdecea;
+            padding: 10px 14px;
+            border-radius: 8px;
+        }
+        #progressMsg {
+            color: #1565c0;
+            font-size: 13px;
+            margin-bottom: 12px;
+            display: none;
+        }
+
+        /* SUCCESS */
+        #successWrap {
+            display: none;
+            text-align: center;
+            padding: 20px 0;
+        }
+        #successWrap .check { font-size: 56px; margin-bottom: 16px; }
+        #successWrap h2 { color: #2e7d32; font-size: 22px; margin-bottom: 10px; }
+        #successWrap p { color: #555; font-size: 15px; line-height: 1.6; margin-bottom: 24px; }
+        .btn-home {
+            display: inline-block;
+            padding: 12px 28px;
+            background: #1565c0;
+            color: white;
+            border-radius: 50px;
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        /* INFO BOX */
+        .info-box {
+            background: #e8f5e9;
+            border-radius: 10px;
+            padding: 14px 16px;
+            font-size: 13px;
+            color: #2e7d32;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+        .divider { border: none; border-top: 1px solid #f0f0f0; margin: 24px 0; }
+    </style>
+</head>
+<body>
+
+<nav class="nav">
+    <a href="index.html" class="nav-logo">OOHPhilippines.com</a>
+    <a href="index.html" class="nav-back">← Back to Directory</a>
+</nav>
+
+<div class="hero">
+    <h1>📍 Upload Your Billboard Site</h1>
+    <p>List your billboard and reach hundreds of advertisers across the Philippines</p>
+</div>
+
+<div class="form-wrap">
+    <div class="form-card">
+
+        <!-- SUCCESS STATE -->
+        <div id="successWrap">
+            <div class="check">✅</div>
+            <h2>Submission Received!</h2>
+            <p>Thank you! We've received your billboard submission and will review it within 1-2 business days. We'll get back to you via email once it's live.</p>
+            <a href="index.html" class="btn-home">🔍 Browse Billboards</a>
+        </div>
+
+        <!-- FORM -->
+        <form id="uploadForm">
+            <div class="info-box">
+                🔒 All submissions are reviewed by our team before going live. We'll notify you by email once your listing is approved.
+            </div>
+
+            <div class="section-label">Your Details</div>
+
+            <div class="form-group">
+                <label>Company / Operator Name *</label>
+                <input type="text" id="operatorName" required placeholder="e.g. HD Digital Signs Corporation">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Contact Person *</label>
+                    <input type="text" id="operatorContact" required placeholder="Your full name">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number *</label>
+                    <input type="tel" id="operatorPhone" required placeholder="+63 XXX XXX XXXX">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Email Address *</label>
+                    <input type="email" id="operatorEmail" required placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Viber / WhatsApp</label>
+                    <input type="text" id="operatorViber" placeholder="+63 XXX XXX XXXX">
+                </div>
+            </div>
+
+            <hr class="divider">
+            <div class="section-label">Billboard Details</div>
+
+            <div class="form-group">
+                <label>Billboard Location *</label>
+                <input type="text" id="siteLocation" required placeholder="e.g. EDSA Northbound near Quezon Ave, Quezon City">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Billboard Size *</label>
+                    <input type="text" id="siteSize" required placeholder="e.g. 20ft x 40ft">
+                </div>
+                <div class="form-group">
+                    <label>Monthly Rate</label>
+                    <input type="text" id="siteRate" placeholder="e.g. ₱50,000/mo or TBD">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Billboard Type *</label>
+                    <select id="siteType" required>
+                        <option value="">Select type</option>
+                        <option value="Static">Static Billboard</option>
+                        <option value="Digital">Digital Billboard</option>
+                        <option value="LED">LED Billboard</option>
+                        <option value="3D LED">3D LED</option>
+                        <option value="Backlit">Backlit Billboard</option>
+                        <option value="Tri-Vision">Tri-Vision</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Illumination</label>
+                    <select id="siteIllumination">
+                        <option value="">Select</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Google Maps Embed URL</label>
+                <input type="text" id="siteMapsUrl" placeholder="Paste Google Maps embed URL here">
+                <small>From Google Maps: Share → Embed a map → Copy the src="..." URL</small>
+            </div>
+            <div class="form-group">
+                <label>Additional Details</label>
+                <textarea id="siteDetails" placeholder="Facing direction, traffic flow, nearby landmarks, number of faces, availability, etc."></textarea>
+            </div>
+
+            <hr class="divider">
+            <div class="section-label">Billboard Photo</div>
+
+            <div class="form-group">
+                <div class="photo-input-wrap" onclick="document.getElementById('sitePhotoInput').click()">
+                    <input type="file" id="sitePhotoInput" accept="image/jpeg,image/png,image/webp" onchange="handlePhotoSelect(this)">
+                    <div class="photo-input-label">📷 Click to choose a photo</div>
+                    <div id="photoMsg">JPG, PNG, or WebP — max 5MB</div>
+                </div>
+                <div id="photoPreviewWrap">
+                    <img id="photoPreviewImg" src="" alt="Preview">
+                </div>
+            </div>
+
+            <div class="submit-section">
+                <p id="errorMsg"></p>
+                <p id="progressMsg"></p>
+                <button type="button" class="btn-submit" id="submitBtn" onclick="submitSite()">📤 Submit Billboard Site</button>
+                <a href="index.html" class="btn-cancel">Cancel — go back to directory</a>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<script>
+    // ── CONFIG ─────────────────────────────────────────────
+    const SUPABASE_URL  = 'https://xecxfkuzexshafwuuizf.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlY3hma3V6ZXhzaGFmd3V1aXpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTk1MTIsImV4cCI6MjA5MTMzNTUxMn0.sZrRmesCDn0DsuldUD8zIhi1gX1ajIKX0aULqNBX_To';
+    const SCRIPT_URL    = 'https://script.google.com/macros/s/AKfycbxgL80VY3DuXG7IBE0ow4xAprZ51Xlw6EOFsQAIWA0yRf8eprZkqI0ehbZSKf8-ZfmqdQ/exec';
+    const API_SECRET    = 'ooh-ph-secret-2026';
+
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+    // ── PHOTO PREVIEW ──────────────────────────────────────
+    function handlePhotoSelect(input) {
+        var file = input.files[0];
+        var msgEl = document.getElementById('photoMsg');
+        if (!file) return;
+        if (file.size > 5 * 1024 * 1024) {
+            msgEl.textContent = '❌ File too large. Please choose a photo under 5MB.';
+            msgEl.style.color = '#c62828';
+            input.value = '';
+            return;
+        }
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('photoPreviewImg').src = e.target.result;
+            document.getElementById('photoPreviewWrap').style.display = 'block';
+            msgEl.textContent = '✅ ' + file.name;
+            msgEl.style.color = '#2e7d32';
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // ── SUBMIT ─────────────────────────────────────────────
+    async function submitSite() {
+        var errEl  = document.getElementById('errorMsg');
+        var progEl = document.getElementById('progressMsg');
+        var btn    = document.getElementById('submitBtn');
+        errEl.style.display = 'none';
+
+        var operator = document.getElementById('operatorName').value.trim();
+        var contact  = document.getElementById('operatorContact').value.trim();
+        var email    = document.getElementById('operatorEmail').value.trim();
+        var phone    = document.getElementById('operatorPhone').value.trim();
+        var viber    = document.getElementById('operatorViber').value.trim();
+        var location = document.getElementById('siteLocation').value.trim();
+        var size     = document.getElementById('siteSize').value.trim();
+        var type     = document.getElementById('siteType').value.trim();
+        var illumin  = document.getElementById('siteIllumination').value.trim();
+        var rate     = document.getElementById('siteRate').value.trim();
+        var mapsUrl  = document.getElementById('siteMapsUrl').value.trim();
+        var details  = document.getElementById('siteDetails').value.trim();
+        var fileInput= document.getElementById('sitePhotoInput');
+
+        if (!operator || !contact || !email || !phone || !location || !size || !type) {
+            errEl.textContent = 'Please fill in all required fields marked with *.';
+            errEl.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+
+        progEl.textContent = '⏳ Submitting your billboard site…';
+        progEl.style.display = 'block';
+        btn.disabled = true;
+
+        try {
+            // 1. Upload photo if provided
+            var photoUrl = '';
+            if (fileInput.files && fileInput.files[0]) {
+                var file = fileInput.files[0];
+                var ext  = (file.name.split('.').pop() || 'jpg').toLowerCase();
+                var path = 'submissions/' + operator.replace(/[^a-zA-Z0-9]/g, '_') + '_' + Date.now() + '.' + ext;
+                progEl.textContent = '⏳ Uploading photo…';
+                var { error: upErr } = await _supabase.storage.from('billboard-photos').upload(path, file, { upsert: true, contentType: file.type });
+                if (upErr) throw new Error('Photo upload failed: ' + upErr.message);
+                var { data: urlData } = _supabase.storage.from('billboard-photos').getPublicUrl(path);
+                photoUrl = urlData.publicUrl || '';
+            }
+
+            // 2. Save to pending_listings
+            progEl.textContent = '⏳ Saving your submission…';
+            var { error: dbErr } = await _supabase.from('pending_listings').insert({
+                operator: operator, contact_person: contact,
+                email: email, phone: phone,
+                location: location, size: size, type: type,
+                illumination: illumin, rate: rate,
+                maps_url: mapsUrl, photo_url: photoUrl,
+                details: (viber ? 'Viber/WhatsApp: ' + viber + '\n\n' : '') + details,
+                status: 'pending'
+            });
+            if (dbErr) throw new Error('Could not save submission: ' + dbErr.message);
+
+            // 3. Email notification via Apps Script
+            progEl.textContent = '⏳ Sending notification…';
+            var notifyUrl = SCRIPT_URL +
+                '?action=notify&apiKey=' + encodeURIComponent(API_SECRET) +
+                '&operator='    + encodeURIComponent(operator) +
+                '&contact='     + encodeURIComponent(contact) +
+                '&email='       + encodeURIComponent(email) +
+                '&phone='       + encodeURIComponent(phone) +
+                '&location='    + encodeURIComponent(location) +
+                '&size='        + encodeURIComponent(size) +
+                '&type='        + encodeURIComponent(type) +
+                '&illumination='+ encodeURIComponent(illumin) +
+                '&rate='        + encodeURIComponent(rate) +
+                '&mapsUrl='     + encodeURIComponent(mapsUrl) +
+                '&photoUrl='    + encodeURIComponent(photoUrl) +
+                '&details='     + encodeURIComponent(details);
+            await fetch(notifyUrl, { method: 'GET', mode: 'no-cors' });
+
+            // 4. Show success
+            document.getElementById('uploadForm').style.display = 'none';
+            document.getElementById('successWrap').style.display = 'block';
+            progEl.style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        } catch(err) {
+            progEl.style.display = 'none';
+            btn.disabled = false;
+            errEl.textContent = '❌ ' + (err.message || 'Something went wrong. Please try again.');
+            errEl.style.display = 'block';
+        }
+    }
+</script>
+
+</body>
+</html>

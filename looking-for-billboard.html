@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Looking for Billboard / OOH — OOHPhilippines.com</title>
+    <meta name="description" content="Post your billboard requirements and connect with operators across the Philippines.">
+    <link rel="icon" href="favicon.ico">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); min-height: 100vh; }
+        .nav-wrapper { position: sticky; top: 0; z-index: 1000; background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .nav-bar { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 12px 24px; gap: 8px; }
+        .nav-logo { font-size: 24px; font-weight: 700; color: #1565c0; letter-spacing: -0.5px; text-decoration: none; }
+        .nav-links { display: flex; gap: 4px; align-items: center; flex-wrap: nowrap; }
+        .nav-link { color: #1565c0; text-decoration: none; font-weight: 600; padding: 7px 13px; border-radius: 7px; background: rgba(255,255,255,0.75); transition: all 0.3s; white-space: nowrap; font-size: 13px; border: none; font-family: inherit; cursor: pointer; }
+        .nav-link:hover { background: white; transform: translateY(-2px); }
+        .nav-link.primary { background: #1565c0; color: white; }
+        .nav-link.primary:hover { background: #0d47a1; }
+        @media (max-width: 768px) { .nav-links { display: none; } }
+        .hero { background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%); color: white; text-align: center; padding: 48px 24px 40px; }
+        .hero h1 { font-size: 28px; font-weight: 800; margin-bottom: 10px; }
+        .hero p { font-size: 15px; opacity: 0.85; max-width: 500px; margin: 0 auto; }
+        .wrap { max-width: 680px; margin: 40px auto 60px; padding: 0 20px; }
+        .card { background: white; border-radius: 16px; padding: 36px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); margin-bottom: 32px; }
+        .section-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #1565c0; margin: 28px 0 16px; }
+        .section-label:first-child { margin-top: 0; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 700; color: #444; margin-bottom: 6px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 14px; border: 1.5px solid #e0e0e0; border-radius: 8px; font-size: 14px; font-family: inherit; color: #202124; background: #fafafa; outline: none; transition: border-color 0.2s; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #1565c0; background: white; }
+        .form-group textarea { min-height: 100px; resize: vertical; }
+        .form-group small { display: block; color: #999; font-size: 12px; margin-top: 5px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media (max-width: 540px) { .form-row { grid-template-columns: 1fr; } }
+        .divider { border: none; border-top: 1px solid #f0f0f0; margin: 24px 0; }
+        .info-box { background: #e3f2fd; border-radius: 10px; padding: 14px 16px; font-size: 13px; color: #1565c0; margin-bottom: 24px; line-height: 1.6; }
+        #errorMsg { color: #c62828; font-size: 13px; margin-bottom: 12px; display: none; background: #fdecea; padding: 10px 14px; border-radius: 8px; }
+        #progressMsg { color: #1565c0; font-size: 13px; margin-bottom: 12px; display: none; }
+        .btn-submit { width: 100%; padding: 15px; background: #1565c0; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background 0.2s; }
+        .btn-submit:hover { background: #0d47a1; }
+        .btn-submit:disabled { background: #90a4ae; cursor: not-allowed; }
+        .btn-cancel { display: block; text-align: center; margin-top: 12px; color: #888; font-size: 13px; text-decoration: none; }
+        #successWrap { display: none; text-align: center; padding: 20px 0; }
+        #successWrap h2 { color: #2e7d32; font-size: 22px; margin-bottom: 10px; }
+        #successWrap p { color: #555; font-size: 15px; line-height: 1.6; margin-bottom: 24px; }
+        .btn-home { display: inline-block; padding: 12px 28px; background: #1565c0; color: white; border-radius: 50px; font-weight: 700; text-decoration: none; font-size: 14px; }
+        /* Inquiries listing */
+        .inq-card { background: white; border-radius: 14px; padding: 22px 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 20px; }
+        .inq-company { font-size: 17px; font-weight: 800; color: #1a237e; }
+        .inq-title { font-size: 14px; color: #e65100; font-weight: 600; margin-top: 2px; }
+        .inq-desc { color: #555; font-size: 13px; margin-top: 12px; line-height: 1.6; }
+        .inq-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+        .inq-tag { font-size: 12px; padding: 4px 10px; border-radius: 20px; }
+        .inq-tag.loc { background: #e3f2fd; color: #1565c0; }
+        .inq-tag.type { background: #e8f5e9; color: #2e7d32; }
+        .inq-tag.bud { background: #fff3e0; color: #e65100; }
+        .inq-date { margin-top: 12px; font-size: 12px; color: #aaa; }
+        .inq-status { background: #e8f5e9; color: #2e7d32; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 20px; white-space: nowrap; }
+    </style>
+</head>
+<body>
+
+<div class="nav-wrapper">
+<div class="nav-bar">
+    <a href="index.html" class="nav-logo">OOHPhilippines.com</a>
+    <div class="nav-links">
+        <a href="index.html" class="nav-link">🔍 Search</a>
+        <a href="submit-promo.html" class="nav-link">🎉 Promos</a>
+        <a href="looking-for-billboard.html" class="nav-link">Looking For Sites?</a>
+        <a href="pricing.html" class="nav-link">💎 Pricing</a>
+        <a href="guides.html" class="nav-link">📖 Guides</a>
+        <a href="upload.html" class="nav-link primary" style="padding:6px 12px;">📍 Upload Your Site</a>
+    </div>
+</div>
+</div>
+
+<div class="hero">
+    <h1>📢 Looking for Billboard / OOH?</h1>
+    <p>Post your requirements and let operators across the Philippines reach out to you</p>
+</div>
+
+<!-- Active Inquiries -->
+<div class="wrap" style="margin-top:40px;">
+    <h2 style="font-size:22px;font-weight:800;color:#1565c0;text-align:center;margin-bottom:6px;">Recent Advertiser Requirements</h2>
+    <p style="text-align:center;color:#888;font-size:14px;margin-bottom:24px;">Billboard operators: Connect with advertisers looking for your sites</p>
+    <div id="inquiriesContainer"><p style="text-align:center;color:#999;padding:30px;">⏳ Loading requirements…</p></div>
+</div>
+
+<!-- Post Requirements Form -->
+<div class="wrap">
+    <div class="card">
+        <div id="successWrap">
+            <div style="font-size:56px;margin-bottom:16px;">✅</div>
+            <h2>Requirements Posted!</h2>
+            <p>Your requirements are now live. Billboard operators will see your post and reach out directly via email or phone.</p>
+            <a href="index.html" class="btn-home">🔍 Browse Directory</a>
+        </div>
+        <form id="inquiryForm">
+            <div class="info-box">📢 Your post will be live immediately and visible to all registered billboard operators for 30 days.</div>
+            <div class="section-label">Your Details</div>
+            <div class="form-group"><label>Company / Brand Name *</label><input type="text" id="companyName" required placeholder="e.g. Jollibee Foods Corporation"></div>
+            <div class="form-row">
+                <div class="form-group"><label>Contact Person *</label><input type="text" id="contactPerson" required placeholder="Your full name"></div>
+                <div class="form-group"><label>Phone Number *</label><input type="tel" id="phone" required placeholder="+63 XXX XXX XXXX"></div>
+            </div>
+            <div class="form-group"><label>Email Address *</label><input type="email" id="email" required placeholder="your@email.com"></div>
+            <hr class="divider">
+            <div class="section-label">Billboard Requirements</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Preferred Location *</label>
+                    <select id="location" required>
+                        <option value="">Select location</option>
+                        <option value="Metro Manila">Metro Manila</option>
+                        <option value="EDSA">EDSA</option>
+                        <option value="C5">C5 Road</option>
+                        <option value="SLEX">SLEX</option>
+                        <option value="NLEX">NLEX</option>
+                        <option value="Cebu">Cebu</option>
+                        <option value="Davao">Davao</option>
+                        <option value="Provincial">Provincial</option>
+                        <option value="Nationwide">Nationwide</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Billboard Type *</label>
+                    <select id="billboardType" required>
+                        <option value="">Select type</option>
+                        <option value="Static">Static Billboard</option>
+                        <option value="Digital">Digital Billboard</option>
+                        <option value="LED">LED Billboard</option>
+                        <option value="Both">Static &amp; Digital</option>
+                        <option value="Any">Any Type</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Budget Range</label>
+                    <select id="budget">
+                        <option value="">Select budget range</option>
+                        <option value="Under 100K">Under ₱100,000/month</option>
+                        <option value="100K-300K">₱100,000 – ₱300,000/month</option>
+                        <option value="300K-500K">₱300,000 – ₱500,000/month</option>
+                        <option value="500K+">₱500,000+/month</option>
+                        <option value="To Discuss">Prefer to Discuss</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Campaign Start Date *</label><input type="date" id="startDate" required></div>
+            </div>
+            <div class="form-group">
+                <label>Specific Billboard Site Codes</label>
+                <input type="text" id="siteCodes" placeholder="e.g. G1096-B, C5-B417 (optional)">
+                <small>📍 Find site codes on billboard cards in the directory.</small>
+            </div>
+            <div class="form-group"><label>Campaign Details *</label><textarea id="details" required placeholder="Tell us about your campaign — product, timeline, specific requirements, etc."></textarea></div>
+            <div style="margin-top:28px;">
+                <p id="errorMsg"></p>
+                <p id="progressMsg"></p>
+                <button type="button" class="btn-submit" id="submitBtn" onclick="submitInquiry()">📢 Post My Requirements</button>
+                <a href="index.html" class="btn-cancel">Cancel — go back to directory</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const SUPABASE_URL  = 'https://xecxfkuzexshafwuuizf.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlY3hma3V6ZXhzaGFmd3V1aXpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTk1MTIsImV4cCI6MjA5MTMzNTUxMn0.sZrRmesCDn0DsuldUD8zIhi1gX1ajIKX0aULqNBX_To';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    emailjs.init('Q1mCYPTXh0omKhAec');
+
+    async function loadInquiries() {
+        var container = document.getElementById('inquiriesContainer');
+        var { data, error } = await _supabase.from('inquiries').select('*').eq('status','active').order('created_at',{ascending:false});
+        if (error || !data || data.length === 0) {
+            container.innerHTML = '<p style="text-align:center;color:#999;padding:30px 0;">No active requirements yet. Be the first to post!</p>';
+            return;
+        }
+        container.innerHTML = data.map(function(inq) {
+            var posted = new Date(inq.created_at).toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'});
+            var contactBtns = '';
+            if (inq.contact_phone) {
+                contactBtns += '<a href="sms:' + inq.contact_phone + '" style="display:inline-flex;align-items:center;gap:5px;padding:8px 16px;background:#e3f2fd;color:#1565c0;border-radius:20px;font-size:13px;font-weight:700;text-decoration:none;">💬 SMS</a>';
+                contactBtns += '<a href="viber://chat?number=' + inq.contact_phone.replace(/[^0-9+]/g,'') + '" style="display:inline-flex;align-items:center;gap:5px;padding:8px 16px;background:#f3e5f5;color:#7b1fa2;border-radius:20px;font-size:13px;font-weight:700;text-decoration:none;">📲 Viber</a>';
+            }
+            if (inq.contact_email) {
+                contactBtns += '<a href="mailto:' + inq.contact_email + '" style="display:inline-flex;align-items:center;gap:5px;padding:8px 16px;background:#e8f5e9;color:#2e7d32;border-radius:20px;font-size:13px;font-weight:700;text-decoration:none;">✉️ Email</a>';
+            }
+            return '<div style="background:white;border-radius:14px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);margin-bottom:24px;position:relative;">' +
+                // Badge
+                '<div style="position:absolute;top:16px;right:16px;background:linear-gradient(135deg,#4caf50,#66bb6a);color:white;font-size:11px;font-weight:800;padding:4px 12px;border-radius:20px;letter-spacing:1px;">ACTIVE</div>' +
+                // Header
+                '<div style="background:linear-gradient(135deg,#1565c0,#0d47a1);padding:20px 24px;">' +
+                '<div style="color:rgba(255,255,255,0.8);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">' + (inq.company||'') + '</div>' +
+                '<div style="color:white;font-size:18px;font-weight:700;margin-top:4px;padding-right:80px;">' + (inq.title||'Looking for Billboard') + '</div>' +
+                '<div style="color:rgba(255,255,255,0.7);font-size:12px;margin-top:8px;">📅 Posted: ' + posted + '</div>' +
+                '</div>' +
+                // Body
+                '<div style="padding:20px 24px;">' +
+                '<p style="color:#555;font-size:14px;line-height:1.6;margin-bottom:20px;">' + (inq.description||'') + '</p>' +
+                // Requirements grid
+                '<div style="background:#f8f9fa;border-radius:10px;padding:16px;margin-bottom:20px;">' +
+                '<h3 style="color:#1565c0;font-size:14px;font-weight:700;margin-bottom:12px;">📋 Requirements:</h3>' +
+                '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;color:#455a64;font-size:13px;">' +
+                (inq.location ? '<div><strong style="color:#202124;display:block;margin-bottom:2px;">📍 Location:</strong>' + inq.location + '</div>' : '') +
+                (inq.type ? '<div><strong style="color:#202124;display:block;margin-bottom:2px;">🎯 Type:</strong>' + inq.type + '</div>' : '') +
+                (inq.budget ? '<div><strong style="color:#202124;display:block;margin-bottom:2px;">💰 Budget:</strong>' + inq.budget + '</div>' : '') +
+                (inq.duration ? '<div><strong style="color:#202124;display:block;margin-bottom:2px;">⏱️ Duration:</strong>' + inq.duration + '</div>' : '') +
+                '</div></div>' +
+                // Contact buttons
+                (contactBtns ? '<div style="margin-top:16px;padding-top:16px;border-top:1px solid #eee;"><p style="font-size:12px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">📞 Contact Advertiser</p><div style="display:flex;flex-wrap:wrap;gap:8px;">' + contactBtns + '</div></div>' : '') +
+                '</div></div>';
+        }).join('');
+    }
+    loadInquiries();
+
+    async function submitInquiry() {
+        var errEl=document.getElementById('errorMsg'), progEl=document.getElementById('progressMsg'), btn=document.getElementById('submitBtn');
+        errEl.style.display='none';
+        var company=document.getElementById('companyName').value.trim(),
+            contact=document.getElementById('contactPerson').value.trim(),
+            email=document.getElementById('email').value.trim(),
+            phone=document.getElementById('phone').value.trim(),
+            location=document.getElementById('location').value.trim(),
+            type=document.getElementById('billboardType').value.trim(),
+            budget=document.getElementById('budget').value.trim(),
+            startDate=document.getElementById('startDate').value.trim(),
+            siteCodes=document.getElementById('siteCodes').value.trim(),
+            details=document.getElementById('details').value.trim();
+        if (!company||!contact||!email||!phone||!location||!type||!details||!startDate) {
+            errEl.textContent='Please fill in all required fields marked with *.'; errEl.style.display='block'; return;
+        }
+        progEl.textContent='⏳ Posting your requirements…'; progEl.style.display='block'; btn.disabled=true;
+        try {
+            var exp=new Date(); exp.setDate(exp.getDate()+30);
+            var fullDetails = details + (siteCodes?'\nSpecific Sites: '+siteCodes:'') + (startDate?'\nCampaign Start: '+startDate:'');
+            var {error}=await _supabase.from('inquiries').insert([{
+                company, title:'Looking for '+type+' Billboard in '+location,
+                location, type, budget, description:fullDetails,
+                contact_email:email, contact_phone:phone,
+                expires_at:exp.toISOString(), status:'active'
+            }]);
+            if (error) throw new Error(error.message);
+            emailjs.send('service_zmd0y16','template_ojqve59',{
+                type:'New Billboard Inquiry',name:company,email,
+                message:'Company: '+company+'\nContact: '+contact+'\nPhone: '+phone+'\nLocation: '+location+'\nType: '+type+'\nBudget: '+budget
+            });
+            document.getElementById('inquiryForm').style.display='none';
+            document.getElementById('successWrap').style.display='block';
+            progEl.style.display='none';
+            window.scrollTo({top:0,behavior:'smooth'});
+        } catch(err) {
+            progEl.style.display='none'; btn.disabled=false;
+            errEl.textContent='❌ '+(err.message||'Something went wrong.'); errEl.style.display='block';
+        }
+    }
+</script>
+</body>
+</html>
