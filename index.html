@@ -3310,6 +3310,8 @@ async function opLogin() {
         emails: account.emails || [],
         websites: account.websites || []
     };
+    var banner = document.getElementById('freeSignupBanner');
+    if (banner) banner.style.display = 'none';
     document.getElementById('opUsername').value = '';
     document.getElementById('opPassword').value = '';
     showPage('operatorDash');
@@ -3319,6 +3321,8 @@ async function opLogin() {
 function opLogout() {
     _supabase.auth.signOut();
     opCurrentUser = null; opFilter = 'all';
+    var banner = document.getElementById('freeSignupBanner');
+    if (banner) banner.style.display = '';
     showPage('operatorLogin');
 }
 
@@ -3728,6 +3732,8 @@ async function subLogin() {
         seat:      profile.seat || 'admin',
         manager:   mgr
     };
+    var banner = document.getElementById('freeSignupBanner');
+    if (banner) banner.style.display = 'none';
     document.getElementById('subUsername').value = '';
     document.getElementById('subPassword').value = '';
     subUpdateNavButtons();
@@ -3739,6 +3745,8 @@ async function subLogin() {
 function subLogout() {
 _supabase.auth.signOut(); 
 subCurrentUser = null;
+    var banner = document.getElementById('freeSignupBanner');
+    if (banner) banner.style.display = '';
     subUpdateNavButtons();
     showPage('home');
 }
