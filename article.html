@@ -128,11 +128,6 @@
 </footer>
 
 <script>
-    const _sb = supabase.createClient(
-        'https://xecxfkuzexshafwuuizf.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlY3hma3V6ZXhzaGFmd3V1aXpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTk1MTIsImV4cCI6MjA5MTMzNTUxMn0.sZrRmesCDn0DsuldUD8zIhi1gX1ajIKX0aULqNBX_To'
-    );
-
     (async function() {
         var params = new URLSearchParams(window.location.search);
         var id = params.get('id');
@@ -143,9 +138,17 @@
             return;
         }
 
-        var { data, error } = await _sb.from('articles').select('*').eq('id', id).eq('status', 'active').single();
+        var resp = await fetch(
+            'https://xecxfkuzexshafwuuizf.supabase.co/rest/v1/articles?select=*&id=eq.' + id + '&status=eq.active&limit=1',
+            { headers: {
+                'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlY3hma3V6ZXhzaGFmd3V1aXpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTk1MTIsImV4cCI6MjA5MTMzNTUxMn0.sZrRmesCDn0DsuldUD8zIhi1gX1ajIKX0aULqNBX_To',
+                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlY3hma3V6ZXhzaGFmd3V1aXpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTk1MTIsImV4cCI6MjA5MTMzNTUxMn0.sZrRmesCDn0DsuldUD8zIhi1gX1ajIKX0aULqNBX_To'
+            }}
+        );
+        var rows = await resp.json();
+        var data = rows && rows.length > 0 ? rows[0] : null;
 
-        if (error || !data) {
+        if (!data) {
             loadingEl.innerHTML = '❌ Article not found or not published yet. <a href="guides.html" style="color:#1565c0;">Back to OOH Insights</a>';
             return;
         }
