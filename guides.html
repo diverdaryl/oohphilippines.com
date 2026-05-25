@@ -11,12 +11,12 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OOH Advertising Guides & Resources Philippines | OOH Philippines</title>
-<meta name="description" content="Free guides and resources on out-of-home advertising in the Philippines — billboard costs, LED vs static, EDSA rates, DOOH, audience measurement, and more.">
+<title> OOHPhilippines Insights - | OOH Philippines</title>
+<meta name="description" content="Industry insights, guides and resources on out-of-home advertising in the Philippines — billboard costs, LED vs static, EDSA rates, DOOH, audience measurement, and more.">
 <meta name="keywords" content="OOH advertising guides Philippines, billboard advertising resources PH, outdoor advertising tips Philippines, OOH Philippines blog">
 <link rel="canonical" href="https://oohphilippines.com/guides.html">
-<meta property="og:title" content="OOH Advertising Guides & Resources | OOH Philippines">
-<meta property="og:description" content="Free guides on billboard advertising in the Philippines — costs, formats, cities, measurement, and more.">
+<meta property="og:title" content="OOH Insights | OOHPhilippines.com">
+<meta property="og:description" content="Industry insights and guides on billboard advertising in the Philippines — costs, formats, cities, measurement, and more.">
 <meta property="og:url" content="https://oohphilippines.com/guides.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="OOH Philippines">
@@ -77,17 +77,17 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
 
 <div class="nav-wrapper">
     <div class="nav-bar">
-        <a href="/" class="nav-logo">OOH Philippines</a>
+        <a href="index.html" class="nav-logo">OOHPhilippines.com</a>
         <div class="nav-links">
             <a href="/" class="nav-link">Browse Billboards</a>
-            <a href="/guides.html" class="nav-link active">Guides</a>
+            <a href="guides.html" class="nav-link active">📝 OOH Insights</a>
             <a href="/" class="nav-link primary">List Your Billboard</a>
         </div>
     </div>
 </div>
 
 <div class="guides-hero">
-    <h1>OOH Advertising Guides</h1>
+    <h1>📝 OOH Insights</h1>
     <p>Free resources to help advertisers, agencies, and media planners navigate billboard advertising in the Philippines.</p>
 </div>
 
@@ -268,14 +268,34 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
 
 </div>
 
+
+<div class="category-header" style="margin-top:40px;">
+    <div class="category-icon">✍️</div>
+    <span class="category-title">Community Contributions</span>
+    <div class="category-line"></div>
+</div>
+
+<div id="communityArticles">
+    <p style="text-align:center;color:#999;padding:30px 0;">⏳ Loading articles…</p>
+</div>
+
+<div style="max-width:1100px;margin:0 auto;padding:0 20px 60px;">
+    <div style="background:linear-gradient(135deg,#1565c0,#0d47a1);border-radius:16px;padding:40px;text-align:center;color:white;">
+        <div style="font-size:36px;margin-bottom:12px;">✍️</div>
+        <h3 style="font-size:24px;font-weight:800;margin-bottom:10px;">Share Your OOH Expertise</h3>
+        <p style="font-size:15px;opacity:0.9;max-width:500px;margin:0 auto 24px;">Are you an OOH professional, marketer, or industry writer? Share your insights with the Philippine OOH community. We welcome articles, case studies, creative executions, and industry perspectives.</p>
+        <a href="contribute.html" style="display:inline-block;padding:14px 32px;background:white;color:#1565c0;border-radius:50px;font-weight:800;font-size:15px;text-decoration:none;">📝 Contribute an Article</a>
+    </div>
+</div>
+
 <footer class="site-footer">
     <div class="footer-content">
         <div class="footer-links">
-            <a href="/" class="footer-link">Home</a>
-            <a href="/guides.html" class="footer-link">Guides</a>
-            <a href="/about.html" class="footer-link">About Us</a>
-            <a href="/privacy.html" class="footer-link">Privacy Policy</a>
-            <a href="/terms.html" class="footer-link">Terms &amp; Conditions</a>
+            <a href="index.html" class="footer-link">Home</a>
+            <a href="guides.html" class="footer-link">OOH Insights</a>
+            <a href="about.html" class="footer-link">About Us</a>
+            <a href="privacy.html" class="footer-link">Privacy Policy</a>
+            <a href="terms.html" class="footer-link">Terms &amp; Conditions</a>
             <a href="https://www.facebook.com/oohphilippines" target="_blank" class="footer-link">Facebook</a>
             <a href="https://www.instagram.com/oohphilippines" target="_blank" class="footer-link">Instagram</a>
         </div>
@@ -283,5 +303,40 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
     </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(async function() {
+    var _sb = supabase.createClient(
+        'https://xecxfkuzexshafwuuizf.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlY3hma3V6ZXhzaGFmd3V1aXpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTk1MTIsImV4cCI6MjA5MTMzNTUxMn0.sZrRmesCDn0DsuldUD8zIhi1gX1ajIKX0aULqNBX_To'
+    );
+    var container = document.getElementById('communityArticles');
+    var { data, error } = await _sb.from('articles').select('*').eq('status','active').order('created_at', { ascending: false });
+
+    if (error || !data || data.length === 0) {
+        container.innerHTML = '<p style="text-align:center;color:#999;padding:20px 0;">No community articles yet. <a href="contribute.html" style="color:#1565c0;font-weight:700;">Be the first to contribute!</a></p>';
+        return;
+    }
+
+    var grid = document.createElement('div');
+    grid.className = 'articles-grid';
+    grid.innerHTML = data.map(function(a) {
+        var date = new Date(a.created_at).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' });
+        var excerpt = (a.content || '').substring(0, 120).trim();
+        if (excerpt.length === 120) excerpt += '…';
+        var hasPhoto = a.photo_urls && a.photo_urls.length > 0;
+        return '<a href="article.html?id=' + a.id + '" class="article-card" style="text-decoration:none;">' +
+            (hasPhoto ? '<img src="' + a.photo_urls[0] + '" style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;margin-bottom:14px;">' : '') +
+            '<span class="card-tag" style="background:#e8f5e9;color:#2e7d32;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:10px;">' + (a.category || 'Article') + '</span>' +
+            '<div class="card-title" style="font-size:16px;font-weight:700;color:#202124;margin-bottom:8px;">' + (a.title || '') + '</div>' +
+            '<div class="card-desc" style="font-size:13px;color:#666;line-height:1.6;flex:1;">' + (excerpt || '') + '</div>' +
+            '<div style="margin-top:14px;font-size:12px;color:#888;">✍️ ' + (a.author_name || '') + (a.company ? ' · ' + a.company : '') + ' · ' + date + '</div>' +
+            '<div class="card-read-more" style="margin-top:10px;color:#1565c0;font-size:13px;font-weight:700;">Read article →</div>' +
+            '</a>';
+    }).join('');
+    container.innerHTML = '';
+    container.appendChild(grid);
+})();
+</script>
 </body>
 </html>
