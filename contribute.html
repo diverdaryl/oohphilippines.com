@@ -310,6 +310,22 @@
             }]);
             if (error) throw new Error('Submission failed: ' + error.message);
 
+            // Email notification via Apps Script
+            var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxgL80VY3DuXG7IBE0ow4xAprZ51Xlw6EOFsQAIWA0yRf8eprZkqI0ehbZSKf8-ZfmqdQ/exec';
+            var notifyUrl = SCRIPT_URL +
+                '?action=contribution&apiKey=ooh-ph-secret-2026' +
+                '&authorName='  + encodeURIComponent(authorName) +
+                '&authorTitle=' + encodeURIComponent(authorTitle) +
+                '&company='     + encodeURIComponent(authorCompany) +
+                '&authorEmail=' + encodeURIComponent(authorEmail) +
+                '&title='       + encodeURIComponent(title) +
+                '&category='    + encodeURIComponent(category) +
+                '&content='     + encodeURIComponent(content.substring(0, 500)) +
+                '&googleDocUrl='+ encodeURIComponent(googleDocUrl) +
+                '&videoUrl='    + encodeURIComponent(videoUrl) +
+                '&photoCount='  + encodeURIComponent(photoUrls.length);
+            await fetch(notifyUrl, { method: 'GET', mode: 'no-cors' });
+
             document.getElementById('contributeForm').style.display = 'none';
             document.getElementById('successWrap').style.display = 'block';
             progEl.style.display = 'none';
