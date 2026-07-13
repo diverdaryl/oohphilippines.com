@@ -46,11 +46,7 @@
         .article-photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin: 28px 0; }
         .article-photos img { width: 100%; aspect-ratio: 16/9; object-fit: contain; background: #000; border-radius: 8px; cursor: pointer; transition: opacity 0.2s; }
         .article-photos img:hover { opacity: 0.85; }
-        .article-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
-        .google-doc-link { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; background: #e8f0fe; color: #1565c0; border-radius: 8px; font-weight: 700; font-size: 14px; text-decoration: none; }
-        .web-link { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; background: #e8f5e9; color: #2e7d32; border-radius: 8px; font-weight: 700; font-size: 14px; text-decoration: none; }
-        .google-doc-link:hover { background: #d2e3fc; }
-        .web-link:hover { background: #c8e6c9; }
+        .google-doc-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 24px; padding: 12px 20px; background: #e8f0fe; color: #1565c0; border-radius: 8px; font-weight: 700; font-size: 14px; text-decoration: none; }
 
         /* Lightbox */
         #lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 9999; justify-content: center; align-items: center; cursor: zoom-out; }
@@ -104,10 +100,7 @@
                 </div>
                 <div id="artText" class="article-text"></div>
                 <div id="artPhotos" class="article-photos"></div>
-                <div class="article-links">
-                    <a id="artDocLink" href="#" target="_blank" class="google-doc-link" style="display:none;">📄 View Full Article in Google Docs →</a>
-                    <a id="artWebLink" href="#" target="_blank" class="web-link" style="display:none;">🔗 Read Full Article on Website →</a>
-                </div>
+                <a id="artDocLink" href="#" target="_blank" class="google-doc-link" style="display:none;">📄 View Full Article in Google Docs →</a>
             </div>
         </div>
     </div>
@@ -135,6 +128,11 @@
 </footer>
 
 <script>
+    const _sb = supabase.createClient(
+        'https://xecxfkuzexshafwuuizf.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlY3hma3V6ZXhzaGFmd3V1aXpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTk1MTIsImV4cCI6MjA5MTMzNTUxMn0.sZrRmesCDn0DsuldUD8zIhi1gX1ajIKX0aULqNBX_To'
+    );
+
     (async function() {
         var params = new URLSearchParams(window.location.search);
         var id = params.get('id');
@@ -145,17 +143,9 @@
             return;
         }
 
-        var resp = await fetch(
-            'https://xecxfkuzexshafwuuizf.supabase.co/rest/v1/articles?select=*&id=eq.' + id + '&status=eq.active&limit=1',
-            { headers: {
-                'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlY3hma3V6ZXhzaGFmd3V1aXpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTk1MTIsImV4cCI6MjA5MTMzNTUxMn0.sZrRmesCDn0DsuldUD8zIhi1gX1ajIKX0aULqNBX_To',
-                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlY3hma3V6ZXhzaGFmd3V1aXpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTk1MTIsImV4cCI6MjA5MTMzNTUxMn0.sZrRmesCDn0DsuldUD8zIhi1gX1ajIKX0aULqNBX_To'
-            }}
-        );
-        var rows = await resp.json();
-        var data = rows && rows.length > 0 ? rows[0] : null;
+        var { data, error } = await _sb.from('articles').select('*').eq('id', id).eq('status', 'active').single();
 
-        if (!data) {
+        if (error || !data) {
             loadingEl.innerHTML = '❌ Article not found or not published yet. <a href="guides.html" style="color:#1565c0;">Back to OOH Insights</a>';
             return;
         }
@@ -219,13 +209,6 @@
             docLink.style.display = 'inline-flex';
         }
 
-        // Web link
-        if (data.web_url) {
-            var webLink = document.getElementById('artWebLink');
-            webLink.href = data.web_url;
-            webLink.style.display = 'inline-flex';
-        }
-
         // Show article
         loadingEl.style.display = 'none';
         document.getElementById('articleContent').style.display = 'block';
@@ -241,6 +224,7 @@
         document.getElementById('lightboxImg').src = '';
         document.body.style.overflow = '';
     }
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeLightbox(); });
 </script>
 </body>
 </html>

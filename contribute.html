@@ -130,19 +130,12 @@
             <div class="form-group">
                 <label>Article Content *</label>
                 <textarea id="articleContent" placeholder="Write your article here. If submitting photos or a video, a short caption or description is fine."></textarea>
-                <small>💡 Tip: You can also submit a Google Docs link or a web link below if you prefer writing there.</small>
+                <small>💡 Tip: You can also submit a Google Docs link below if you prefer writing there.</small>
             </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Google Docs Link (optional)</label>
-                    <input type="url" id="googleDocUrl" placeholder="https://docs.google.com/document/d/...">
-                    <small>Make sure sharing is set to "Anyone with the link can view".</small>
-                </div>
-                <div class="form-group">
-                    <label>Web Link (optional)</label>
-                    <input type="url" id="webLinkUrl" placeholder="https://yourwebsite.com/your-article">
-                    <small>Link to an article already published on your website or blog.</small>
-                </div>
+            <div class="form-group">
+                <label>Google Docs Link (optional)</label>
+                <input type="url" id="googleDocUrl" placeholder="https://docs.google.com/document/d/...">
+                <small>If submitting via Google Docs, make sure sharing is set to "Anyone with the link can view".</small>
             </div>
 
             <hr class="divider">
@@ -256,7 +249,6 @@
         var category      = document.getElementById('articleCategory').value.trim();
         var content       = document.getElementById('articleContent').value.trim();
         var googleDocUrl  = document.getElementById('googleDocUrl').value.trim();
-        var webLinkUrl    = document.getElementById('webLinkUrl').value.trim();
         var videoUrl      = document.getElementById('videoUrl').value.trim();
 
         if (!authorName || !authorTitle || !authorEmail || !title || !category) {
@@ -264,12 +256,12 @@
             errEl.style.display = 'block'; return;
         }
 
-        // Smart content validation
+        // Smart content validation (Option B)
         var hasMedia = (selectedPhotos.filter(Boolean).length > 0) || !!videoUrl;
-        var hasLink  = !!googleDocUrl || !!webLinkUrl;
+        var hasGoogleDoc = !!googleDocUrl;
         var wordCount = content ? content.split(/\s+/).filter(Boolean).length : 0;
 
-        if (!hasLink) {
+        if (!hasGoogleDoc) {
             if (!hasMedia && wordCount < 100) {
                 errEl.textContent = 'Please provide at least 100 words of content, or include a video/photos with a short caption.';
                 errEl.style.display = 'block'; return;
@@ -304,18 +296,17 @@
             // Save to articles table
             progEl.textContent = '⏳ Saving submission…';
             var { error } = await _supabase.from('articles').insert([{
-                author_name:    authorName,
-                author_email:   authorEmail,
-                author_title:   authorTitle,
-                company:        authorCompany,
-                title:          title,
-                category:       category,
-                content:        content,
+                author_name:   authorName,
+                author_email:  authorEmail,
+                author_title:  authorTitle,
+                company:       authorCompany,
+                title:         title,
+                category:      category,
+                content:       content,
                 google_doc_url: googleDocUrl,
-                web_url:        webLinkUrl,
-                video_url:      videoUrl,
-                photo_urls:     photoUrls,
-                status:         'pending'
+                video_url:     videoUrl,
+                photo_urls:    photoUrls,
+                status:        'pending'
             }]);
             if (error) throw new Error('Submission failed: ' + error.message);
 
@@ -331,7 +322,6 @@
                 '&category='    + encodeURIComponent(category) +
                 '&content='     + encodeURIComponent(content.substring(0, 500)) +
                 '&googleDocUrl='+ encodeURIComponent(googleDocUrl) +
-                '&webLinkUrl='  + encodeURIComponent(webLinkUrl) +
                 '&videoUrl='    + encodeURIComponent(videoUrl) +
                 '&photoCount='  + encodeURIComponent(photoUrls.length);
             await fetch(notifyUrl, { method: 'GET', mode: 'no-cors' });

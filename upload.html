@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="canonical" href="https://www.oohphilippines.com/upload.html">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Your Billboard Site — OOHPhilippines.com</title>
@@ -426,25 +425,16 @@
                 photoUrl = urlData.publicUrl || '';
             }
 
-            // 2. Save directly to billboards with status='pending'
+            // 2. Save to pending_listings
             progEl.textContent = '⏳ Saving your submission…';
-            var siteName = operator.replace(/[^a-zA-Z0-9]/g, '_') + '_' + Date.now();
-            var { error: dbErr } = await _supabase.from('billboards').insert({
-                site_name:    siteName,
-                company:      operator,
-                email:        email,
-                phone:        phone,
-                viber:        viber,
-                location:     location,
-                size:         size,
-                type:         type,
-                illumination: illumin,
-                op_rate:      rate,
-                maps_url:     mapsUrl,
-                photo:        photoUrl,
-                description:  (viber ? 'Viber/WhatsApp: ' + viber + '\n\n' : '') + details,
-                status:       'pending',
-                featured:     0
+            var { error: dbErr } = await _supabase.from('pending_listings').insert({
+                operator: operator, contact_person: contact,
+                email: email, phone: phone,
+                location: location, size: size, type: type,
+                illumination: illumin, rate: rate,
+                maps_url: mapsUrl, photo_url: photoUrl,
+                details: (viber ? 'Viber/WhatsApp: ' + viber + '\n\n' : '') + details,
+                status: 'pending'
             });
             if (dbErr) throw new Error('Could not save submission: ' + dbErr.message);
 
