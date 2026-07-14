@@ -5182,11 +5182,24 @@ async function opUploadPhoto() {
         var publicUrl = urlData && urlData.publicUrl;
         if (!publicUrl) throw new Error('Could not retrieve public URL from storage.');
 
+        // Save to billboards table (source of truth for public listing + dashboard)
+        var { error: photoDbErr } = await _supabase
+            .from('billboards')
+            .update({ photo: publicUrl })
+            .eq('site_name', siteName);
+        if (photoDbErr) throw new Error('Photo uploaded, but saving it to your listing failed: ' + photoDbErr.message);
+
         opWriteToSheet({ site: siteName, photo: publicUrl });
 
         for (var i = 0; i < allBillboards.length; i++) {
             if (allBillboards[i]['Site Name'] === siteName) {
                 allBillboards[i]['Photo'] = publicUrl;
+                break;
+            }
+        }
+        for (var j = 0; j < opMyBoards.length; j++) {
+            if (opMyBoards[j]['Site Name'] === siteName) {
+                opMyBoards[j]['Photo'] = publicUrl;
                 break;
             }
         }
