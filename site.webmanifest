@@ -1,6 +1,6 @@
 {
   "name": "OOHPhilippines.com",
-  "short_name": "OOH PH",
+  "short_name": "OOH Philippines",
   "description": "Find and compare billboard sites across the Philippines",
   "icons": [
     { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
