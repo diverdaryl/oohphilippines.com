@@ -3231,8 +3231,15 @@ function showSharedSite(b) {
     if (div.firstChild) container.appendChild(div.firstChild);
     var more = document.createElement('div');
     more.style.cssText = 'text-align:center;padding:28px 20px;background:#f0f7ff;border-radius:16px;margin:24px 0;border:1px solid #bbdefb;';
-    more.innerHTML = '<p style="font-size:15px;color:#1565c0;font-weight:600;margin-bottom:14px;">Looking for more billboard sites like this?</p>'
-        + '<button onclick="showPage(\'home\')" style="background:#1565c0;color:white;border:none;padding:12px 28px;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;">🔍 Search All Billboards</button>';
+    if (isFreeUser() || subCurrentUser) {
+        more.innerHTML = '<p style="font-size:15px;color:#1565c0;font-weight:600;margin-bottom:14px;">Looking for more billboard sites like this?</p>'
+            + '<button onclick="showPage(\'home\')" style="background:#1565c0;color:white;border:none;padding:12px 28px;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;">🔍 Search All Billboards</button>';
+    } else {
+        more.innerHTML = '<p style="font-size:15px;color:#1565c0;font-weight:600;margin-bottom:8px;">Want to browse more billboard sites?</p>'
+            + '<p style="font-size:13px;color:#555;margin-bottom:16px;">Sign up for free to search the full OOH Philippines inventory.</p>'
+            + '<button onclick="openSignupModal()" style="background:#1565c0;color:white;border:none;padding:12px 28px;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;">✨ Sign Up Free</button>'
+            + '<span style="display:block;margin-top:10px;font-size:13px;color:#999;">Already have an account? <a href="javascript:void(0)" onclick="openSignupModal(\'login\')" style="color:#1565c0;font-weight:600;">Log in</a></span>';
+    }
     container.appendChild(more);
     window.scrollTo({ top: 0 });
 }
