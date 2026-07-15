@@ -963,6 +963,15 @@
         font-family: 'Segoe UI', sans-serif;
     }
     .btn-website:hover { background: #e8f0fe; }
+    .btn-share {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 9px 16px; background: #e8f5e9;
+        color: #2e7d32; text-align: center; text-decoration: none;
+        border-radius: 8px; font-weight: 700; font-size: 13px;
+        border: 1.5px solid #2e7d32; transition: background 0.2s;
+        cursor: pointer; font-family: 'Segoe UI', sans-serif;
+    }
+    .btn-share:hover { background: #c8e6c9; }
     .btn-youtube {
         display: inline-flex; align-items: center; gap: 6px;
         padding: 9px 16px; background: #FF0000;
@@ -3018,6 +3027,8 @@ function buildCard(b) {
     var waBtn = '<a href="https://api.whatsapp.com/send?phone=' + waNum + waMsg + '" target="_blank" class="btn-whatsapp">📱 WhatsApp</a>';
     var phoneBtn = phone1Btn + phone2Btn + viberBtn + waBtn;
     var websiteBtn = b['Website'] ? '<a href="' + b['Website'] + '" target="_blank" class="btn-website">🌐 Visit Website</a>' : '';
+    var snShareEsc = (b['Site Name'] || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    var shareBtn = '<button type="button" class="btn-share" onclick="shareCard(\'' + snShareEsc + '\')">🔗 Share</button>';
     var videoBtn = b['YouTube'] ? '<a href="' + b['YouTube'] + '" target="_blank" class="btn-youtube">▶ Watch Site Video</a>' : '';
     var isMobile = /Android|iPhone|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent) && !/iPad/i.test(navigator.userAgent) && window.innerWidth < 768;
     // Full-width image section + optional Street View thumbnail below
@@ -3180,9 +3191,70 @@ function buildCard(b) {
         '<div class="bc-footer">' +
         '<div class="bc-price-label">Monthly Rate</div>' +
         '<div class="bc-price-val">' + (liveRate || b['Price'] || 'Please inquire') + '</div>' +
-        '<div class="bc-btn-group">' + emailBtn + phoneBtn + websiteBtn + videoBtn + photoLightboxBtn + shortlistBtn + '</div>' +
+        '<div class="bc-btn-group">' + emailBtn + phoneBtn + websiteBtn + videoBtn + photoLightboxBtn + shortlistBtn + shareBtn + '</div>' +
         '</div>' +
         '</div>';
+}
+
+function shareCard(siteName) {
+    var url = window.location.origin + window.location.pathname + '?site=' + encodeURIComponent(siteName);
+    if (navigator.share) {
+        navigator.share({ title: siteName + ' — OOHPhilippines.com', url: url }).catch(function(){});
+        return;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(function(){
+            if (typeof opShowToast === 'function') opShowToast('🔗 Link copied! Share it with your client.');
+        }).catch(function(){ window.prompt('Copy this link:', url); });
+    } else {
+        window.prompt('Copy this link:', url);
+    }
+}
+
+function showSharedSite(b) {
+    showPage('inventory');
+    var container = document.getElementById('billboardContainer');
+    var prompt = document.getElementById('searchPrompt');
+    var counter = document.getElementById('resultCount');
+    var btn = document.getElementById('loadMoreBtn');
+    if (prompt) prompt.style.display = 'none';
+    if (counter) counter.textContent = '';
+    if (btn) btn.style.display = 'none';
+    if (!container) return;
+    container.innerHTML = '';
+    var label = document.createElement('div');
+    label.className = 'results-divider';
+    label.innerHTML = '<span>🔗 Shared Billboard</span>';
+    container.appendChild(label);
+    var div = document.createElement('div');
+    div.innerHTML = buildCard(b);
+    if (div.firstChild) container.appendChild(div.firstChild);
+    var more = document.createElement('div');
+    more.style.cssText = 'text-align:center;padding:28px 20px;background:#f0f7ff;border-radius:16px;margin:24px 0;border:1px solid #bbdefb;';
+    more.innerHTML = '<p style="font-size:15px;color:#1565c0;font-weight:600;margin-bottom:14px;">Looking for more billboard sites like this?</p>'
+        + '<button onclick="showPage(\'home\')" style="background:#1565c0;color:white;border:none;padding:12px 28px;border-radius:50px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;">🔍 Search All Billboards</button>';
+    container.appendChild(more);
+    window.scrollTo({ top: 0 });
+}
+
+function handleSharedLink(siteName) {
+    var target = (siteName || '').toLowerCase().trim();
+    var b = null;
+    for (var i = 0; i < allBillboards.length; i++) {
+        if ((allBillboards[i]['Site Name'] || '').toLowerCase().trim() === target) { b = allBillboards[i]; break; }
+    }
+    if (!b) {
+        if (typeof opShowToast === 'function') opShowToast('Sorry, that billboard could not be found.');
+        return;
+    }
+    var isFeat = parseInt(b['Featured'] || '0') > 0;
+    if (isFeat || isFreeUser() || subCurrentUser) {
+        showSharedSite(b);
+    } else {
+        window._pendingSharedSite = b['Site Name'];
+        if (typeof opShowToast === 'function') opShowToast('🔒 Log in or sign up free to view this billboard.');
+        openSignupModal('login');
+    }
 }
 
 function showMore() {
@@ -3405,6 +3477,11 @@ function loadBillboards() {
                 if (searchEl) searchEl.value = qParam;
                 showPage('inventory');
                 setTimeout(function() { filterCards(qParam); }, 300);
+            }
+            // Check for ?site= shared billboard link
+            var siteParam = urlParams.get('site');
+            if (siteParam) {
+                setTimeout(function() { handleSharedLink(siteParam); }, 300);
             }
         })
         .catch(function(err) {
@@ -4521,7 +4598,12 @@ async function subLogin() {
     document.getElementById('subUsername').value = '';
     document.getElementById('subPassword').value = '';
     subUpdateNavButtons();
-    showPage('subscriberShortlist');
+    if (window._pendingSharedSite) {
+        var _ps3 = window._pendingSharedSite; window._pendingSharedSite = null;
+        setTimeout(function() { handleSharedLink(_ps3); }, 300);
+    } else {
+        showPage('subscriberShortlist');
+    }
 }
 
 
@@ -5519,6 +5601,10 @@ async function doSignup() {
     closeSignupModal();
     updateNavForFreeUser();
     alert('✅ Welcome to OOH Philippines, ' + name + '!');
+    if (window._pendingSharedSite) {
+        var _ps = window._pendingSharedSite; window._pendingSharedSite = null;
+        setTimeout(function() { handleSharedLink(_ps); }, 300);
+    }
 }
 
 // Free Login via Supabase
@@ -5574,12 +5660,21 @@ async function doFreeLogin() {
         try { localStorage.removeItem(FREE_USER_KEY); } catch(e) {}
         closeSignupModal();
         subUpdateNavButtons();
-        showPage('subscriberShortlist');
+        if (window._pendingSharedSite) {
+            var _ps1 = window._pendingSharedSite; window._pendingSharedSite = null;
+            setTimeout(function() { handleSharedLink(_ps1); }, 300);
+        } else {
+            showPage('subscriberShortlist');
+        }
     } else {
         freeCurrentUser = { name: data.name, email: data.email, company: data.company || '' };
         try { localStorage.setItem(FREE_USER_KEY, JSON.stringify(freeCurrentUser)); } catch(e) {}
         closeSignupModal();
         updateNavForFreeUser();
+        if (window._pendingSharedSite) {
+            var _ps2 = window._pendingSharedSite; window._pendingSharedSite = null;
+            setTimeout(function() { handleSharedLink(_ps2); }, 300);
+        }
     }
 }
 
