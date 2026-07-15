@@ -2988,25 +2988,68 @@ function ooDirectionFactor(tag) {
     var dirs = ['northbound','southbound','eastbound','westbound'].filter(function(d){ return t.indexOf(d) !== -1; });
     return dirs.length >= 2 ? 1.0 : 0.5; // double-facing sees ~full corridor traffic, single-facing ~half
 }
+
+// ── Live corridor traffic (Phase 1: corridor_traffic table overrides hardcoded baselines) ──
+function ooFormatMeasuredAt(dateStr) {
+    if (!dateStr) return '';
+    try {
+        var d = new Date(dateStr);
+        if (isNaN(d.getTime())) return '';
+        var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        return months[d.getMonth()] + ' ' + d.getFullYear();
+    } catch(e) { return ''; }
+}
+function loadLiveTraffic() {
+    try {
+        _supabase.from('corridor_traffic').select('corridor_key,adt,confidence,measured_at')
+            .then(function(res) {
+                if (res.error || !res.data || !res.data.length) return; // silent fallback to baked-in baselines
+                var live = {};
+                res.data.forEach(function(r) {
+                    if (r.corridor_key && r.adt > 0) live[String(r.corridor_key).toUpperCase()] = r;
+                });
+                OOHPH_CORRIDOR_ADT.forEach(function(road) {
+                    var l = live[road.name.toUpperCase()];
+                    if (l) {
+                        road.adt = l.adt;
+                        if (l.confidence) road.confidence = l.confidence;
+                        road.measuredAt = ooFormatMeasuredAt(l.measured_at);
+                    }
+                });
+                OOHPH_CITY_TIERS.forEach(function(tier) {
+                    var l = live[tier.name.toUpperCase()];
+                    if (l) {
+                        tier.adt = l.adt;
+                        if (l.confidence) tier.liveConfidence = l.confidence;
+                        tier.measuredAt = ooFormatMeasuredAt(l.measured_at);
+                    }
+                });
+            });
+    } catch(e) {}
+}
 function estimateWeeklyImpressions(b) {
     var corridor = ooCorridor(b['Location'], b['Tag']);
     var adt, confidence, corridorName;
+    var measuredAt = '';
     if (corridor) {
         adt = corridor.adt;
         confidence = corridor.confidence;
         corridorName = corridor.name;
+        measuredAt = corridor.measuredAt || '';
     } else {
         var tier = ooCityTier(b);
         adt = tier.adt;
-        confidence = 'Low'; // all city-tier / provincial defaults are placeholders pending DPWH verification
+        confidence = tier.liveConfidence || 'Low'; // city-tier defaults are placeholders unless live data upgrades them
         corridorName = tier.name;
+        measuredAt = tier.measuredAt || '';
     }
     var lts = OOHPH_LTS[b['Type']] || OOHPH_LTS['Static'];
     var dailyOTS = adt * OOHPH_OCCUPANCY * ooDirectionFactor(b['Tag']) * lts;
     return {
         weekly: Math.round(dailyOTS * 7),
         confidence: confidence,
-        corridor: corridorName
+        corridor: corridorName,
+        measuredAt: measuredAt
     };
 }
 function formatImpressions(n) {
@@ -3184,7 +3227,8 @@ function buildCard(b) {
         '<div class="bc-divider"></div>' +
         '</div>' +
         '<div class="bc-specs">' + specChips + '</div>' +
-        (impEst.confidence === 'Low' ? '<div style="font-size:10px;color:#9aa0a6;margin:2px 0 6px;">*Early estimate — corridor traffic pending verification. <a href="ooh-audience-measurement-philippines.html" target="_blank" style="color:#9aa0a6;text-decoration:underline;">How this is calculated</a></div>' :
+        (impEst.measuredAt ? '<div style="font-size:10px;color:#9aa0a6;margin:2px 0 6px;">*Modeled estimate — traffic data updated ' + impEst.measuredAt + '. <a href="ooh-audience-measurement-philippines.html" target="_blank" style="color:#9aa0a6;text-decoration:underline;">How this is calculated</a></div>' :
+         impEst.confidence === 'Low' ? '<div style="font-size:10px;color:#9aa0a6;margin:2px 0 6px;">*Early estimate — corridor traffic pending verification. <a href="ooh-audience-measurement-philippines.html" target="_blank" style="color:#9aa0a6;text-decoration:underline;">How this is calculated</a></div>' :
          impEst.confidence === 'Medium' ? '<div style="font-size:10px;color:#9aa0a6;margin:2px 0 6px;">*Modeled estimate using a 2021 traffic study — figure may be outdated. <a href="ooh-audience-measurement-philippines.html" target="_blank" style="color:#9aa0a6;text-decoration:underline;">How this is calculated</a></div>' :
          impEst.confidence === 'High' ? '<div style="font-size:10px;color:#9aa0a6;margin:2px 0 6px;">*Modeled estimate, not a measured count. <a href="ooh-audience-measurement-philippines.html" target="_blank" style="color:#9aa0a6;text-decoration:underline;">How this is calculated</a></div>' : '') +
         '<div class="bc-desc">' + desc + '</div>' +
@@ -3518,11 +3562,14 @@ function openLightbox(src) {
 function estimateWeeklyImpressionsDetailed(b) {
     var corridor = ooCorridor(b['Location'], b['Tag']);
     var adt, confidence, corridorName;
+    var measuredAt = '';
     if (corridor) {
         adt = corridor.adt; confidence = corridor.confidence; corridorName = corridor.name;
+        measuredAt = corridor.measuredAt || '';
     } else {
         var tier = ooCityTier(b);
-        adt = tier.adt; confidence = 'Low'; corridorName = tier.name;
+        adt = tier.adt; confidence = tier.liveConfidence || 'Low'; corridorName = tier.name;
+        measuredAt = tier.measuredAt || '';
     }
     var type = b['Type'] || 'Static';
     var lts = OOHPH_LTS[type] || OOHPH_LTS['Static'];
@@ -3532,7 +3579,8 @@ function estimateWeeklyImpressionsDetailed(b) {
         corridor: corridorName, confidence: confidence, adt: adt, occupancy: OOHPH_OCCUPANCY,
         directionFactor: dir, facing: (dir === 1.0 ? 'Double-facing' : 'Single-facing'),
         type: type, ltsFactor: lts,
-        daily: Math.round(dailyOTS), weekly: Math.round(dailyOTS * 7), monthly: Math.round(dailyOTS * 30.4)
+        daily: Math.round(dailyOTS), weekly: Math.round(dailyOTS * 7), monthly: Math.round(dailyOTS * 30.4),
+        measuredAt: measuredAt
     };
 }
 
@@ -3657,6 +3705,7 @@ document.addEventListener('DOMContentLoaded', function(){
     if(hi){ hi.addEventListener('keydown', function(e){ if(e.key==='Enter') searchFromHome(); }); }
     showPage('home');
     window.scrollTo(0,0);
+    loadLiveTraffic();
     loadBillboards();
     loadGlobalAvailCache(function(){
         // Re-render shortlist if subscriber is logged in
