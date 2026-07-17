@@ -3197,7 +3197,8 @@ function buildCard(b) {
         var isMedConf = impEst.confidence === 'Medium';
         var canViewInsights = isSubscriber || isFeatured;
         var chipStyle = isLowConf ? 'opacity:0.65;border-style:dashed;cursor:pointer;' : 'cursor:pointer;';
-        var chipLabel = '📊 ~' + formatImpressions(impEst.weekly) + ' weekly audience reach' + (isLowConf ? ' (early est.)*' : (isMedConf ? ' (2021 data)*' : '*')) + (canViewInsights ? ' 🔍' : ' 🔒');
+        var chipQualifier = impEst.measuredAt ? ' (' + impEst.measuredAt + ' data)*' : (isLowConf ? ' (early est.)*' : (isMedConf ? ' (2021 data)*' : '*'));
+        var chipLabel = '📊 ~' + formatImpressions(impEst.weekly) + ' weekly audience reach' + chipQualifier + (canViewInsights ? ' 🔍' : ' 🔒');
         var chipTitle = canViewInsights
             ? 'Click for a detailed reach breakdown'
             : 'Subscribe to see the detailed reach breakdown';
@@ -3592,7 +3593,11 @@ function openReachInsights(siteName) {
     if (!b) return;
     var d = estimateWeeklyImpressionsDetailed(b);
     var confColor = d.confidence === 'High' ? '#2e7d32' : (d.confidence === 'Medium' ? '#e65100' : '#9aa0a6');
-    var confLabel = d.confidence === 'High' ? 'Sourced (MMDA/operator data)' : (d.confidence === 'Medium' ? 'Sourced, dated (2021 study)' : 'Preliminary estimate — pending verification');
+    var confLabel = d.confidence === 'High'
+        ? 'Sourced (official traffic data' + (d.measuredAt ? ', ' + d.measuredAt : '') + ')'
+        : (d.confidence === 'Medium'
+            ? 'Sourced' + (d.measuredAt ? ' (' + d.measuredAt + ' data)' : ', dated (2021 study)')
+            : 'Preliminary estimate — pending verification');
     var html = ''
         + '<div style="font-size:11px; font-weight:700; color:#1565c0; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Audience Reach Insights</div>'
         + '<div style="font-size:18px; font-weight:700; color:#202124; margin-bottom:2px;">' + (b['Site Name'] || '') + '</div>'
