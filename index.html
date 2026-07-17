@@ -2919,14 +2919,19 @@ var OOHPH_CORRIDOR_ADT = [
     { keys: ['NLEX'],                          adt: 320000, confidence: 'High',   name: 'NLEX' },
     { keys: ['SLEX'],                          adt: 356594, confidence: 'High',   name: 'SLEX' },
     { keys: ['ORTIGAS'],                       adt: 185699, confidence: 'Medium', name: 'Ortigas Ave' },
-    { keys: ['C5'],                            adt: 200000, confidence: 'Low',    name: 'C5' },
-    { keys: ['ESPA'],                          adt: 120000, confidence: 'Low',    name: 'España Blvd' },
+    { keys: ['C5', 'KATIPUNAN', 'BONI SERRANO', 'BONNY SERRANO', 'KALAYAAN'], adt: 200000, confidence: 'Low', name: 'C5' },
+    { keys: ['ESPA', 'QUEZON BLVD', 'QUEZON BOULEVARD', 'QUIAPO'], adt: 120000, confidence: 'Low', name: 'España Blvd' },
     { keys: ['MARCOS HIGHWAY', 'MARCOS HWY'],  adt: 150000, confidence: 'Low',    name: 'Marcos Highway (Metro Manila)', excludeKeys: ['BAGUIO'] },
     { keys: ['SUMULONG'],                      adt: 90000,  confidence: 'Low',    name: 'Sumulong Highway' },
     { keys: ['CAVITEX'],                       adt: 90000,  confidence: 'Low',    name: 'CAVITEX' },
     { keys: ['CALAX'],                         adt: 50000,  confidence: 'Low',    name: 'CALAX' },
     { keys: ['CCLEX'],                         adt: 25000,  confidence: 'Low',    name: 'CCLEX' },
-    { keys: ['SCTEX'],                         adt: 45000,  confidence: 'Low',    name: 'SCTEX' }
+    { keys: ['SCTEX'],                         adt: 45000,  confidence: 'Low',    name: 'SCTEX' },
+    { keys: ['ROXAS BLVD', 'ROXAS BOULEVARD', 'MACAPAGAL', 'DIOKNO', 'ASEANA'], excludeKeys: ['DAVAO', 'CAGAYAN'],
+                                               adt: 100000, confidence: 'Low',    name: 'Manila Bay Area (Roxas Blvd-Macapagal-Diokno)' },
+    { keys: ['AURORA BLVD', 'AURORA BOULEVARD'], adt: 70000, confidence: 'Low',   name: 'Aurora Boulevard (Quezon City)' },
+    { keys: ['BINONDO', 'ESCOLTA', 'JONES BRIDGE', 'PADRE BURGOS', 'CARRIEDO', 'JUAN LUNA'],
+                                               adt: 60000,  confidence: 'Low',    name: 'Manila City Center (Binondo-Escolta-P. Burgos)' }
 ];
 // Regional classification tiers — placeholder ADT by area/road-type, pending DPWH/LGU verification.
 // All render as "early est." (Low confidence). Order matters: more specific areas listed before generic ones.
