@@ -2936,9 +2936,12 @@ var OOHPH_CORRIDOR_ADT = [
                                                adt: 80000,  confidence: 'Low',    name: 'Nagtahan-Lacson Ave (Sta. Mesa, Manila)' },
     { keys: ['LAONG LAAN'],                    adt: 40000,  confidence: 'Low',    name: 'Laong Laan St (Manila)' },
     { keys: ['VALENZUELA'],                    adt: 120000, confidence: 'Low',    name: 'MacArthur Highway (Valenzuela)' },
-    { keys: ['GIL PUYAT', 'PUYAT', 'BUENDIA'], adt: 90000,  confidence: 'Low',    name: 'Gil Puyat Ave / Buendia (Makati)' },
-    { keys: ['34TH STREET', '34TH ST', '11TH AVE', '7TH AVE', '5TH AVE'], excludeKeys: ['CEBU'],
-                                               adt: 40000,  confidence: 'Low',    name: 'BGC Internal Roads (Taguig)' }
+    { keys: ['GIL PUYAT', 'PUYAT', 'PUIYAT', 'BUENDIA', 'AYALA', 'GLORIETTA', 'MAKATI AVE', 'JUPITER'], excludeKeys: ['DAVAO'],
+                                               adt: 90000,  confidence: 'Low',    name: 'Makati CBD (Ayala-Buendia-Makati Ave)' },
+    { keys: ['34TH STREET', '34TH ST', '11TH AVE', '7TH AVE', '5TH AVE', 'FORT BONIFACIO', 'BGC'], excludeKeys: ['CEBU'],
+                                               adt: 40000,  confidence: 'Low',    name: 'BGC Internal Roads (Taguig)' },
+    { keys: ['MONUMENTO', 'CALOOCAN'], excludeKeys: [],
+                                               adt: 90000,  confidence: 'Low',    name: 'Monumento / Caloocan (MacArthur)' }
 ];
 // Regional classification tiers — placeholder ADT by area/road-type, pending DPWH/LGU verification.
 // All render as "early est." (Low confidence). Order matters: more specific areas listed before generic ones.
