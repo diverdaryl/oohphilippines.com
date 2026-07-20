@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Banner Ads Admin — OOHPhilippines.com</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+* { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI',sans-serif; }
+body { background:#f0f4f8; color:#263238; padding:24px 16px; }
+.wrap { max-width:900px; margin:0 auto; }
+h1 { color:#1565c0; font-size:24px; margin-bottom:4px; }
+.sub { color:#78909c; font-size:13px; margin-bottom:24px; }
+.card { background:white; border:1px solid #e0e6ec; border-radius:14px; padding:20px; margin-bottom:20px; box-shadow:0 3px 12px rgba(0,0,0,0.05); }
+label { display:block; font-size:12px; font-weight:700; color:#546e7a; margin:12px 0 4px; }
+input, select { width:100%; padding:10px 12px; border:1px solid #cfd8dc; border-radius:8px; font-size:14px; }
+.row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+button { padding:11px 24px; border:none; border-radius:50px; font-size:14px; font-weight:700; cursor:pointer; }
+.btn-blue { background:#1565c0; color:white; }
+.btn-grey { background:#eceff1; color:#546e7a; }
+.btn-red { background:#ffebee; color:#c62828; }
+.btn-sm { padding:6px 14px; font-size:12px; }
+.err { color:#c62828; font-size:13px; margin-top:10px; display:none; }
+.ad-row { display:flex; gap:14px; align-items:center; border-top:1px solid #eceff1; padding:14px 0; flex-wrap:wrap; }
+.ad-row img { width:130px; height:48px; object-fit:cover; border-radius:8px; border:1px solid #e0e6ec; }
+.ad-info { flex:1; min-width:200px; }
+.ad-info strong { font-size:15px; }
+.ad-meta { font-size:12px; color:#78909c; margin-top:2px; }
+.badge { display:inline-block; font-size:10px; font-weight:800; padding:2px 9px; border-radius:20px; margin-left:6px; }
+.badge.on { background:#e8f5e9; color:#2e7d32; }
+.badge.off { background:#ffebee; color:#c62828; }
+.badge.pl { background:#e3f2fd; color:#1565c0; }
+.stats { font-size:12px; color:#546e7a; white-space:nowrap; }
+.stats b { color:#1565c0; }
+@media(max-width:600px){ .row { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+    <h1>📢 Banner Ads Admin</h1>
+    <p class="sub">Manage direct-sold banners on OOHPhilippines.com · Home strip: 728×90px recommended · Results card: 600×150px recommended</p>
+
+    <!-- Login -->
+    <div class="card" id="loginCard">
+        <label>Admin Passcode</label>
+        <input type="password" id="passInput" placeholder="Enter your passcode">
+        <div class="err" id="loginErr">Invalid passcode.</div>
+        <div style="margin-top:14px;"><button class="btn-blue" onclick="doLogin()">Log In</button></div>
+    </div>
+
+    <!-- Add / Edit -->
+    <div class="card" id="formCard" style="display:none;">
+        <h3 id="formTitle" style="color:#1565c0;">➕ Add New Banner</h3>
+        <input type="hidden" id="fId">
+        <div class="row">
+            <div><label>Advertiser Name *</label><input id="fAdvertiser" placeholder="e.g. Jollibee"></div>
+            <div><label>Placement</label>
+                <select id="fPlacement">
+                    <option value="both">Home + Results</option>
+                    <option value="home">Home page only</option>
+                    <option value="results">Search results only</option>
+                </select>
+            </div>
+        </div>
+        <label>Banner Image URL *</label><input id="fImage" placeholder="https://... (upload image to Supabase Storage or any host)">
+        <label>Click-through Link</label><input id="fLink" placeholder="https://advertiser-website.com">
+        <div class="row">
+            <div><label>Start Date (optional)</label><input type="date" id="fStart"></div>
+            <div><label>End Date (optional)</label><input type="date" id="fEnd"></div>
+        </div>
+        <label><input type="checkbox" id="fActive" checked style="width:auto;margin-right:6px;">Active</label>
+        <div class="err" id="formErr"></div>
+        <div style="margin-top:16px;display:flex;gap:10px;">
+            <button class="btn-blue" onclick="saveAd()">💾 Save Banner</button>
+            <button class="btn-grey" onclick="resetForm()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- List -->
+    <div class="card" id="listCard" style="display:none;">
+        <h3 style="color:#1565c0;">Current Banners</h3>
+        <div id="adList"></div>
+    </div>
+</div>
+
+<script>
+var _supabase = supabase.createClient('https://xecxfkuzexshafwuuizf.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlY3hma3V6ZXhzaGFmd3V1aXpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTk1MTIsImV4cCI6MjA5MTMzNTUxMn0.sZrRmesCDn0DsuldUD8zIhi1gX1ajIKX0aULqNBX_To');
+var passcode = sessionStorage.getItem('adsPass') || '';
+var ads = [];
+
+if (passcode) doLogin(true);
+
+async function doLogin(auto) {
+    if (!auto) passcode = document.getElementById('passInput').value.trim();
+    var res = await _supabase.rpc('ads_admin_list', { pass: passcode });
+    if (res.error) {
+        sessionStorage.removeItem('adsPass');
+        document.getElementById('loginErr').style.display = 'block';
+        return;
+    }
+    sessionStorage.setItem('adsPass', passcode);
+    document.getElementById('loginCard').style.display = 'none';
+    document.getElementById('formCard').style.display = 'block';
+    document.getElementById('listCard').style.display = 'block';
+    ads = res.data || [];
+    renderList();
+}
+
+function renderList() {
+    var el = document.getElementById('adList');
+    if (ads.length === 0) { el.innerHTML = '<p style="color:#78909c;font-size:14px;padding:14px 0;">No banners yet. Add your first one above.</p>'; return; }
+    el.innerHTML = ads.map(function(a) {
+        var dates = (a.start_date || '—') + ' → ' + (a.end_date || 'no end');
+        var ctr = a.impressions > 0 ? ((a.clicks / a.impressions) * 100).toFixed(2) + '%' : '—';
+        return '<div class="ad-row">' +
+            '<img src="' + a.image_url + '" onerror="this.style.opacity=0.3">' +
+            '<div class="ad-info"><strong>' + esc(a.advertiser) + '</strong>' +
+            '<span class="badge ' + (a.active ? 'on' : 'off') + '">' + (a.active ? 'ACTIVE' : 'PAUSED') + '</span>' +
+            '<span class="badge pl">' + a.placement.toUpperCase() + '</span>' +
+            '<div class="ad-meta">' + dates + '</div></div>' +
+            '<div class="stats">👁 <b>' + a.impressions + '</b> · 🖱 <b>' + a.clicks + '</b> · CTR <b>' + ctr + '</b></div>' +
+            '<div style="display:flex;gap:6px;">' +
+            '<button class="btn-grey btn-sm" onclick="editAd(\'' + a.id + '\')">✏️ Edit</button>' +
+            '<button class="btn-grey btn-sm" onclick="toggleAd(\'' + a.id + '\')">' + (a.active ? '⏸ Pause' : '▶️ Activate') + '</button>' +
+            '<button class="btn-red btn-sm" onclick="deleteAd(\'' + a.id + '\')">🗑</button>' +
+            '</div></div>';
+    }).join('');
+}
+
+function esc(s){ return String(s||'').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+
+function editAd(id) {
+    var a = ads.find(function(x){ return x.id === id; });
+    if (!a) return;
+    document.getElementById('formTitle').textContent = '✏️ Edit Banner — ' + a.advertiser;
+    document.getElementById('fId').value = a.id;
+    document.getElementById('fAdvertiser').value = a.advertiser;
+    document.getElementById('fImage').value = a.image_url;
+    document.getElementById('fLink').value = a.link_url || '';
+    document.getElementById('fPlacement').value = a.placement;
+    document.getElementById('fStart').value = a.start_date || '';
+    document.getElementById('fEnd').value = a.end_date || '';
+    document.getElementById('fActive').checked = a.active;
+    window.scrollTo(0,0);
+}
+
+function resetForm() {
+    document.getElementById('formTitle').textContent = '➕ Add New Banner';
+    ['fId','fAdvertiser','fImage','fLink','fStart','fEnd'].forEach(function(id){ document.getElementById(id).value = ''; });
+    document.getElementById('fPlacement').value = 'both';
+    document.getElementById('fActive').checked = true;
+    document.getElementById('formErr').style.display = 'none';
+}
+
+async function saveAd() {
+    var err = document.getElementById('formErr');
+    var advertiser = document.getElementById('fAdvertiser').value.trim();
+    var image = document.getElementById('fImage').value.trim();
+    if (!advertiser || !image) { err.textContent = 'Advertiser name and image URL are required.'; err.style.display = 'block'; return; }
+    var res = await _supabase.rpc('ads_admin_save', {
+        pass: passcode,
+        p_id: document.getElementById('fId').value || null,
+        p_advertiser: advertiser,
+        p_image_url: image,
+        p_link_url: document.getElementById('fLink').value.trim() || null,
+        p_placement: document.getElementById('fPlacement').value,
+        p_start: document.getElementById('fStart').value || null,
+        p_end: document.getElementById('fEnd').value || null,
+        p_active: document.getElementById('fActive').checked
+    });
+    if (res.error) { err.textContent = 'Save failed: ' + res.error.message; err.style.display = 'block'; return; }
+    resetForm();
+    doLogin(true);
+}
+
+async function toggleAd(id) {
+    var a = ads.find(function(x){ return x.id === id; });
+    if (!a) return;
+    await _supabase.rpc('ads_admin_save', {
+        pass: passcode, p_id: a.id, p_advertiser: a.advertiser, p_image_url: a.image_url,
+        p_link_url: a.link_url, p_placement: a.placement, p_start: a.start_date,
+        p_end: a.end_date, p_active: !a.active
+    });
+    doLogin(true);
+}
+
+async function deleteAd(id) {
+    if (!confirm('Delete this banner permanently? (Pause it instead to keep its stats.)')) return;
+    await _supabase.rpc('ads_admin_delete', { pass: passcode, p_id: id });
+    doLogin(true);
+}
+
+document.getElementById('passInput').addEventListener('keydown', function(e){ if (e.key === 'Enter') doLogin(); });
+</script>
+</body>
+</html>

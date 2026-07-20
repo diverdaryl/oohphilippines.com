@@ -2025,12 +2025,24 @@
     .results-divider::before { content:''; position:absolute; top:50%; left:0; right:0; height:1px; background:#e0e0e0; }
     .results-divider span { position:relative; background:#f0f4f8; padding:4px 14px; font-size:12px; font-weight:700; color:#888; border-radius:20px; border:1px solid #e0e0e0; }
 
-
+    /* ── Banner Ads (direct-sold) ── */
+    .home-ad-strip { max-width:728px; margin:0 auto 30px; }
+    .ad-slot-label { text-align:center; font-size:10px; font-weight:700; letter-spacing:1.5px; color:#9aa7b5; text-transform:uppercase; margin-bottom:6px; }
+    .home-ad-strip a.ad-banner-link { display:block; border-radius:12px; overflow:hidden; box-shadow:0 4px 18px rgba(0,0,0,0.10); border:1px solid #e0e6ec; transition:transform 0.2s, box-shadow 0.2s; }
+    .home-ad-strip a.ad-banner-link:hover { transform:translateY(-2px); box-shadow:0 8px 26px rgba(0,0,0,0.15); }
+    .home-ad-strip img { display:block; width:100%; height:auto; max-height:110px; object-fit:cover; }
+    .ad-dots { text-align:center; margin-top:8px; }
+    .ad-dots span { display:inline-block; width:7px; height:7px; border-radius:50%; background:#c5d0da; margin:0 3px; cursor:pointer; transition:background 0.2s; }
+    .ad-dots span.on { background:#1565c0; }
+    .home-ad-house { display:block; max-width:728px; margin:0 auto 30px; text-align:center; background:linear-gradient(135deg,#0d47a1,#1565c0); color:white; border-radius:12px; padding:18px 24px; text-decoration:none; box-shadow:0 4px 18px rgba(21,101,192,0.25); }
+    .home-ad-house strong { display:block; font-size:17px; margin-bottom:4px; }
+    .home-ad-house span { font-size:13px; opacity:0.85; }
+    .ad-card { max-width:600px; width:100%; margin:0 auto 24px auto; }
+    .ad-card a.ad-banner-link { display:block; border-radius:16px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.08); border:1px solid #e8eaed; }
+    .ad-card img { display:block; width:100%; height:auto; }
+    @media(max-width:600px){ .home-ad-strip, .home-ad-house { margin-left:16px; margin-right:16px; } }
 
 </style>
-
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7868989291317607"
-     crossorigin="anonymous"></script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OOHPhilippines.com - Billboard Advertising Platform</title>
@@ -2161,6 +2173,21 @@
 <!-- Home Page -->
 <div id="homePage" class="page active">
     <div class="hero-container">
+        <!-- Sponsored banner strip (direct-sold, managed in Supabase banner_ads table) -->
+        <div class="home-ad-strip" id="homeAdStrip" style="display:none;">
+            <div class="ad-slot-label">Sponsored</div>
+            <a id="homeAdLink" class="ad-banner-link" href="#" target="_blank" rel="noopener sponsored">
+                <img id="homeAdImg" src="" alt="Advertisement">
+            </a>
+            <div class="ad-dots" id="homeAdDots"></div>
+        </div>
+
+        <!-- House ad fallback: shown when no direct-sold banner is active -->
+        <a class="home-ad-house" id="homeAdHouse" style="display:none;" href="mailto:info@oohphilippines.com?subject=Banner Advertising Inquiry">
+            <strong>📢 Your ad here — reach the Philippine OOH industry</strong>
+            <span>LED screen suppliers, audience measurement &amp; ad tech providers: connect with billboard operators, agencies &amp; media planners · info@oohphilippines.com</span>
+        </a>
+
         <h1 class="logo" style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;">OOHPhilippines.com</h1>
         <h2 class="tagline">Find the best billboards in the Philippines, fast.</h2>
         <p class="description">Browse real locations, compare sites, and plan your next OOH campaign with confidence.</p>
@@ -2199,8 +2226,9 @@
             <span class="quick-link" onclick="goToInventory('La Union')">La Union</span>
             <span class="quick-link" onclick="goToInventory('Naga')">Naga</span>
             <span class="quick-link" onclick="goToInventory('Legazpi')">Legazpi</span>
-            <span class="quick-link" onclick="goToInventory('Cagayan de Oro')">Cagayan de Oro</span> 
+            <span class="quick-link" onclick="goToInventory('Cagayan de Oro')">Cagayan de Oro</span>
         </div>
+
     </div>
 </div>
 
@@ -3331,6 +3359,11 @@ function showMore() {
         var div = document.createElement('div');
         div.innerHTML = buildCard(allMatches[i]);
         container.appendChild(div.firstChild);
+        // Inject a sponsored banner after every N listings
+        if ((i + 1) % AD_EVERY_N_RESULTS === 0 && typeof buildResultsAdCard === 'function') {
+            var adCard = buildResultsAdCard();
+            if (adCard) container.appendChild(adCard);
+        }
     }
     visibleCount = end;
     var btn = document.getElementById('loadMoreBtn');
@@ -3701,7 +3734,107 @@ function submitModalFeedback(){
     closeFeedbackModal();
 }
 
+/* ══════════ BANNER ADS (direct-sold, Supabase-managed) ══════════ */
+var bannerAdsHome = [];      // placement 'home' or 'both'
+var bannerAdsResults = [];   // placement 'results' or 'both'
+var homeAdIndex = 0;
+var homeAdTimer = null;
+var resultsAdCursor = 0;
+var AD_EVERY_N_RESULTS = 6;  // inject a sponsored card after every N listings
+var adImpressionsSent = {};
+
+function adTrack(adId, kind) {
+    try {
+        _supabase.rpc('ad_track', { ad_id: adId, kind: kind }).then(function(){});
+    } catch(e) {}
+}
+
+function adImpression(adId) {
+    if (adImpressionsSent[adId]) return;
+    adImpressionsSent[adId] = true;
+    adTrack(adId, 'imp');
+}
+
+function initBannerAds() {
+    var today = new Date().toISOString().slice(0,10);
+    _supabase.from('banner_ads')
+        .select('id,advertiser,image_url,link_url,placement')
+        .eq('active', true)
+        .or('start_date.is.null,start_date.lte.' + today)
+        .or('end_date.is.null,end_date.gte.' + today)
+        .then(function(res) {
+            var ads = (res && res.data) || [];
+            bannerAdsHome = ads.filter(function(a){ return a.placement === 'home' || a.placement === 'both'; });
+            bannerAdsResults = ads.filter(function(a){ return a.placement === 'results' || a.placement === 'both'; });
+            renderHomeAdStrip();
+        }, function(){ renderHomeAdStrip(); });
+}
+
+function renderHomeAdStrip() {
+    var strip = document.getElementById('homeAdStrip');
+    var house = document.getElementById('homeAdHouse');
+    if (!strip || !house) return;
+    if (bannerAdsHome.length === 0) {
+        strip.style.display = 'none';
+        house.style.display = 'block';
+        return;
+    }
+    house.style.display = 'none';
+    strip.style.display = 'block';
+    var dots = document.getElementById('homeAdDots');
+    dots.innerHTML = '';
+    if (bannerAdsHome.length > 1) {
+        bannerAdsHome.forEach(function(_, i) {
+            var d = document.createElement('span');
+            d.onclick = function(){ showHomeAd(i); resetHomeAdTimer(); };
+            dots.appendChild(d);
+        });
+    }
+    showHomeAd(0);
+    resetHomeAdTimer();
+}
+
+function showHomeAd(i) {
+    if (bannerAdsHome.length === 0) return;
+    homeAdIndex = i % bannerAdsHome.length;
+    var ad = bannerAdsHome[homeAdIndex];
+    var img = document.getElementById('homeAdImg');
+    var link = document.getElementById('homeAdLink');
+    img.src = ad.image_url;
+    img.alt = ad.advertiser + ' — advertisement';
+    link.href = ad.link_url || '#';
+    link.onclick = function(){ adTrack(ad.id, 'click'); };
+    adImpression(ad.id);
+    var dots = document.getElementById('homeAdDots').children;
+    for (var d = 0; d < dots.length; d++) dots[d].className = (d === homeAdIndex) ? 'on' : '';
+}
+
+function resetHomeAdTimer() {
+    if (homeAdTimer) clearInterval(homeAdTimer);
+    if (bannerAdsHome.length > 1) {
+        homeAdTimer = setInterval(function(){ showHomeAd(homeAdIndex + 1); }, 6000);
+    }
+}
+
+function buildResultsAdCard() {
+    if (bannerAdsResults.length === 0) return null;
+    var ad = bannerAdsResults[resultsAdCursor % bannerAdsResults.length];
+    resultsAdCursor++;
+    adImpression(ad.id);
+    var wrap = document.createElement('div');
+    wrap.className = 'ad-card';
+    wrap.innerHTML =
+        '<div class="ad-slot-label">Sponsored</div>' +
+        '<a class="ad-banner-link" href="' + (ad.link_url || '#') + '" target="_blank" rel="noopener sponsored">' +
+        '<img src="' + ad.image_url + '" alt="' + (ad.advertiser || 'Advertisement') + '">' +
+        '</a>';
+    wrap.querySelector('a').addEventListener('click', function(){ adTrack(ad.id, 'click'); });
+    return wrap;
+}
+/* ══════════ END BANNER ADS ══════════ */
+
 document.addEventListener('DOMContentLoaded', function(){
+    initBannerAds();
     // Load inquiry badge count
     fetch('https://xecxfkuzexshafwuuizf.supabase.co/rest/v1/inquiries?select=id&status=eq.active', {
         headers: {
