@@ -2267,6 +2267,14 @@
 <!-- Inventory Page -->
 <div id="inventoryPage" class="page">
     <div class="inventory-container">
+        <!-- Sponsored banner strip (direct-sold, top of inventory page) -->
+        <div class="home-ad-strip" id="resultsTopAdStrip" style="display:none;">
+            <div class="ad-slot-label">Sponsored</div>
+            <a id="resultsTopAdLink" class="ad-banner-link" href="#" target="_blank" rel="noopener sponsored">
+                <img id="resultsTopAdImg" src="" alt="Advertisement">
+            </a>
+            <div class="ad-dots" id="resultsTopAdDots"></div>
+        </div>
         <h1 class="inventory-title">Billboard Inventory</h1>
         <div style="text-align:center; margin-bottom: 20px;">
             <button onclick="goToSearch()" style="padding: 12px 28px; background: #1565c0; color: white; border: none; border-radius: 50px; font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 14px rgba(21,101,192,0.3); transition: all 0.3s;" onmouseover="this.style.background='#0d47a1';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='#1565c0';this.style.transform='translateY(0)'">🔍 Search Billboards</button>
@@ -3702,6 +3710,7 @@ function showPage(pageId) {
     document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
     var t = document.getElementById(pageId + 'Page');
     if (t) { t.classList.add('active'); window.scrollTo(0,0); }
+    if (pageId === 'inventory' && typeof renderResultsTopAdStrip === 'function') { renderResultsTopAdStrip(); }
 }
 function goToSearch() {
     showPage('home');
@@ -3767,7 +3776,8 @@ function initBannerAds() {
             bannerAdsHome = ads.filter(function(a){ return a.placement === 'home' || a.placement === 'both'; });
             bannerAdsResults = ads.filter(function(a){ return a.placement === 'results' || a.placement === 'both'; });
             renderHomeAdStrip();
-        }, function(){ renderHomeAdStrip(); });
+            renderResultsTopAdStrip();
+        }, function(){ renderHomeAdStrip(); renderResultsTopAdStrip(); });
 }
 
 function renderHomeAdStrip() {
@@ -3813,6 +3823,53 @@ function resetHomeAdTimer() {
     if (homeAdTimer) clearInterval(homeAdTimer);
     if (bannerAdsHome.length > 1) {
         homeAdTimer = setInterval(function(){ showHomeAd(homeAdIndex + 1); }, 6000);
+    }
+}
+
+var resultsTopAdIndex = 0;
+var resultsTopAdTimer = null;
+
+function renderResultsTopAdStrip() {
+    var strip = document.getElementById('resultsTopAdStrip');
+    if (!strip) return;
+    if (bannerAdsHome.length === 0) {
+        strip.style.display = 'none';
+        return;
+    }
+    strip.style.display = 'block';
+    var dots = document.getElementById('resultsTopAdDots');
+    dots.innerHTML = '';
+    if (bannerAdsHome.length > 1) {
+        bannerAdsHome.forEach(function(_, i) {
+            var d = document.createElement('span');
+            d.onclick = function(){ showResultsTopAd(i); resetResultsTopAdTimer(); };
+            dots.appendChild(d);
+        });
+    }
+    showResultsTopAd(0);
+    resetResultsTopAdTimer();
+}
+
+function showResultsTopAd(i) {
+    if (bannerAdsHome.length === 0) return;
+    resultsTopAdIndex = i % bannerAdsHome.length;
+    var ad = bannerAdsHome[resultsTopAdIndex];
+    var img = document.getElementById('resultsTopAdImg');
+    var link = document.getElementById('resultsTopAdLink');
+    if (!img || !link) return;
+    img.src = ad.image_url;
+    img.alt = ad.advertiser + ' — advertisement';
+    link.href = ad.link_url || '#';
+    link.onclick = function(){ adTrack(ad.id, 'click'); };
+    adImpression(ad.id);
+    var dots = document.getElementById('resultsTopAdDots').children;
+    for (var d = 0; d < dots.length; d++) dots[d].className = (d === resultsTopAdIndex) ? 'on' : '';
+}
+
+function resetResultsTopAdTimer() {
+    if (resultsTopAdTimer) clearInterval(resultsTopAdTimer);
+    if (bannerAdsHome.length > 1) {
+        resultsTopAdTimer = setInterval(function(){ showResultsTopAd(resultsTopAdIndex + 1); }, 6000);
     }
 }
 
