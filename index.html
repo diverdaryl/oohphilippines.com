@@ -2387,6 +2387,7 @@
     <div class="proposal-header" id="proposalHeader">
         <h1 id="proposalTitle">Billboard Site Proposal</h1>
         <p id="proposalMeta"></p>
+        <p id="proposalReachSummary" style="font-weight:700;color:#1565c0;margin-top:6px;"></p>
     </div>
 
     <div class="sub-dash-header">
@@ -3002,6 +3003,48 @@ var OOHPH_PROVINCIAL_DEFAULT_ADT = 25000; // conservative catch-all for provinci
 var OOHPH_OCCUPANCY    = 1.9;   // blended persons per vehicle
 var OOHPH_LTS          = { 'Static': 0.45, 'LED': 0.55, 'LPB': 0.35 }; // visibility / "eyes-on" factor by format
 
+// ── PSA demographic context (Market Context) ──
+// Source: Philippine Statistics Authority, 2023 Family Income and Expenditure Survey (FIES),
+// "Average Annual Family Income in 2023 is Estimated at PhP 353.23 Thousand", released Aug 15, 2024.
+// Figures are 2023p (preliminary) average ANNUAL FAMILY income in thousand PHP, at the REGION level —
+// this is demographic/economic context for the area, not a measured audience count, and should never
+// be added to or confused with the OTS traffic-based reach estimate above.
+// https://psa.gov.ph/statistics/income-expenditure/fies
+var OOHPH_PSA_NATIONAL_AVG_INCOME = 353.23;
+var OOHPH_PSA_REGION_INCOME = [
+    { keys: ['MANILA','QUEZON CITY','MAKATI','PASIG','TAGUIG','MANDALUYONG','PARANAQUE','PARAÑAQUE','CALOOCAN','MARIKINA','ANTIPOLO','PASAY','MUNTINLUPA','LAS PINAS','LAS PIÑAS','VALENZUELA','MALABON','NAVOTAS','SAN JUAN','PATEROS'],
+        region: 'National Capital Region (NCR)', income: 513.52 },
+    { keys: ['BAGUIO'], region: 'Cordillera Administrative Region (CAR)', income: 359.24 },
+    { keys: ['ILOCOS','LA UNION','PANGASINAN','URDANETA','DAGUPAN','VIGAN','LAOAG'], region: 'Region I – Ilocos Region', income: 339.69 },
+    { keys: ['CAGAYAN','ISABELA','TUGUEGARAO','ILAGAN','SANTIAGO','CAUAYAN'], region: 'Region II – Cagayan Valley', income: 310.55 },
+    { keys: ['PAMPANGA','TARLAC','NUEVA ECIJA','BULACAN','BALAGTAS','ANGELES','MABALACAT','MEXICO','ZAMBALES','OLONGAPO','SUBIC'],
+        region: 'Region III – Central Luzon', income: 375.24 },
+    { keys: ['CAVITE','LAGUNA','BATANGAS','AGUINALDO','SARIAYA','DASMARIÑAS','DASMARINAS','BACOOR','IMUS','NOVELETA','CARMONA','SANTA ROSA','CALAMBA','CABUYAO'],
+        region: 'Region IV-A – CALABARZON', income: 426.53 },
+    { keys: ['PALAWAN','PUERTO PRINCESA','MINDORO'], region: 'MIMAROPA Region', income: 267.36 },
+    { keys: ['CAMARINES','ALBAY','SORSOGON','NAGA','LEGAZPI','DAET','LIGAO'], region: 'Region V – Bicol Region', income: 287.47 },
+    { keys: ['ILOILO','CAPIZ','AKLAN','ROXAS CITY','KALIBO','CATICLAN','MALAY'], region: 'Region VI – Western Visayas', income: 320.23 },
+    { keys: ['BACOLOD','NEGROS'], region: 'Negros Island Region (NIR)', income: 266.29 },
+    { keys: ['CEBU','BOHOL','TAGBILARAN'], region: 'Region VII – Central Visayas', income: 326.94 },
+    { keys: ['SAMAR','LEYTE','ORMOC','CALBAYOG','TACLOBAN'], region: 'Region VIII – Eastern Visayas', income: 267.33 },
+    { keys: ['ZAMBOANGA'], region: 'Region IX – Zamboanga Peninsula', income: 257.14 },
+    { keys: ['CAGAYAN DE ORO','CDO','ILIGAN','LANAO'], region: 'Region X – Northern Mindanao', income: 296.50 },
+    { keys: ['DAVAO'], region: 'Region XI – Davao Region', income: 318.95 },
+    { keys: ['SOUTH COTABATO','GENSAN','KORONADAL','SOCCSKSARGEN','COTABATO','KIDAPAWAN'], region: 'Region XII – SOCCSKSARGEN', income: 282.44 },
+    { keys: ['AGUSAN','BUTUAN','SURIGAO','CARAGA'], region: 'Caraga', income: 276.57 },
+    { keys: ['BASILAN','SULU','TAWI-TAWI','MAGUINDANAO','BARMM'], region: 'Bangsamoro Autonomous Region (BARMM)', income: 206.88 }
+];
+function ooPSARegionIncome(location, tag) {
+    var text = ((location || '') + ' ' + (tag || '')).toString().toUpperCase();
+    for (var i = 0; i < OOHPH_PSA_REGION_INCOME.length; i++) {
+        var r = OOHPH_PSA_REGION_INCOME[i];
+        for (var k = 0; k < r.keys.length; k++) {
+            if (text.indexOf(r.keys[k]) !== -1) return r;
+        }
+    }
+    return { region: 'Philippines (national average)', income: OOHPH_PSA_NATIONAL_AVG_INCOME };
+}
+
 function ooCorridor(location, tag) {
     var text = ((location || '') + ' ' + (tag || '')).toString().toUpperCase();
     for (var i = 0; i < OOHPH_CORRIDOR_ADT.length; i++) {
@@ -3047,7 +3090,7 @@ function ooFormatMeasuredAt(dateStr) {
 }
 function loadLiveTraffic() {
     try {
-        _supabase.from('corridor_traffic').select('corridor_key,adt,confidence,measured_at')
+        _supabase.from('corridor_traffic').select('corridor_key,adt,confidence,measured_at,source')
             .then(function(res) {
                 if (res.error || !res.data || !res.data.length) return; // silent fallback to baked-in baselines
                 var live = {};
@@ -3060,6 +3103,7 @@ function loadLiveTraffic() {
                         road.adt = l.adt;
                         if (l.confidence) road.confidence = l.confidence;
                         road.measuredAt = ooFormatMeasuredAt(l.measured_at);
+                        road.source = l.source || '';
                     }
                 });
                 OOHPH_CITY_TIERS.forEach(function(tier) {
@@ -3068,6 +3112,7 @@ function loadLiveTraffic() {
                         tier.adt = l.adt;
                         if (l.confidence) tier.liveConfidence = l.confidence;
                         tier.measuredAt = ooFormatMeasuredAt(l.measured_at);
+                        tier.source = l.source || '';
                     }
                 });
             });
@@ -3613,15 +3658,15 @@ function openLightbox(src) {
 // Detailed breakdown version of estimateWeeklyImpressions — same math, exposes intermediate factors for the insights modal.
 function estimateWeeklyImpressionsDetailed(b) {
     var corridor = ooCorridor(b['Location'], b['Tag']);
-    var adt, confidence, corridorName;
+    var adt, confidence, corridorName, source;
     var measuredAt = '';
     if (corridor) {
         adt = corridor.adt; confidence = corridor.confidence; corridorName = corridor.name;
-        measuredAt = corridor.measuredAt || '';
+        measuredAt = corridor.measuredAt || ''; source = corridor.source || '';
     } else {
         var tier = ooCityTier(b);
         adt = tier.adt; confidence = tier.liveConfidence || 'Low'; corridorName = tier.name;
-        measuredAt = tier.measuredAt || '';
+        measuredAt = tier.measuredAt || ''; source = tier.source || '';
     }
     var type = b['Type'] || 'Static';
     var lts = OOHPH_LTS[type] || OOHPH_LTS['Static'];
@@ -3632,7 +3677,7 @@ function estimateWeeklyImpressionsDetailed(b) {
         directionFactor: dir, facing: (dir === 1.0 ? 'Double-facing' : 'Single-facing'),
         type: type, ltsFactor: lts,
         daily: Math.round(dailyOTS), weekly: Math.round(dailyOTS * 7), monthly: Math.round(dailyOTS * 30.4),
-        measuredAt: measuredAt
+        measuredAt: measuredAt, source: source
     };
 }
 
@@ -3643,11 +3688,12 @@ function openReachInsights(siteName) {
     }
     if (!b) return;
     var d = estimateWeeklyImpressionsDetailed(b);
+    var psa = ooPSARegionIncome(b['Location'], b['Tag']);
     var confColor = d.confidence === 'High' ? '#2e7d32' : (d.confidence === 'Medium' ? '#e65100' : '#9aa0a6');
     var confLabel = d.confidence === 'High'
-        ? 'Sourced (official traffic data' + (d.measuredAt ? ', ' + d.measuredAt : '') + ')'
+        ? 'Sourced (' + (d.source || 'official traffic data') + (d.measuredAt ? ', ' + d.measuredAt : '') + ')'
         : (d.confidence === 'Medium'
-            ? 'Sourced' + (d.measuredAt ? ' (' + d.measuredAt + ' data)' : ', dated (2021 study)')
+            ? 'Sourced (' + (d.source || 'modeled') + (d.measuredAt ? ', ' + d.measuredAt : ', dated (2021 study)') + ')'
             : 'Preliminary estimate — pending verification');
     var html = ''
         + '<div style="font-size:11px; font-weight:700; color:#1565c0; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">Audience Reach Insights</div>'
@@ -3672,7 +3718,15 @@ function openReachInsights(siteName) {
         + '<div style="display:flex; align-items:center; gap:6px; font-size:11px; color:' + confColor + '; font-weight:700; margin-bottom:10px;">'
         +   '<span>●</span><span>' + confLabel + '</span>'
         + '</div>'
-        + '<div style="font-size:11px; color:#9aa0a6; line-height:1.5;">This is a modeled Opportunity-To-See (OTS) estimate, not a measured count. <a href="ooh-audience-measurement-philippines.html" target="_blank" style="color:#1565c0;">Read the full methodology →</a></div>';
+        + '<div style="font-size:11px; color:#9aa0a6; line-height:1.5; margin-bottom:14px;">This is a modeled Opportunity-To-See (OTS) estimate, not a measured count. <a href="ooh-audience-measurement-philippines.html" target="_blank" style="color:#1565c0;">Read the full methodology →</a></div>'
+        + '<div style="border-top:1px solid #eee; padding-top:12px;">'
+        +   '<div style="font-size:11px; font-weight:700; color:#5f6368; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">Market Context</div>'
+        +   '<table style="width:100%; font-size:12px; color:#5f6368; border-collapse:collapse;">'
+        +     '<tr><td style="padding:3px 0;">Region</td><td style="text-align:right; font-weight:600; color:#202124;">' + psa.region + '</td></tr>'
+        +     '<tr><td style="padding:3px 0;">Avg. annual family income</td><td style="text-align:right; font-weight:600; color:#202124;">&#8369;' + psa.income.toLocaleString() + 'K</td></tr>'
+        +   '</table>'
+        +   '<div style="font-size:10px; color:#9aa0a6; line-height:1.5; margin-top:6px;">Source: PSA 2023 Family Income and Expenditure Survey (regional average, not a site-specific measurement). This is demographic context, separate from the audience reach estimate above.</div>'
+        + '</div>';
     document.getElementById('reachInsightsBody').innerHTML = html;
     document.getElementById('reachInsightsModal').style.display = 'flex';
 }
@@ -4991,6 +5045,22 @@ function subDeleteCampaign(campId) {
     subRenderCampaigns();
 }
 
+// --- Aggregate audience reach across a campaign's sites (knOOH-style rollup) ---
+function subCampaignReachSummary(camp) {
+    var totalWeekly = 0, totalMonthly = 0, matched = 0, hasLow = false, hasMedium = false;
+    camp.sites.forEach(function(sn) {
+        var b = allBillboards.filter(function(x){ return x['Site Name'] === sn; })[0];
+        if (!b) return;
+        var d = estimateWeeklyImpressionsDetailed(b);
+        totalWeekly += d.weekly;
+        totalMonthly += d.monthly;
+        matched++;
+        if (d.confidence === 'Low') hasLow = true;
+        else if (d.confidence === 'Medium') hasMedium = true;
+    });
+    return { totalWeekly: totalWeekly, totalMonthly: totalMonthly, matched: matched, hasLow: hasLow, hasMedium: hasMedium };
+}
+
 // --- Render Campaigns tab ---
 function subRenderCampaigns() {
     var grid = document.getElementById('subCampaignGrid');
@@ -5019,9 +5089,14 @@ function subRenderCampaigns() {
                 '</div>';
         }
         var campIdSafe2 = camp.id.replace(/'/g,"\\'");
+        var reach = subCampaignReachSummary(camp);
+        var reachLine = reach.matched > 0
+            ? '<div class="sub-campaign-reach" style="font-size:13px;font-weight:700;color:#1565c0;margin:4px 0 8px;">&#x1F4CA; ~' + formatImpressions(reach.totalWeekly) + ' combined weekly reach' + (reach.hasLow ? ' <span style="font-weight:400;color:#9aa0a6;">(includes preliminary estimates)</span>' : '') + '</div>'
+            : '';
         html += '<div class="sub-campaign-card">' +
             '<h3>&#x1F4CC; ' + camp.name + '</h3>' +
             '<div class="sub-campaign-meta">' + (camp.client ? '&#x1F3E2; ' + camp.client + ' &nbsp;|&nbsp; ' : '') + '&#x1F4C5; Created: ' + camp.created + ' &nbsp;|&nbsp; &#x1F4CD; ' + camp.sites.length + ' site' + (camp.sites.length !== 1 ? 's' : '') + '</div>' +
+            reachLine +
             '<div class="sub-campaign-sites">' + (siteItems || '<em style="color:#ccc">No sites added yet. Go to Shortlist and click Add to Campaign.</em>') + '</div>' +
             '<div class="sub-campaign-actions">' +
                 '<button class="sub-camp-btn pdf" onclick="subPrintCampaign(\'' + campIdSafe2 + '\')">&#x1F5A8;&#xFE0F; Proposal PDF</button>' +
@@ -5085,13 +5160,16 @@ function subExportCSV() {
 function subExportCampaignCSV(campId) {
     var camp = subGetCampaigns().find(function(c){ return c.id === campId; });
     if (!camp) return;
-    var rows = [['Campaign','Client','Site Name','Tag','Location','Size','Type','Illumination','Price','Availability']];
+    var rows = [['Campaign','Client','Site Name','Tag','Location','Size','Type','Illumination','Price','Availability','Weekly Reach (est.)','Monthly Reach (est.)','Confidence']];
+    var reach = subCampaignReachSummary(camp);
     camp.sites.forEach(function(sn) {
         var b = allBillboards.filter(function(x){ return x['Site Name'] === sn; })[0];
         if (!b) return;
         var avail = !(b['Availability'] === 'FALSE' || b['Availability'] === false);
-        rows.push([camp.name, camp.client||'', sn, b['Tag']||'', b['Location']||'', b['Size']||'', b['Type']||'', b['Illumination']||'', b['Price']||'', avail ? 'Available' : 'Unavailable']);
+        var d = estimateWeeklyImpressionsDetailed(b);
+        rows.push([camp.name, camp.client||'', sn, b['Tag']||'', b['Location']||'', b['Size']||'', b['Type']||'', b['Illumination']||'', b['Price']||'', avail ? 'Available' : 'Unavailable', d.weekly, d.monthly, d.confidence]);
     });
+    rows.push(['', '', 'COMBINED TOTAL', '', '', '', '', '', '', '', reach.totalWeekly, reach.totalMonthly, reach.hasLow ? 'Includes preliminary estimates' : '']);
     subDownloadCSV(rows, 'Campaign_' + camp.name.replace(/[^a-z0-9]/gi,'_') + '.csv');
 }
 
@@ -5114,6 +5192,11 @@ function subPrintCampaign(campId) {
     document.getElementById('proposalTitle').textContent = camp.name + (camp.client ? ' — ' + camp.client : '');
     document.getElementById('proposalMeta').textContent = 'Prepared by ' + subCurrentUser.company + ' via OOHPhilippines.com | ' + new Date().toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'numeric'});
     document.getElementById('proposalHeader').style.display = 'block';
+    var reach = subCampaignReachSummary(camp);
+    var reachSummaryEl = document.getElementById('proposalReachSummary');
+    reachSummaryEl.textContent = reach.matched > 0
+        ? '📊 ~' + formatImpressions(reach.totalWeekly) + ' combined weekly reach  ·  ~' + formatImpressions(reach.totalMonthly) + ' monthly  ·  ' + reach.matched + ' site' + (reach.matched !== 1 ? 's' : '') + (reach.hasLow ? '  (includes preliminary estimates)' : '')
+        : '';
     // Show only campaign sites temporarily
     var grid = document.getElementById('subShortlistGrid');
     var origHTML = grid.innerHTML;
@@ -5121,11 +5204,14 @@ function subPrintCampaign(campId) {
         var b = allBillboards.filter(function(x){ return x['Site Name'] === sn; })[0];
         if (!b) return '';
         var avail = !(b['Availability'] === 'FALSE' || b['Availability'] === false);
+        var d = estimateWeeklyImpressionsDetailed(b);
+        var reachNote = '<div style="font-size:12px;font-weight:700;color:#1565c0;margin:4px 0;">📊 ~' + formatImpressions(d.weekly) + ' weekly reach' + (d.confidence === 'Low' ? ' <span style="font-weight:400;color:#9aa0a6;">(preliminary est.)</span>' : '') + '</div>';
         return '<div class="sub-site-card">' +
             (resolvePhoto(b['Photo'], b['Maps URL']) ? '<img src="' + resolvePhoto(b['Photo'], b['Maps URL']) + '" alt="" style="width:100%;height:160px;object-fit:cover;display:block;border-radius:14px 14px 0 0;" onerror="this.style.display=\'none\'">' : '') +
             '<div class="sub-site-body">' +
             '<div class="sub-site-name">' + sn + '</div>' +
             '<div class="sub-site-tag">&#x1F4CD; ' + (b['Tag']||'') + '</div>' +
+            reachNote +
             '<span class="sub-avail-chip ' + (avail ? 'avail' : 'unavail') + '">' + (avail ? '&#x2705; Available' : '&#x1F534; Unavailable') + '</span>' +
             '<div class="sub-site-specs"><div><strong>Size</strong>' + (b['Size']||'—') + '</div><div><strong>Type</strong>' + (b['Type']||'—') + '</div><div><strong>Illumination</strong>' + (b['Illumination']||'—') + '</div><div><strong>Price</strong>' + (b['Price']||'—') + '</div></div>' +
             '</div></div>';
@@ -5136,6 +5222,7 @@ function subPrintCampaign(campId) {
         window.print();
         grid.innerHTML = origHTML;
         document.getElementById('proposalHeader').style.display = 'none';
+        document.getElementById('proposalReachSummary').textContent = '';
         subRenderShortlist();
     }, 300);
 }
