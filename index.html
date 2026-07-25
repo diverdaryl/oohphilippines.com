@@ -68,7 +68,7 @@
         color: #1565c0;
         text-decoration: none;
         font-weight: 600;
-        padding: 7px 13px;
+        padding: 7px 11px;
         border-radius: 7px;
         background: rgba(255, 255, 255, 0.75);
         transition: all 0.3s;
@@ -2030,7 +2030,7 @@
     .ad-slot-label { text-align:center; font-size:10px; font-weight:700; letter-spacing:1.5px; color:#9aa7b5; text-transform:uppercase; margin-bottom:6px; }
     .home-ad-strip a.ad-banner-link { display:block; border-radius:12px; overflow:hidden; box-shadow:0 4px 18px rgba(0,0,0,0.10); border:1px solid #e0e6ec; transition:transform 0.2s, box-shadow 0.2s; }
     .home-ad-strip a.ad-banner-link:hover { transform:translateY(-2px); box-shadow:0 8px 26px rgba(0,0,0,0.15); }
-    .home-ad-strip img { display:block; width:100%; height:auto; max-height:110px; object-fit:cover; transition:opacity 0.4s ease; }
+    .home-ad-strip img { display:block; width:100%; height:auto; max-height:110px; object-fit:cover; }
     .ad-dots { text-align:center; margin-top:8px; }
     .ad-dots span { display:inline-block; width:7px; height:7px; border-radius:50%; background:#c5d0da; margin:0 3px; cursor:pointer; transition:background 0.2s; }
     .ad-dots span.on { background:#1565c0; }
@@ -2038,8 +2038,8 @@
     .home-ad-house strong { display:block; font-size:17px; margin-bottom:4px; }
     .home-ad-house span { font-size:13px; opacity:0.85; }
     .ad-card { max-width:600px; width:100%; margin:0 auto 24px auto; }
-    .ad-card a.ad-banner-link { display:flex; align-items:center; justify-content:center; height:200px; background:#f5f7fa; border-radius:16px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.08); border:1px solid #e8eaed; }
-    .ad-card img { display:block; max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; transition:opacity 0.4s ease; }
+    .ad-card a.ad-banner-link { display:block; border-radius:16px; overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.08); border:1px solid #e8eaed; }
+    .ad-card img { display:block; width:100%; height:auto; }
     @media(max-width:600px){ .home-ad-strip, .home-ad-house { margin-left:16px; margin-right:16px; } }
 
 </style>
@@ -2067,6 +2067,7 @@
         <a href="looking-for-billboard.html" class="nav-link" style="text-decoration:none;position:relative;">Looking For Sites? <span id="inquiryBadge" style="display:none;position:absolute;top:-6px;right:-6px;background:#e65100;color:white;font-size:10px;font-weight:800;padding:2px 6px;border-radius:10px;min-width:18px;text-align:center;"></span></a>
         <a href="pricing.html" class="nav-link">💎 Pricing</a>
         <a href="guides.html" class="nav-link">📝 OOH Insights</a>
+        <a href="roi-calculator.html" class="nav-link" style="background:#e8f0fe;color:#1565c0;font-weight:700;" title="ROI Calculator">📈 ROI</a>
         <a class="nav-link" href="about.html" style="text-decoration:none;display:inline-block;">About Us</a>
         <a href="upload.html" class="nav-link primary" style="padding:6px 12px;">📍 Upload Your Site</a>
         <button class="nav-link" id="subNavBtn" onclick="subNavClick()" style="background:#fff3e0;color:#e65100;display:none;">👤 My Account</button>
@@ -2100,6 +2101,7 @@
     <a href="looking-for-billboard.html" style="display:block;padding:12px 20px;color:#333;text-decoration:none;font-weight:600;">Looking For Sites? <span id="inquiryBadgeMobile" style="display:none;background:#e65100;color:white;font-size:10px;font-weight:800;padding:2px 6px;border-radius:10px;margin-left:4px;vertical-align:middle;"></span></a>
     <a href="pricing.html" class="nav-link" style="display:block;text-align:left;">💎 Pricing</a>
     <a href="guides.html" class="nav-link" style="display:block;text-align:left;">📝 OOH Insights</a>
+    <a href="roi-calculator.html" style="background:#e8f0fe;color:#1565c0;font-weight:700;display:block;text-align:left;text-decoration:none;padding:10px 14px;border-radius:8px;">📈 ROI Calculator</a>
     <a href="about.html" style="text-decoration:none;display:block;">About Us</a>
     <a href="upload.html" style="display:block;padding:12px 20px;background:#1565c0;color:white;border-radius:8px;text-align:center;font-weight:700;text-decoration:none;margin-bottom:8px;">📍 Upload your Sites Here</a>
     <button id="subMobileBtn" onclick="subNavClick();closeMobileMenu();" style="background:#fff3e0;color:#e65100;display:none;">👤 My Account</button>
@@ -2267,14 +2269,6 @@
 <!-- Inventory Page -->
 <div id="inventoryPage" class="page">
     <div class="inventory-container">
-        <!-- Sponsored banner strip (direct-sold, top of inventory page) -->
-        <div class="home-ad-strip" id="resultsTopAdStrip" style="display:none;">
-            <div class="ad-slot-label">Sponsored</div>
-            <a id="resultsTopAdLink" class="ad-banner-link" href="#" target="_blank" rel="noopener sponsored">
-                <img id="resultsTopAdImg" src="" alt="Advertisement">
-            </a>
-            <div class="ad-dots" id="resultsTopAdDots"></div>
-        </div>
         <h1 class="inventory-title">Billboard Inventory</h1>
         <div style="text-align:center; margin-bottom: 20px;">
             <button onclick="goToSearch()" style="padding: 12px 28px; background: #1565c0; color: white; border: none; border-radius: 50px; font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 14px rgba(21,101,192,0.3); transition: all 0.3s;" onmouseover="this.style.background='#0d47a1';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='#1565c0';this.style.transform='translateY(0)'">🔍 Search Billboards</button>
@@ -2475,6 +2469,7 @@
 
 
 <!-- OPERATOR LOGIN PAGE -->
+
 <div id="operatorLoginPage" class="page">
     <div class="op-login-wrap">
         <div class="op-login-card">
@@ -3710,7 +3705,6 @@ function showPage(pageId) {
     document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
     var t = document.getElementById(pageId + 'Page');
     if (t) { t.classList.add('active'); window.scrollTo(0,0); }
-    if (pageId === 'inventory' && typeof renderResultsTopAdStrip === 'function') { renderResultsTopAdStrip(); }
 }
 function goToSearch() {
     showPage('home');
@@ -3776,8 +3770,7 @@ function initBannerAds() {
             bannerAdsHome = ads.filter(function(a){ return a.placement === 'home' || a.placement === 'both'; });
             bannerAdsResults = ads.filter(function(a){ return a.placement === 'results' || a.placement === 'both'; });
             renderHomeAdStrip();
-            renderResultsTopAdStrip();
-        }, function(){ renderHomeAdStrip(); renderResultsTopAdStrip(); });
+        }, function(){ renderHomeAdStrip(); });
 }
 
 function renderHomeAdStrip() {
@@ -3804,22 +3797,14 @@ function renderHomeAdStrip() {
     resetHomeAdTimer();
 }
 
-function fadeSwapImage(img, src, alt) {
-    img.style.opacity = '0';
-    setTimeout(function() {
-        img.src = src;
-        img.alt = alt;
-        img.style.opacity = '1';
-    }, 250);
-}
-
 function showHomeAd(i) {
     if (bannerAdsHome.length === 0) return;
     homeAdIndex = i % bannerAdsHome.length;
     var ad = bannerAdsHome[homeAdIndex];
     var img = document.getElementById('homeAdImg');
     var link = document.getElementById('homeAdLink');
-    fadeSwapImage(img, ad.image_url, ad.advertiser + ' — advertisement');
+    img.src = ad.image_url;
+    img.alt = ad.advertiser + ' — advertisement';
     link.href = ad.link_url || '#';
     link.onclick = function(){ adTrack(ad.id, 'click'); };
     adImpression(ad.id);
@@ -3834,78 +3819,9 @@ function resetHomeAdTimer() {
     }
 }
 
-var resultsTopAdIndex = 0;
-var resultsTopAdTimer = null;
-
-function renderResultsTopAdStrip() {
-    var strip = document.getElementById('resultsTopAdStrip');
-    if (!strip) return;
-    if (bannerAdsHome.length === 0) {
-        strip.style.display = 'none';
-        return;
-    }
-    strip.style.display = 'block';
-    var dots = document.getElementById('resultsTopAdDots');
-    dots.innerHTML = '';
-    if (bannerAdsHome.length > 1) {
-        bannerAdsHome.forEach(function(_, i) {
-            var d = document.createElement('span');
-            d.onclick = function(){ showResultsTopAd(i); resetResultsTopAdTimer(); };
-            dots.appendChild(d);
-        });
-    }
-    showResultsTopAd(0);
-    resetResultsTopAdTimer();
-}
-
-function showResultsTopAd(i) {
-    if (bannerAdsHome.length === 0) return;
-    resultsTopAdIndex = i % bannerAdsHome.length;
-    var ad = bannerAdsHome[resultsTopAdIndex];
-    var img = document.getElementById('resultsTopAdImg');
-    var link = document.getElementById('resultsTopAdLink');
-    if (!img || !link) return;
-    fadeSwapImage(img, ad.image_url, ad.advertiser + ' — advertisement');
-    link.href = ad.link_url || '#';
-    link.onclick = function(){ adTrack(ad.id, 'click'); };
-    adImpression(ad.id);
-    var dots = document.getElementById('resultsTopAdDots').children;
-    for (var d = 0; d < dots.length; d++) dots[d].className = (d === resultsTopAdIndex) ? 'on' : '';
-}
-
-function resetResultsTopAdTimer() {
-    if (resultsTopAdTimer) clearInterval(resultsTopAdTimer);
-    if (bannerAdsHome.length > 1) {
-        resultsTopAdTimer = setInterval(function(){ showResultsTopAd(resultsTopAdIndex + 1); }, 6000);
-    }
-}
-
-var activeResultsAdCards = [];
-var resultsAdRotateTimer = null;
-
-function ensureResultsAdRotateTimer() {
-    if (resultsAdRotateTimer) return;
-    resultsAdRotateTimer = setInterval(function() {
-        // Prune cards no longer on the page (removed by a new search, etc.)
-        activeResultsAdCards = activeResultsAdCards.filter(function(entry) {
-            return document.body.contains(entry.imgEl);
-        });
-        activeResultsAdCards.forEach(function(entry) {
-            if (entry.ads.length < 2) return;
-            entry.index = (entry.index + 1) % entry.ads.length;
-            var ad = entry.ads[entry.index];
-            fadeSwapImage(entry.imgEl, ad.image_url, (ad.advertiser || 'Advertisement') + ' — advertisement');
-            entry.linkEl.href = ad.link_url || '#';
-            entry.linkEl.onclick = function(){ adTrack(ad.id, 'click'); };
-            adImpression(ad.id);
-        });
-    }, 6000);
-}
-
 function buildResultsAdCard() {
     if (bannerAdsResults.length === 0) return null;
-    var startIndex = resultsAdCursor % bannerAdsResults.length;
-    var ad = bannerAdsResults[startIndex];
+    var ad = bannerAdsResults[resultsAdCursor % bannerAdsResults.length];
     resultsAdCursor++;
     adImpression(ad.id);
     var wrap = document.createElement('div');
@@ -3915,13 +3831,7 @@ function buildResultsAdCard() {
         '<a class="ad-banner-link" href="' + (ad.link_url || '#') + '" target="_blank" rel="noopener sponsored">' +
         '<img src="' + ad.image_url + '" alt="' + (ad.advertiser || 'Advertisement') + '">' +
         '</a>';
-    var linkEl = wrap.querySelector('a');
-    var imgEl = wrap.querySelector('img');
-    linkEl.addEventListener('click', function(){ adTrack(ad.id, 'click'); });
-    if (bannerAdsResults.length > 1) {
-        activeResultsAdCards.push({ imgEl: imgEl, linkEl: linkEl, ads: bannerAdsResults, index: startIndex });
-        ensureResultsAdRotateTimer();
-    }
+    wrap.querySelector('a').addEventListener('click', function(){ adTrack(ad.id, 'click'); });
     return wrap;
 }
 /* ══════════ END BANNER ADS ══════════ */
@@ -5018,6 +4928,9 @@ showPage = function(pageId) {
     }
     _origShowPage2(pageId);
 };
+
+
+
 
 // ============================================================
 // AGENCY FEATURES
