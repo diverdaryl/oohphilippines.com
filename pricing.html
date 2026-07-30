@@ -50,6 +50,14 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
 .plan-cta.outline:hover { background: #e65100; color: white; }
 .plan-cta.ghost { background: #f5f5f5; color: #aaa; cursor: not-allowed; }
 
+/* CREDITS */
+.credit-price .amount { font-size: 40px; font-weight: 900; color: #e65100; line-height: 1; }
+.credit-price .currency { font-size: 18px; font-weight: 700; color: #e65100; vertical-align: top; margin-top: 6px; display: inline-block; }
+.credit-price .period { font-size: 13px; color: #888; margin-top: 4px; display: block; }
+.credit-count { display: inline-block; background: #fff3e0; color: #e65100; font-weight: 800; font-size: 15px; padding: 6px 14px; border-radius: 20px; }
+.credit-perunit { font-size: 12px; color: #90a4ae; }
+.credit-save { display: inline-block; background: #e8f5e9; color: #2e7d32; font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 12px; }
+
 /* GUARANTEE */
 .pricing-guarantee { background: white; border-radius: 16px; padding: 28px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.06); margin-bottom: 40px; }
 
@@ -70,6 +78,11 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
 .faq-item h3 { font-size: 15px; font-weight: 700; color: #1565c0; margin-bottom: 10px; }
 .faq-item p { font-size: 14px; color: #666; line-height: 1.6; }
 
+/* SECTION HEADER */
+.section-head { text-align: center; margin-bottom: 8px; }
+.section-head h2 { font-size: 28px; font-weight: 800; color: #1565c0; }
+.section-sub { text-align: center; color: #666; font-size: 15px; margin-bottom: 26px; max-width: 620px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+
 /* MODAL */
 .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(6px); z-index: 2000; align-items: center; justify-content: center; padding: 1rem; }
 .modal-overlay.active { display: flex; }
@@ -84,6 +97,7 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
 .modal-input { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-family: 'Segoe UI', sans-serif; font-size: 15px; color: #202124; outline: none; transition: border-color 0.3s; margin-bottom: 16px; }
 .modal-input:focus { border-color: #1565c0; }
 .modal-input::placeholder { color: #b0bec5; }
+.modal-note { font-size: 12px; color: #90a4ae; margin: -8px 0 16px; line-height: 1.5; }
 .modal-error { display: none; background: #fde8e8; border: 1px solid #f5c6cb; border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #c0392b; margin-bottom: 14px; }
 .modal-error.active { display: block; }
 .modal-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #e65100, #bf360c); color: white; border: none; border-radius: 10px; font-family: 'Segoe UI', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
@@ -150,85 +164,123 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
     <a href="index.html" class="nav-link">🔍 Search</a>
     <span class="nav-link active">💎 Pricing</span>
     <a href="mailto:info@oohphilippines.com" class="nav-link">Contact Us</a>
-    <a href="index.html#subscriberLogin" class="nav-link" style="background:#fff3e0;color:#e65100;">🔑 Subscriber Login</a>
+    <a href="index.html" class="nav-link" style="background:#fff3e0;color:#e65100;">🔑 Log In</a>
   </div>
 </div>
 </div>
 
 <div class="pricing-wrap">
-  <h1>Simple, transparent pricing</h1>
-  <p>Find the perfect plan for your OOH advertising needs. Upgrade or cancel anytime.</p>
-  <div style="font-size:13px;color:#e65100;font-weight:700;margin-bottom:4px;">⭐ Founding Member Offer: Lock in today's rates before prices increase.</div>
-  <div style="font-size:12px;color:#888;margin-bottom:28px;">Early subscribers keep their rate permanently as the platform grows.</div>
+  <h1>Simple, credit-based pricing</h1>
+  <p>Browse the entire Philippine OOH market for free. Pay only for the deep audience data and ROI tools you actually use.</p>
+  <div style="font-size:13px;color:#e65100;font-weight:700;margin-bottom:4px;">⭐ Sign up and get 5 free credits — no card required.</div>
+  <div style="font-size:12px;color:#888;margin-bottom:28px;">Credits never expire. Use them whenever you need deeper insight on a site.</div>
 
-  <!-- PLAN CARDS -->
+  <!-- FREE ACCOUNT + WHAT A CREDIT IS -->
   <div class="pricing-grid">
 
-    <!-- Free -->
-    <div class="pricing-card">
+    <!-- Free account -->
+    <div class="pricing-card featured">
+      <div class="featured-badge">⭐ FREE TO START</div>
       <span class="plan-icon">🔍</span>
-      <div class="plan-name">Free</div>
-      <div class="plan-tagline">Explore the Philippine OOH market at no cost.</div>
+      <div class="plan-name">Free Account</div>
+      <div class="plan-tagline">Full access to the directory — the whole market at your fingertips.</div>
       <div class="plan-price">
         <span class="currency">₱</span><span class="amount">0</span>
         <span class="period">forever</span>
       </div>
       <hr class="plan-divider">
       <ul class="plan-features">
-        <li>✅ Search &amp; browse all billboard sites</li>
-        <li>✅ View location, size &amp; type</li>
-        <li>✅ Browse active promos</li>
-        <li>✅ 5 searches per week</li>
-        <li class="muted">🔒 Full contact info</li>
-        <li class="muted">🔒 Audience reach insights</li>
-        <li class="muted">🔒 Shortlist &amp; save sites</li>
-        <li class="muted">🔒 Export to PDF / Excel</li>
+        <li>✅ Search &amp; browse <strong>all</strong> billboard sites</li>
+        <li>✅ Full contact info (email, phone, Viber, WhatsApp)</li>
+        <li>✅ Headline audience reach on every site</li>
+        <li>✅ Shortlist &amp; save favourite sites</li>
+        <li>✅ Campaign planning &amp; grouping</li>
+        <li>✅ Export to PDF / CSV</li>
+        <li>✅ <strong>5 free credits</strong> to start</li>
       </ul>
-      <button class="plan-cta ghost" disabled>Get Started Free</button>
+      <a class="plan-cta primary" href="index.html">Sign Up Free →</a>
     </div>
 
-    <!-- Pro -->
+    <!-- What a credit unlocks -->
+    <div class="pricing-card">
+      <span class="plan-icon">⭐</span>
+      <div class="plan-name">What credits unlock</div>
+      <div class="plan-tagline">Everyday browsing is free. Credits reveal the deep numbers when you're ready to plan.</div>
+      <hr class="plan-divider">
+      <ul class="plan-features">
+        <li>📊 <strong>1 credit</strong> = one full <strong>audience-measurement breakdown</strong> for a site (traffic, OTS, direction &amp; format factors, sources)</li>
+        <li>📈 <strong>1 credit</strong> = one <strong>ROI computation</strong> in the ROI calculator</li>
+        <li>🆓 Headline reach numbers stay free — you only spend a credit to open the detailed view</li>
+        <li>♾️ Credits <strong>never expire</strong></li>
+        <li>💬 Featured sites &amp; operator inquiries are always free</li>
+      </ul>
+      <a class="plan-cta outline" href="#buy-credits">Buy Credits ↓</a>
+    </div>
+
+  </div>
+
+  <!-- CREDIT PACKS -->
+  <div id="buy-credits" class="section-head"><h2>💳 Buy Credits</h2></div>
+  <p class="section-sub">Top up anytime. Bigger packs cost less per credit. One-time payment — no subscription, no auto-renew.</p>
+
+  <div class="pricing-grid">
+
+    <!-- Starter 10 -->
+    <div class="pricing-card">
+      <span class="credit-count">10 credits</span>
+      <div class="plan-name">Starter</div>
+      <div class="plan-tagline">A handful of deep-dives to compare your shortlist.</div>
+      <div class="credit-price">
+        <span class="currency">₱</span><span class="amount">500</span>
+        <span class="period">one-time</span>
+      </div>
+      <div class="credit-perunit">₱50 per credit</div>
+      <hr class="plan-divider">
+      <ul class="plan-features">
+        <li>✅ 10 audience breakdowns or ROI runs</li>
+        <li>✅ Credits never expire</li>
+        <li>✅ Added to your account after payment</li>
+      </ul>
+      <button class="plan-cta outline" onclick="openModal('credits_10','10 Credits',500,'credits')">Buy 10 — ₱500 →</button>
+    </div>
+
+    <!-- Popular 20 -->
     <div class="pricing-card featured">
       <div class="featured-badge">⭐ MOST POPULAR</div>
-      <span class="plan-icon">💼</span>
-      <div class="plan-name">Pro</div>
-      <div class="plan-tagline">For brands &amp; media buyers planning campaigns.</div>
-      <div class="plan-price">
-        <span class="currency">₱</span><span class="amount">999</span>
-        <span class="period">/ month</span>
+      <span class="credit-count">20 credits</span>
+      <div class="plan-name">Popular <span class="credit-save">Save 10%</span></div>
+      <div class="plan-tagline">Enough to plan a full campaign end-to-end.</div>
+      <div class="credit-price">
+        <span class="currency">₱</span><span class="amount">900</span>
+        <span class="period">one-time</span>
       </div>
+      <div class="credit-perunit">₱45 per credit</div>
       <hr class="plan-divider">
       <ul class="plan-features">
-        <li>✅ Everything in Free</li>
-        <li>✅ <strong>Unlimited searches</strong></li>
-        <li>✅ Full contact info (phone, Viber, WhatsApp)</li>
-        <li>✅ <strong>📊 Audience reach insights</strong> per site (modeled OTS breakdown)</li>
-        <li>✅ Shortlist &amp; save favorite sites</li>
-        <li>✅ Download site specs as PDF</li>
-        <li>✅ Priority email support</li>
+        <li>✅ 20 audience breakdowns or ROI runs</li>
+        <li>✅ Credits never expire</li>
+        <li>✅ Added to your account after payment</li>
       </ul>
-      <button class="plan-cta primary" onclick="openModal('pro','Pro Plan',999,'subscription')">Subscribe — ₱999/mo →</button>
+      <button class="plan-cta primary" onclick="openModal('credits_20','20 Credits',900,'credits')">Buy 20 — ₱900 →</button>
     </div>
 
-    <!-- Agency -->
+    <!-- Pro 30 -->
     <div class="pricing-card">
-      <span class="plan-icon">🏢</span>
-      <div class="plan-name">Agency</div>
-      <div class="plan-tagline">For agencies managing multiple clients &amp; campaigns.</div>
-      <div class="plan-price">
-        <span class="currency">₱</span><span class="amount">2,999</span>
-        <span class="period">/ month</span>
+      <span class="credit-count">30 credits</span>
+      <div class="plan-name">Pro <span class="credit-save">Save 13%</span></div>
+      <div class="plan-tagline">Best value for agencies and frequent planners.</div>
+      <div class="credit-price">
+        <span class="currency">₱</span><span class="amount">1,300</span>
+        <span class="period">one-time</span>
       </div>
+      <div class="credit-perunit">₱43 per credit</div>
       <hr class="plan-divider">
       <ul class="plan-features">
-        <li>✅ Everything in Pro, including <strong>📊 Audience reach insights</strong> per site (modeled OTS breakdown)</li>
-        <li>✅ <strong>Up to 5 user seats</strong></li>
-        <li>✅ Campaign planning &amp; grouping</li>
-        <li>✅ Export inventory to Excel / CSV</li>
-        <li>✅ Branded site proposals</li>
-        <li>✅ Dedicated account manager</li>
+        <li>✅ 30 audience breakdowns or ROI runs</li>
+        <li>✅ Credits never expire</li>
+        <li>✅ Added to your account after payment</li>
       </ul>
-      <button class="plan-cta outline" onclick="openModal('agency','Agency Plan',2999,'subscription')">Subscribe — ₱2,999/mo →</button>
+      <button class="plan-cta outline" onclick="openModal('credits_30','30 Credits',1300,'credits')">Buy 30 — ₱1,300 →</button>
     </div>
 
   </div>
@@ -236,9 +288,9 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
   <!-- GUARANTEE -->
   <div class="pricing-guarantee">
     <div style="font-size:36px;">🤝</div>
-    <strong style="color:#1565c0;font-size:18px;">No contracts. No surprises.</strong>
+    <strong style="color:#1565c0;font-size:18px;">No subscriptions. No surprises.</strong>
     <p style="margin-top:8px;color:#666;font-size:14px;line-height:1.6;">
-      Plans billed monthly. Cancel anytime. All payments in Philippine Peso (₱) via QR Ph.<br>
+      Credits are a one-time purchase and never expire. All payments in Philippine Peso (₱) via QR Ph — GCash, Maya, BPI, UnionBank and more.<br>
       Questions? Email us at <a href="mailto:info@oohphilippines.com" style="color:#1565c0;">info@oohphilippines.com</a>
     </p>
   </div>
@@ -270,6 +322,26 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
         <button class="plan-cta outline" onclick="openModal('featured','Featured Listing',1500,'featured_listing')">Get Featured — ₱1,500/mo →</button>
       </div>
 
+      <!-- Banner Advertising -->
+      <div class="operator-card">
+        <div class="op-badge featured-op">📢 Banner Ads</div>
+        <span class="plan-icon">🖼️</span>
+        <div class="plan-name">Banner Advertising</div>
+        <div class="plan-tagline">Put your brand in front of advertisers, agencies and media planners browsing the platform.</div>
+        <div class="plan-price">
+          <span class="amount" style="font-size:28px;">Let's talk</span>
+          <span class="period">custom placements &amp; rates</span>
+        </div>
+        <hr class="plan-divider">
+        <ul class="plan-features">
+          <li>✅ Prime banner slots across the site</li>
+          <li>✅ Reach a high-intent OOH audience</li>
+          <li>✅ Flexible sizes &amp; durations</li>
+          <li>✅ Rates tailored to your campaign</li>
+        </ul>
+        <a class="plan-cta primary" href="mailto:info@oohphilippines.com?subject=Banner%20Ad%20Inquiry%20%E2%80%94%20OOHPhilippines.com&body=Hi%20OOHPhilippines%20team%2C%0A%0AI'd%20like%20to%20inquire%20about%20banner%20advertising%20on%20your%20platform.%0A%0ACompany%2Fbrand%3A%20%0APreferred%20placement%2Fsize%3A%20%0ACampaign%20dates%3A%20%0A%0AThank%20you!">Inquire Here →</a>
+      </div>
+
     </div>
   </div>
 
@@ -278,31 +350,43 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
     <h2>Frequently Asked Questions</h2>
     <div class="faq-grid">
       <div class="faq-item">
-        <h3>How do I subscribe?</h3>
-        <p>Click the Subscribe button, enter your email, and scan the QR code with GCash, Maya, BPI, or any QR Ph-enabled banking app. Your account activates automatically after payment.</p>
+        <h3>Is it really free to browse?</h3>
+        <p>Yes. Signing up is free and unlocks the full directory — every site's location, size, type, contact details, headline audience reach, plus shortlists, campaign planning and PDF/CSV export. You only spend credits to open a detailed audience-measurement breakdown or run an ROI computation.</p>
       </div>
       <div class="faq-item">
-        <h3>Can I cancel anytime?</h3>
-        <p>Yes. There are no long-term contracts. You can cancel at any time and you won't be billed for the next period.</p>
+        <h3>What is a credit?</h3>
+        <p>A credit is a one-time token you spend on deep insight. 1 credit reveals the full audience-measurement breakdown for a billboard (traffic volume, OTS, direction and format factors, and data sources), or runs one calculation in the ROI calculator.</p>
+      </div>
+      <div class="faq-item">
+        <h3>How many free credits do I get?</h3>
+        <p>Every new account starts with 5 free credits — no card required. When you run low, top up with any of the packs above.</p>
+      </div>
+      <div class="faq-item">
+        <h3>Do credits expire?</h3>
+        <p>Never. Credits stay in your account until you use them. There's no subscription and nothing auto-renews.</p>
+      </div>
+      <div class="faq-item">
+        <h3>How do I buy credits?</h3>
+        <p>Click any "Buy" button, confirm the email tied to your account, and scan the QR code with GCash, Maya, BPI, or any QR Ph-enabled banking app. Your credits are added to your account after payment clears.</p>
       </div>
       <div class="faq-item">
         <h3>What payment methods do you accept?</h3>
         <p>We accept payments via QR Ph — scan with GCash, Maya, BPI, UnionBank, and all major Philippine banking apps.</p>
       </div>
       <div class="faq-item">
-        <h3>My billboard is not yet in the directory. Can I still get featured?</h3>
-        <p>Yes! When you click "Get Featured", you can indicate that your billboard is not yet listed and fill in your billboard details. We'll add it to the directory and mark it as featured.</p>
-      </div>
-      <div class="faq-item">
-        <h3>Can I upgrade from Pro to Agency?</h3>
-        <p>Absolutely. Just email us at info@oohphilippines.com and we'll handle the upgrade. It takes effect immediately.</p>
-      </div>
-      <div class="faq-item">
         <h3>What are "audience reach insights"?</h3>
-        <p>For every billboard, Pro and Agency subscribers can see a modeled weekly audience reach estimate — based on traffic volume, road facing, and format visibility — plus a full breakdown of how it was calculated. It's not a measured count, but a transparent, documented estimate to help you compare sites and plan campaigns.</p>
+        <p>For every billboard we show a modeled weekly audience reach estimate — based on traffic volume, road facing, and format visibility. The headline number is free; spending 1 credit opens the full breakdown of how it was calculated and the data sources behind it. It's a transparent, documented estimate, not a measured count.</p>
       </div>
       <div class="faq-item">
-        <h3>Do you offer discounts for NGOs or startups?</h3>
+        <h3>I'm an operator — how do I get featured?</h3>
+        <p>Click "Get Featured" above. You can indicate whether your billboard is already listed or fill in its details so we can add it. Featured listings are a separate ₱1,500/month operator service and don't use credits.</p>
+      </div>
+      <div class="faq-item">
+        <h3>How do banner ads work?</h3>
+        <p>We offer banner placements across the platform to brands, operators and agencies who want visibility with our audience. Rates depend on placement, size and duration, so we handle them case by case — click "Inquire Here" and we'll send you options.</p>
+      </div>
+      <div class="faq-item">
+        <h3>Do you offer discounts for NGOs, startups or bulk credits?</h3>
         <p>Yes! Contact us at info@oohphilippines.com and we'll work something out.</p>
       </div>
     </div>
@@ -393,7 +477,7 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
       <div class="pm-note">Pay securely via QR Ph · Scan with any banking app</div>
     </div>
 
-    <!-- Email form (Step 2 for featured, Step 1 for subscriptions) -->
+    <!-- Email form (Step 2 for featured, Step 1 for credits) -->
     <div id="formStep" style="display:none;">
       <div class="step-indicator" id="featuredStepIndicator" style="display:none;">
         <div class="step-dot">1</div>
@@ -402,13 +486,14 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
         <div class="step-line"></div>
         <div class="step-dot">3</div>
       </div>
-      <div class="modal-tag" id="modalTag">Pro Plan</div>
-      <div class="modal-title" id="modalTitle">Subscribe Now</div>
-      <div class="modal-amount" id="modalAmount">₱999 / month</div>
+      <div class="modal-tag" id="modalTag">10 Credits</div>
+      <div class="modal-title" id="modalTitle">Buy Credits</div>
+      <div class="modal-amount" id="modalAmount">₱500</div>
       <div class="modal-error" id="errorMsg"></div>
-      <label class="modal-label">Your Email Address</label>
+      <label class="modal-label">Your Account Email</label>
       <input class="modal-input" type="email" id="emailInput" placeholder="you@company.com"
         onkeydown="if(event.key==='Enter') handlePayment()" />
+      <div class="modal-note" id="creditNote">Credits will be added to the account with this email. Use the email you signed up with.</div>
       <button class="modal-btn" onclick="handlePayment()">Continue to Payment →</button>
       <div class="pm-note">Pay securely via QR Ph · Scan with any banking app</div>
       <div class="pm-badges">
@@ -432,9 +517,9 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
       <div class="qr-box">
         <img id="qrImage" src="" alt="Payment QR Code" />
       </div>
-      <div class="qr-instructions">
+      <div class="qr-instructions" id="qrInstructions">
         Open <strong>GCash, Maya, BPI</strong>, or any banking app and tap <strong>Scan QR</strong>.<br>
-        Your subscription activates automatically after payment.
+        Your credits are added to your account after payment.
       </div>
       <div class="qr-timer" id="qrTimer">Expires in 5:00</div>
       <div class="pm-badges">
@@ -452,10 +537,13 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
   const EDGE_FN_URL = 'https://xecxfkuzexshafwuuizf.supabase.co/functions/v1/create-payment';
 
   const AMOUNTS = {
-    pro:      '₱999 / month',
-    agency:   '₱2,999 / month',
-    featured: '₱1,500 / month',
+    credits_10: '₱500',
+    credits_20: '₱900',
+    credits_30: '₱1,300',
+    featured:   '₱1,500 / month',
   };
+
+  const PACK_CREDITS = { credits_10: 10, credits_20: 20, credits_30: 30 };
 
   let currentPlan = null;
   let currentType = null;
@@ -466,6 +554,14 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
   let featuredEmail = null;
   let featuredNotes = null;
   let isListedPath = true;
+
+  function loggedInEmail() {
+    try {
+      const u = JSON.parse(localStorage.getItem('oohph_free_user') || 'null');
+      if (u && u.email) return u.email;
+    } catch (e) {}
+    return '';
+  }
 
   function openModal(plan, title, amount, type) {
     currentPlan = plan;
@@ -490,8 +586,12 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
       setListedPath(true);
       showStep('featured');
     } else {
+      // Credits flow
       document.getElementById('featuredStepIndicator').style.display = 'none';
-      document.getElementById('modalTitle').textContent = 'Subscribe Now';
+      document.getElementById('modalTitle').textContent = 'Buy ' + (PACK_CREDITS[plan] || '') + ' Credits';
+      document.getElementById('creditNote').style.display = 'block';
+      const em = loggedInEmail();
+      if (em) document.getElementById('emailInput').value = em;
       showStep('form');
       setTimeout(() => document.getElementById('emailInput').focus(), 100);
     }
@@ -587,6 +687,7 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
 
     featuredEmail = email;
     document.getElementById('emailInput').value = email;
+    document.getElementById('creditNote').style.display = 'none';
     document.getElementById('modalTitle').textContent = 'Confirm & Pay';
     document.getElementById('featuredStepIndicator').style.display = 'flex';
     showStep('form');
@@ -613,6 +714,7 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
           email,
           payment_type: currentType,
           plan: currentPlan,
+          credits: PACK_CREDITS[currentPlan] || null,
           site_code: featuredSiteCode || null,
           site_notes: featuredNotes || null,
           photo_base64: featuredPhotoBase64 || null,
@@ -629,6 +731,9 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:
       }
 
       document.getElementById('qrTitle').textContent = 'Scan to Pay ' + AMOUNTS[currentPlan];
+      document.getElementById('qrInstructions').innerHTML = currentType === 'featured_listing'
+        ? 'Open <strong>GCash, Maya, BPI</strong>, or any banking app and tap <strong>Scan QR</strong>.<br>Your featured listing activates after payment.'
+        : 'Open <strong>GCash, Maya, BPI</strong>, or any banking app and tap <strong>Scan QR</strong>.<br>Your credits are added to your account after payment.';
       document.getElementById('qrImage').src = data.qr_url;
       showStep('qr');
       startTimer(300);
