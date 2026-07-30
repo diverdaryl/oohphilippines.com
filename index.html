@@ -2868,6 +2868,12 @@ var visibleCount = 0;
 // Free user — declared early so isFreeUser() is available everywhere
 var freeCurrentUser = null;
 function isFreeUser() { return freeCurrentUser !== null; }
+// --- Platform admin/owner (full unlimited access, never expires) ---
+var ADMIN_EMAILS = ['darylabueva@gmail.com'];
+function isAdminUser() {
+    var e = ((freeCurrentUser && freeCurrentUser.email) || (subCurrentUser && subCurrentUser.username) || '').toLowerCase();
+    return e !== '' && ADMIN_EMAILS.indexOf(e) !== -1;
+}
 var LOAD_MORE_COUNT = 10;
 
 // Global Street View calibration cache — loaded from sv_calibration table
@@ -3215,7 +3221,7 @@ function buildCard(b) {
     }
     // Subscriber gating
     var isSubscriber = (subCurrentUser !== null);
-    var hasFullAccess = isSubscriber || isFreeUser();
+    var hasFullAccess = isSubscriber || isFreeUser() || isAdminUser();
     // Get live data from globalAvailCache (loaded from Apps Script)
     var siteName0 = b['Site Name'] || '';
     var liveData  = globalAvailCache[siteName0] || null;
@@ -3287,7 +3293,7 @@ function buildCard(b) {
     if (impEst.confidence !== 'Unverified') {
         var isLowConf = impEst.confidence === 'Low';
         var isMedConf = impEst.confidence === 'Medium';
-        var canViewInsights = isSubscriber || isFeatured;
+        var canViewInsights = isSubscriber || isFeatured || isAdminUser();
         var chipStyle = isLowConf ? 'opacity:0.65;border-style:dashed;cursor:pointer;' : 'cursor:pointer;';
         var chipQualifier = impEst.measuredAt ? ' (' + impEst.measuredAt + ' data)*' : (isLowConf ? ' (early est.)*' : (isMedConf ? ' (2021 data)*' : '*'));
         var chipLabel = '📊 ~' + formatImpressions(impEst.weekly) + ' weekly audience reach' + chipQualifier + (canViewInsights ? ' 🔍' : ' 🔒');
@@ -5669,7 +5675,7 @@ function updateNavForFreeUser() {
         var navWrapper = document.querySelector('.nav-wrapper');
         if (navWrapper) navWrapper.insertAdjacentElement('afterend', infoBar);
     }
-    infoBar.innerHTML = '👋 Hi, <strong>' + (freeCurrentUser.name || freeCurrentUser.email) + '</strong> &nbsp;|&nbsp; <a href="javascript:void(0)" onclick="showPage(\'subscriberShortlist\')" style="display:inline-block;background:#1565c0;color:white;font-weight:700;padding:5px 14px;border-radius:20px;text-decoration:none;font-size:13px;">♡ My Account</a> &nbsp;|&nbsp; <a href="javascript:void(0)" onclick="doFreeLogout()" style="color:#999;font-size:12px;">Log out</a>';
+    infoBar.innerHTML = '👋 Hi, <strong>' + (freeCurrentUser.name || freeCurrentUser.email) + '</strong>' + (isAdminUser() ? ' <span style="background:#e65100;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:0.5px;">ADMIN</span>' : '') + ' &nbsp;|&nbsp; <a href="javascript:void(0)" onclick="showPage(\'subscriberShortlist\')" style="display:inline-block;background:#1565c0;color:white;font-weight:700;padding:5px 14px;border-radius:20px;text-decoration:none;font-size:13px;">♡ My Account</a> &nbsp;|&nbsp; <a href="javascript:void(0)" onclick="doFreeLogout()" style="color:#999;font-size:12px;">Log out</a>';
 }
 
 function doFreeLogout() {
@@ -5698,6 +5704,7 @@ function getFreeSearchData() {
 }
 
 function incrementFreeSearch() {
+    if (isAdminUser()) return 0;
     var data = getFreeSearchData();
     data.count = (data.count || 0) + 1;
     try { localStorage.setItem(FREE_SEARCH_KEY, JSON.stringify(data)); } catch(e) {}
@@ -5706,6 +5713,7 @@ function incrementFreeSearch() {
 }
 
 function hasSearchesLeft() {
+    if (isAdminUser()) return true;
     var data = getFreeSearchData();
     return data.count < FREE_SEARCH_MAX;
 }
