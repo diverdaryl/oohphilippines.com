@@ -3294,15 +3294,16 @@ function buildCard(b) {
         var isLowConf = impEst.confidence === 'Low';
         var isMedConf = impEst.confidence === 'Medium';
         var canViewInsights = isSubscriber || isFeatured || isAdminUser();
+        var canClickInsights = canViewInsights || isFreeUser();
         var chipStyle = isLowConf ? 'opacity:0.65;border-style:dashed;cursor:pointer;' : 'cursor:pointer;';
         var chipQualifier = impEst.measuredAt ? ' (' + impEst.measuredAt + ' data)*' : (isLowConf ? ' (early est.)*' : (isMedConf ? ' (2021 data)*' : '*'));
-        var chipLabel = '📊 ~' + formatImpressions(impEst.weekly) + ' weekly audience reach' + chipQualifier + (canViewInsights ? ' 🔍' : ' 🔒');
+        var chipLabel = '📊 ~' + formatImpressions(impEst.weekly) + ' weekly audience reach' + chipQualifier + (canClickInsights ? ' 🔍' : ' 🔒');
         var chipTitle = canViewInsights
             ? 'Click for a detailed reach breakdown'
-            : 'Subscribe to see the detailed reach breakdown';
+            : (isFreeUser() ? 'Uses 1 credit to unlock the full breakdown' : 'Sign up free to view the breakdown');
         var chipOnclick = canViewInsights
             ? "openReachInsights('" + siteName0.replace(/'/g,"\\'") + "')"
-            : "showPage('subscriberLogin')";
+            : (isFreeUser() ? tryViewOnclick(siteName0) : "openSignupModal()");
         specChips += '<span class="bc-spec-chip" style="' + chipStyle + '" title="' + chipTitle + '" onclick="' + chipOnclick + '">' + chipLabel + '</span>';
     }
     // Description
@@ -3687,6 +3688,65 @@ function estimateWeeklyImpressionsDetailed(b) {
         measuredAt: measuredAt, source: source
     };
 }
+
+// ── Credit system: free users spend 1 credit per detailed reach view; admin/featured are free ──
+var _viewedInsights = {};
+function creditBalance() { return (freeCurrentUser && typeof freeCurrentUser.credits === 'number') ? freeCurrentUser.credits : 0; }
+function refreshCredits() {
+    if (!freeCurrentUser || !freeCurrentUser.email) return;
+    _supabase.from('free_users').select('credits').eq('email', freeCurrentUser.email).maybeSingle().then(function(res){
+        if (!res.error && res.data && typeof res.data.credits === 'number') {
+            freeCurrentUser.credits = res.data.credits;
+            try { localStorage.setItem(FREE_USER_KEY, JSON.stringify(freeCurrentUser)); } catch(e) {}
+            if (typeof updateNavForFreeUser === 'function' && freeCurrentUser) updateNavForFreeUser();
+        }
+    });
+}
+function tryViewInsights(siteName) {
+    if (isAdminUser() || _viewedInsights[siteName]) { openReachInsights(siteName); return; }
+    if (!freeCurrentUser) { openSignupModal(); return; }
+    if (creditBalance() <= 0) { openBuyCreditsModal(); return; }
+    _supabase.rpc('spend_credit', { p_email: freeCurrentUser.email }).then(function(res){
+        if (res.error) { alert('Sorry, we could not process your credit. Please try again.'); return; }
+        var newBal = res.data;
+        if (newBal === null || newBal < 0) {
+            freeCurrentUser.credits = 0;
+            try { localStorage.setItem(FREE_USER_KEY, JSON.stringify(freeCurrentUser)); } catch(e) {}
+            updateNavForFreeUser(); openBuyCreditsModal(); return;
+        }
+        freeCurrentUser.credits = newBal;
+        _viewedInsights[siteName] = true;
+        try { localStorage.setItem(FREE_USER_KEY, JSON.stringify(freeCurrentUser)); } catch(e) {}
+        updateNavForFreeUser();
+        openReachInsights(siteName);
+    });
+}
+function closeBuyCredits() { var o = document.getElementById('buyCreditsOverlay'); if (o) o.style.display = 'none'; }
+function openBuyCreditsModal() {
+    var ov = document.getElementById('buyCreditsOverlay');
+    if (!ov) {
+        ov = document.createElement('div');
+        ov.id = 'buyCreditsOverlay';
+        ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;';
+        ov.onclick = function(e){ if (e.target === ov) closeBuyCredits(); };
+        ov.innerHTML = '<div style="background:#fff;border-radius:16px;max-width:430px;width:100%;padding:28px;text-align:center;font-family:Segoe UI,sans-serif;box-shadow:0 12px 40px rgba(0,0,0,0.25);">'
+          + '<div style="font-size:40px;margin-bottom:6px;">⭐</div>'
+          + '<h3 style="color:#1565c0;font-size:20px;margin:0 0 8px;">You are out of credits</h3>'
+          + '<p style="color:#555;font-size:14px;line-height:1.6;margin:0 0 16px;">Credits unlock the full audience-measurement breakdown and ROI computations. Top up to keep going:</p>'
+          + '<div style="display:flex;gap:8px;justify-content:center;margin-bottom:14px;flex-wrap:wrap;">'
+          +   '<div style="border:1px solid #e0e0e0;border-radius:10px;padding:12px 14px;min-width:88px;"><div style="font-weight:800;color:#1565c0;font-size:18px;">10</div><div style="font-size:11px;color:#888;">credits</div><div style="font-weight:700;color:#e65100;margin-top:4px;">&#8369;500</div></div>'
+          +   '<div style="border:1px solid #e0e0e0;border-radius:10px;padding:12px 14px;min-width:88px;"><div style="font-weight:800;color:#1565c0;font-size:18px;">20</div><div style="font-size:11px;color:#888;">credits</div><div style="font-weight:700;color:#e65100;margin-top:4px;">&#8369;900</div></div>'
+          +   '<div style="border:1px solid #e0e0e0;border-radius:10px;padding:12px 14px;min-width:88px;"><div style="font-weight:800;color:#1565c0;font-size:18px;">30</div><div style="font-size:11px;color:#888;">credits</div><div style="font-weight:700;color:#e65100;margin-top:4px;">&#8369;1300</div></div>'
+          + '</div>'
+          + '<p style="font-size:12px;color:#999;margin:0 0 16px;">Online purchase is coming soon. To top up now, email <a href="mailto:info@oohphilippines.com" style="color:#1565c0;">info@oohphilippines.com</a>.</p>'
+          + '<button onclick="closeBuyCredits()" style="background:#1565c0;color:#fff;border:none;padding:11px 28px;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;">Got it</button>'
+          + '</div>';
+        document.body.appendChild(ov);
+    }
+    ov.style.display = 'flex';
+}
+
+function tryViewOnclick(sn) { return "tryViewInsights('" + String(sn).replace(/'/g, "\\'") + "')"; }
 
 function openReachInsights(siteName) {
     var b = null;
@@ -5647,6 +5707,7 @@ var FREE_RESET_DAYS  = 7;
             freeCurrentUser = JSON.parse(stored);
             hideBanner();
             updateNavForFreeUser();
+            refreshCredits();
         }
     } catch(e) {}
 })();
@@ -5675,7 +5736,7 @@ function updateNavForFreeUser() {
         var navWrapper = document.querySelector('.nav-wrapper');
         if (navWrapper) navWrapper.insertAdjacentElement('afterend', infoBar);
     }
-    infoBar.innerHTML = '👋 Hi, <strong>' + (freeCurrentUser.name || freeCurrentUser.email) + '</strong>' + (isAdminUser() ? ' <span style="background:#e65100;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:0.5px;">ADMIN</span>' : '') + ' &nbsp;|&nbsp; <a href="javascript:void(0)" onclick="showPage(\'subscriberShortlist\')" style="display:inline-block;background:#1565c0;color:white;font-weight:700;padding:5px 14px;border-radius:20px;text-decoration:none;font-size:13px;">♡ My Account</a> &nbsp;|&nbsp; <a href="javascript:void(0)" onclick="doFreeLogout()" style="color:#999;font-size:12px;">Log out</a>';
+    infoBar.innerHTML = '👋 Hi, <strong>' + (freeCurrentUser.name || freeCurrentUser.email) + '</strong>' + (isAdminUser() ? ' <span style="background:#e65100;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:0.5px;">ADMIN</span>' : ' <span style="background:#fff3e0;color:#e65100;font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;">⭐ ' + creditBalance() + ' credits</span>') + ' &nbsp;|&nbsp; <a href="javascript:void(0)" onclick="showPage(\'subscriberShortlist\')" style="display:inline-block;background:#1565c0;color:white;font-weight:700;padding:5px 14px;border-radius:20px;text-decoration:none;font-size:13px;">♡ My Account</a> &nbsp;|&nbsp; <a href="javascript:void(0)" onclick="doFreeLogout()" style="color:#999;font-size:12px;">Log out</a>';
 }
 
 function doFreeLogout() {
@@ -5907,7 +5968,7 @@ async function doSignup() {
     }
 
     // Save to localStorage
-    var user = { name: name, email: email, company: company };
+    var user = { name: name, email: email, company: company, credits: 5 };
     freeCurrentUser = user;
     try { localStorage.setItem(FREE_USER_KEY, JSON.stringify(user)); } catch(e) {}
     try { localStorage.setItem(FREE_SEARCH_KEY, JSON.stringify({ count: 0, resetDate: new Date().getTime() })); } catch(e) {}
@@ -5937,7 +5998,7 @@ async function doFreeLogin() {
     // Fetch user by email only, then compare password hash
     var { data, error } = await _supabase
         .from('free_users')
-        .select('name, email, company, password')
+        .select('name, email, company, password, credits')
         .eq('email', email)
         .maybeSingle();
 
@@ -5981,7 +6042,7 @@ async function doFreeLogin() {
             showPage('subscriberShortlist');
         }
     } else {
-        freeCurrentUser = { name: data.name, email: data.email, company: data.company || '' };
+        freeCurrentUser = { name: data.name, email: data.email, company: data.company || '', credits: (typeof data.credits === 'number' ? data.credits : 0) };
         try { localStorage.setItem(FREE_USER_KEY, JSON.stringify(freeCurrentUser)); } catch(e) {}
         closeSignupModal();
         updateNavForFreeUser();
