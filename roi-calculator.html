@@ -607,6 +607,20 @@ function roiCheckSubscriber() {
     } catch(e) {}
 }
 
+// Admin/owner (darylabueva) = unlimited ROI, never metered
+function roiCheckAdmin() {
+    try {
+        var raw = localStorage.getItem('oohph_free_user');
+        if (!raw) return;
+        var u = JSON.parse(raw);
+        var email = (u && u.email || '').toLowerCase();
+        if (email && ['darylabueva@gmail.com'].indexOf(email) !== -1) {
+            roiIsSubscriber = true; // admin unlimited
+            roiRenderState();
+        }
+    } catch(e) {}
+}
+
 function roiSiteSearchInput() {
     var q = (document.getElementById('roiSiteSearch').value || '').trim().toUpperCase();
     var box = document.getElementById('roiSiteResults');
@@ -727,6 +741,7 @@ function closeAssumptionsGuide() { document.getElementById('assumptionsModal').s
 (function(){
     roiRenderState();
     roiCheckSubscriber();
+    roiCheckAdmin();
     loadLiveTraffic();
     fetch(SHEET_URL)
         .then(function(r){ return r.text(); })
