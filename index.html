@@ -2072,23 +2072,7 @@
         <a href="upload.html" class="nav-link primary" style="padding:6px 12px;">📍 Upload Your Site</a>
         <button class="nav-link" id="subNavBtn" onclick="subNavClick()" style="background:#fff3e0;color:#e65100;display:none;">👤 My Account</button>
         <div class="nav-login-dropdown" id="navLoginDropdown">
-            <button class="nav-login-btn" onclick="toggleLoginMenu()" id="navLoginToggle">🔑 Login <span style="font-size:10px;">▾</span></button>
-            <div class="nav-login-menu" id="navLoginMenu">
-                <button onclick="showPage('subscriberLogin'); closeLoginMenu();" style="color:#e65100;">
-                    🔑 Subscriber Login
-                    <span class="menu-sub">Agencies &amp; advertisers</span>
-                </button>
-                <div class="menu-divider"></div>
-                <button onclick="showPage('operatorLogin'); closeLoginMenu();" style="color:#2e7d32;">
-                    🔐 Operator Login
-                    <span class="menu-sub">Billboard operators</span>
-                </button>
-                <div class="menu-divider"></div>
-                <button onclick="openSignupModal(); closeLoginMenu();" style="color:#1565c0;">
-                    ✨ Sign Up Free
-                    <span class="menu-sub">New users</span>
-                </button>
-            </div>
+            <button class="nav-login-btn" onclick="showPage('operatorLogin')" id="navLoginToggle">🔐 Operator Log In</button>
         </div>
     </div>
     <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileMenu()">
