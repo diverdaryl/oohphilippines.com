@@ -863,115 +863,101 @@ async function roiGeneratePDF(btn) {
 
         var doc = new window.jspdf.jsPDF({ unit: 'pt', format: 'a4' });
         var W = doc.internal.pageSize.getWidth();
-        var H = doc.internal.pageSize.getHeight();
         var x = 40, y;
-        function ensure(h){ if (y + h > H - 40) { doc.addPage(); y = 48; } }
         function txt(id){ var el = document.getElementById(id); return ((el && el.textContent) || '').replace(/₱/g, 'PHP '); }
         function val(id){ return document.getElementById(id).value || '0'; }
         function money(v){ var n = parseFloat(v) || 0; return 'PHP ' + n.toLocaleString('en-PH'); }
 
         // Header band
-        doc.setFillColor(21,101,192); doc.rect(0,0,W,72,'F');
+        doc.setFillColor(21,101,192); doc.rect(0,0,W,60,'F');
         doc.setTextColor(255,255,255);
-        doc.setFont('helvetica','bold'); doc.setFontSize(19); doc.text('OOHPhilippines.com', x, 34);
-        doc.setFont('helvetica','normal'); doc.setFontSize(11); doc.text('Billboard ROI & Audience Report', x, 54);
+        doc.setFont('helvetica','bold'); doc.setFontSize(18); doc.text('OOHPhilippines.com', x, 28);
+        doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.text('Billboard ROI & Audience Report', x, 46);
         var today = new Date().toLocaleDateString('en-PH', { year:'numeric', month:'long', day:'numeric' });
-        doc.setFontSize(9); doc.text(today, W - x, 54, { align:'right' });
+        doc.setFontSize(9); doc.text(today, W - x, 46, { align:'right' });
 
-        y = 100; doc.setTextColor(32,33,36);
-        doc.setFont('helvetica','bold'); doc.setFontSize(15); doc.text(siteName, x, y); y += 16;
-        doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(95,99,104);
-        doc.text(loc, x, y); y += 18;
+        y = 82; doc.setTextColor(32,33,36);
+        doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.text(siteName, x, y); y += 15;
+        doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(95,99,104);
+        doc.text(loc, x, y); y += 14;
 
-        // Site image (photo or Street View)
+        // Site image (photo or Street View) — capped for single-page layout
         if (img && img.dataURL) {
             var maxW = W - 2*x, ratio = img.h / img.w, dispW = maxW, dispH = maxW * ratio;
-            if (dispH > 235) { dispH = 235; dispW = 235 / ratio; }
+            if (dispH > 150) { dispH = 150; dispW = 150 / ratio; }
             var ix = x + (maxW - dispW) / 2;
-            ensure(dispH + 24);
             try { doc.addImage(img.dataURL, 'JPEG', ix, y, dispW, dispH); } catch(e) {}
-            y += dispH + 4;
-            doc.setFontSize(8); doc.setTextColor(150,150,150);
-            doc.text(isSV ? 'Google Street View — approximate site view' : 'Operator-provided site photo', x, y + 8);
-            y += 20;
+            y += dispH + 3;
+            doc.setFontSize(7.5); doc.setTextColor(150,150,150);
+            doc.text(isSV ? 'Google Street View — approximate site view' : 'Operator-provided site photo', x, y + 7);
+            y += 16;
         }
 
         // Headline results box
-        ensure(72);
-        doc.setFillColor(232,240,254); doc.roundedRect(x, y, W - 2*x, 56, 6, 6, 'F');
+        doc.setFillColor(232,240,254); doc.roundedRect(x, y, W - 2*x, 50, 6, 6, 'F');
         var col = (W - 2*x) / 3;
         function head(cx, big, small){
-            doc.setTextColor(21,101,192); doc.setFont('helvetica','bold'); doc.setFontSize(18);
-            doc.text(String(big), cx, y+26, {align:'center'});
-            doc.setTextColor(95,99,104); doc.setFont('helvetica','normal'); doc.setFontSize(8);
-            doc.text(String(small), cx, y+42, {align:'center'});
+            doc.setTextColor(21,101,192); doc.setFont('helvetica','bold'); doc.setFontSize(17);
+            doc.text(String(big), cx, y+24, {align:'center'});
+            doc.setTextColor(95,99,104); doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
+            doc.text(String(small), cx, y+38, {align:'center'});
         }
         head(x + col*0.5, txt('roiOutROI'), 'Projected ROI');
         head(x + col*1.5, txt('roiOutCPM'), 'CPM (per 1,000 views)');
         head(x + col*2.5, txt('roiOutBreakeven'), 'Break-even sales');
-        y += 78;
+        y += 64;
 
-        function section(title){
-            ensure(44);
-            doc.setTextColor(32,33,36); doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.text(title, x, y); y += 6;
-            doc.setDrawColor(220); doc.line(x, y, W-x, y); y += 16;
-            doc.setFont('helvetica','normal'); doc.setFontSize(10);
+        function secHead(cx, cw, title){
+            doc.setTextColor(32,33,36); doc.setFont('helvetica','bold'); doc.setFontSize(10.5); doc.text(title, cx, y);
+            doc.setDrawColor(220); doc.line(cx, y+5, cx+cw, y+5);
         }
-        function rowLine(label, value){
-            ensure(18);
-            doc.setTextColor(95,99,104); doc.text(String(label), x, y);
-            doc.setTextColor(32,33,36); doc.text(String(value), W - x, y, {align:'right'});
-            y += 16;
+        function fullRow(l, v){
+            doc.setTextColor(95,99,104); doc.text(String(l), x, y);
+            doc.setTextColor(32,33,36); doc.text(String(v), W - x, y, {align:'right'}); y += 13.5;
         }
 
-        // Audience measurement breakdown
-        section('Audience measurement — how the reach was modeled');
+        // Audience measurement (full width)
+        secHead(x, W - 2*x, 'Audience measurement — how the reach was modeled'); y += 20;
+        doc.setFont('helvetica','normal'); doc.setFontSize(9.5);
         var srcLine = d.confidence === 'High'
             ? ('Sourced official traffic data' + (d.measuredAt ? ' (' + d.measuredAt + ')' : ''))
             : (d.confidence === 'Medium' ? 'Sourced but dated (2021 study)' : 'Preliminary estimate, pending verification');
-        rowLine('Corridor', d.corridor + ' (' + d.confidence + ' confidence)');
-        rowLine('Average daily traffic (ADT)', Math.round(d.adt).toLocaleString('en-PH') + ' vehicles/day');
-        rowLine('Vehicle occupancy', '× ' + d.occupancy + ' persons');
-        rowLine('Facing / direction factor', d.facing + ' (× ' + d.directionFactor + ')');
-        rowLine('Format visibility (' + d.type + ')', '× ' + d.ltsFactor);
-        rowLine('= Daily opportunity-to-see (OTS)', '~' + formatImpressions(d.daily));
-        rowLine('Weekly OTS', '~' + formatImpressions(d.weekly));
-        rowLine('Monthly OTS', '~' + formatImpressions(d.monthly));
-        ensure(18); doc.setFontSize(8.5); doc.setTextColor(120,120,120);
-        doc.text('Reach data: ' + srcLine, x, y); y += 12; doc.setFontSize(10);
+        fullRow('Corridor', d.corridor + ' (' + d.confidence + ' confidence)');
+        fullRow('Average daily traffic (ADT)', Math.round(d.adt).toLocaleString('en-PH') + ' vehicles/day');
+        fullRow('Vehicle occupancy', '× ' + d.occupancy + ' persons');
+        fullRow('Facing / direction factor', d.facing + ' (× ' + d.directionFactor + ')');
+        fullRow('Format visibility (' + d.type + ')', '× ' + d.ltsFactor);
+        fullRow('= Daily opportunity-to-see (OTS)', '~' + formatImpressions(d.daily));
+        fullRow('Weekly OTS', '~' + formatImpressions(d.weekly));
+        fullRow('Monthly OTS', '~' + formatImpressions(d.monthly));
+        doc.setFontSize(8); doc.setTextColor(120,120,120); doc.text('Reach data: ' + srcLine, x, y); y += 16;
 
-        y += 8;
-        section('Your campaign inputs');
-        rowLine('Monthly rate', money(val('roiRate')));
-        rowLine('Duration', val('roiMonths') + ' month(s)');
-        rowLine('Production cost', money(val('roiProduction')));
-        rowLine('Attention rate', val('roiAttention') + '%');
-        rowLine('Conversion rate', val('roiConversion') + '%');
-        rowLine('Avg. transaction value', money(val('roiAvgTxn')));
-        y += 10;
+        // Two columns: Campaign inputs (left) + Projected results (right)
+        var half = (W - 2*x - 20) / 2;
+        var lx = x, rx = x + half + 20, yStart = y;
+        secHead(lx, half, 'Campaign inputs');
+        secHead(rx, half, 'Projected results');
+        doc.setFont('helvetica','normal'); doc.setFontSize(9.5);
+        var ly = yStart + 20, ry = yStart + 20;
+        function colRow(cx, cw, l, v, yy){ doc.setTextColor(95,99,104); doc.text(String(l), cx, yy); doc.setTextColor(32,33,36); doc.text(String(v), cx+cw, yy, {align:'right'}); }
+        var inputs = [['Monthly rate', money(val('roiRate'))], ['Duration', val('roiMonths') + ' mo'], ['Production', money(val('roiProduction'))], ['Attention', val('roiAttention') + '%'], ['Conversion', val('roiConversion') + '%'], ['Avg. txn value', money(val('roiAvgTxn'))]];
+        inputs.forEach(function(r){ colRow(lx, half, r[0], r[1], ly); ly += 14; });
+        var res = [['Impressions (OTS)', txt('roiOutImp')], ['Total cost', txt('roiOutCost')], ['Attentive reach', txt('roiOutAttentive')], ['Conversions', txt('roiOutConv')], ['Revenue', txt('roiOutRevenue')], ['Cost / viewer', txt('roiOutCPV')]];
+        res.forEach(function(r){ colRow(rx, half, r[0], r[1], ry); ry += 14; });
+        y = Math.max(ly, ry) + 10;
 
-        section('Projected results');
-        rowLine('Total campaign impressions (OTS)', txt('roiOutImp'));
-        rowLine('Total campaign cost', txt('roiOutCost'));
-        rowLine('Attentive reach', txt('roiOutAttentive'));
-        rowLine('Projected conversions', txt('roiOutConv'));
-        rowLine('Projected revenue', txt('roiOutRevenue'));
-        rowLine('Cost per attentive viewer', txt('roiOutCPV'));
-        y += 8;
-
+        // Break-even takeaway
         var mbt = document.getElementById('roiMustBeTrue');
         if (mbt && mbt.style.display !== 'none' && mbt.textContent) {
             var clean = mbt.textContent.replace(/✅/g, '').trim();
             var lines = doc.splitTextToSize(clean, W - 2*x - 20);
-            var boxH = lines.length * 13 + 16;
-            ensure(boxH + 6);
+            var boxH = lines.length * 12 + 14;
             doc.setFillColor(232,245,233); doc.roundedRect(x, y, W - 2*x, boxH, 6, 6, 'F');
-            doc.setTextColor(27,94,32); doc.setFontSize(9.5); doc.text(lines, x + 10, y + 16);
-            y += boxH + 14;
+            doc.setTextColor(27,94,32); doc.setFontSize(9); doc.text(lines, x + 10, y + 15);
+            y += boxH + 12;
         }
 
-        ensure(44);
-        doc.setTextColor(150,150,150); doc.setFontSize(8);
+        doc.setTextColor(150,150,150); doc.setFontSize(7.5);
         var disc = 'Reach figures are modeled Opportunity-To-See (OTS) estimates, not measured counts. ROI outputs are projections based on your own assumptions and do not guarantee campaign results. Generated at oohphilippines.com/roi-calculator.';
         doc.text(doc.splitTextToSize(disc, W - 2*x), x, y);
 
