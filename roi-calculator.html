@@ -967,6 +967,38 @@ async function roiGeneratePDF(btn) {
         var disc = 'Reach figures are modeled Opportunity-To-See (OTS) estimates, not measured counts. ROI outputs are projections based on your own assumptions and do not guarantee campaign results. Generated at oohphilippines.com/roi-calculator.';
         doc.text(doc.splitTextToSize(disc, W - 2*x), x, y);
 
+        // ── Page 2: plain-language explainer (for operators & advertisers) ──
+        doc.addPage();
+        doc.setFillColor(21,101,192); doc.rect(0,0,W,46,'F');
+        doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(15);
+        doc.text('How to read this report', x, 29);
+        var py = 70;
+        function p2para(t){ doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(60,64,67); var L=doc.splitTextToSize(t, W-2*x); doc.text(L, x, py); py += L.length*13 + 8; }
+        function p2head(t){ doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(21,101,192); doc.text(t, x, py); py += 8; doc.setDrawColor(220); doc.line(x, py, W-x, py); py += 14; }
+        function p2term(t, desc){ doc.setFont('helvetica','bold'); doc.setFontSize(9.7); doc.setTextColor(32,33,36); doc.text(t, x, py); py += 12; doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(80,84,88); var L=doc.splitTextToSize(desc, W-2*x-12); doc.text(L, x+12, py); py += L.length*12 + 7; }
+
+        p2para('This report has two parts. First it estimates how many people get a chance to see this billboard. Then it estimates whether advertising on it could pay off. Everything here is a transparent, documented estimate — never a guarantee.');
+
+        p2head('Part 1 — Audience measurement: how many people see it');
+        p2term('Average daily traffic (ADT)', 'How many vehicles pass the site each day. We use official road-count data where it exists; otherwise a clearly-labelled estimate.');
+        p2term('Vehicle occupancy (x 1.9)', 'Each vehicle usually carries more than one person — driver plus passengers — so we multiply traffic by about 1.9 people.');
+        p2term('Facing / direction', 'A billboard seen from only one direction catches about half the road traffic; one seen from both directions catches more.');
+        p2term('Format visibility', 'Big, lit and LED boards get noticed more than small static ones, so each format is given a visibility factor.');
+        p2term('Opportunity-to-see (OTS)', 'Multiply all of the above together and you get how many times people could see the board — per day, week and month. That is the site reach.');
+        p2term('Confidence label', 'High = based on official traffic data. Low = a preliminary estimate still being verified. It tells you how solid the reach number is.');
+
+        p2head('Part 2 — ROI: will the ad pay off?');
+        p2term('Total campaign cost', 'The monthly rate multiplied by the number of months, plus any one-time production cost.');
+        p2term('Attention rate', 'Not everyone who passes actually notices the ad. You choose a realistic percentage who do.');
+        p2term('Conversion rate', 'Of the people who noticed, a small percentage eventually buy. This depends mostly on your product.');
+        p2term('Projected revenue & ROI', 'Noticed x conversion x average sale = projected revenue. Compared against the cost, this gives the ROI percentage.');
+        p2term('CPM', 'The cost to reach 1,000 people. It lets you compare a billboard against online, TV or radio on a level footing.');
+        p2term('Break-even sales', 'How many sales are needed just to cover the cost. The green line turns this into a gut-check: "only 1 in X people who notice needs to buy." If that feels believable for your product, the campaign likely pays for itself.');
+
+        doc.setFont('helvetica','italic'); doc.setFontSize(8.5); doc.setTextColor(120,120,120);
+        var honest = 'Remember: billboard reach is modeled, not measured, and billboards cannot be clicked — so these are planning estimates based on the assumptions entered, not promises of results. Operators: send this report to advertisers to show what your site reach is worth.';
+        doc.text(doc.splitTextToSize(honest, W-2*x), x, py + 4);
+
         var fname = 'OOH-ROI-' + siteName.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').slice(0, 40) + '.pdf';
         doc.save(fname);
     } catch(e) {
