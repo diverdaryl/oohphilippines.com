@@ -119,21 +119,6 @@ table.rtable td:last-child { text-align: right; font-weight: 700; color: #202124
 
     <div id="roiFreeBanner" style="display:none;background:#fff3e0;border:1px solid #ffcc80;color:#e65100;border-radius:10px;padding:10px 16px;margin:14px 0 4px;font-size:13px;font-weight:600;text-align:center;"></div>
 
-    <!-- Locked state -->
-    <div id="roiLockedState" style="display:none;">
-        <div class="card" style="text-align:center;max-width:560px;margin:24px auto;padding:48px 28px;">
-            <div style="font-size:44px;margin-bottom:12px;">🔒</div>
-            <div style="background:#fff3e0;color:#e65100;font-size:13px;font-weight:700;border-radius:10px;padding:10px 14px;margin-bottom:14px;">You've used your 2 free ROI analyses — subscribe for unlimited access.</div>
-            <h2 style="margin:0 0 8px;font-size:22px;">Unlimited ROI analyses with Pro</h2>
-            <p style="color:#5f6368;font-size:14px;line-height:1.6;margin:0 0 20px;">
-                Pro &amp; Agency subscribers get unlimited site analyses, full reach breakdowns on every billboard card, and shortlist tools.
-            </p>
-            <a href="/?login=subscriber" class="btn-orange" style="margin:0 6px 8px;">🔑 Subscriber Login</a>
-            <a href="pricing.html" class="btn-primary" style="margin:0 6px 8px;padding:13px 30px;font-size:15px;">💎 View Plans</a>
-            <div style="margin-top:14px;"><button onclick="openCpmGuide()" class="link-btn">💡 New to media buying? Why billboards beat other channels on cost →</button></div>
-        </div>
-    </div>
-
     <!-- Calculator -->
     <div id="roiCalcState" style="margin-top:14px;">
 
@@ -196,6 +181,9 @@ table.rtable td:last-child { text-align: right; font-weight: 700; color: #202124
                 </div>
             </div>
         </div>
+
+        <!-- Credit unlock prompt (shown when ROI results require a credit) -->
+        <div id="roiUnlockPrompt" class="card" style="display:none;text-align:center;max-width:560px;margin:14px auto;padding:36px 26px;"></div>
 
         <div id="roiResults" style="display:none;">
             <div style="background:linear-gradient(135deg,#1565c0,#0d47a1);border-radius:14px;color:white;padding:24px;margin-bottom:14px;">
@@ -516,20 +504,26 @@ function loadLiveTraffic() {
 }
 
 // ════════════════════════════════════════════════════════════════
-// ROI CALCULATOR
+// ROI CALCULATOR  (credit-gated: 1 credit per site's ROI results)
 // ════════════════════════════════════════════════════════════════
 var allBillboards = [];
 var roiSelectedBillboard = null;
-var roiIsSubscriber = false;
-var ROI_FREE_LIMIT = 2;
+var roiIsSubscriber = false;               // admin or legacy subscriber → unlimited
+
+// Credit-system state
+var ROI_ADMIN_EMAILS = ['darylabueva@gmail.com'];
+var roiUserEmail = null;                    // raw email as stored (used for REST + spend)
+var roiUserMode  = 'guest';                 // 'admin' | 'credits' | 'guest'
+var roiCredits   = 0;                       // current balance for credit-mode users
+var roiUnlockedSites = [];                  // site names already unlocked (persisted per user)
 
 var ROI_PRESETS = {
     qsr:        { conv: 1.0,  txn: 250,     att: 20, hint: 'Fast food is a frequent, low-commitment purchase — a noticed billboard plausibly nudges 0.5–2% of viewers into a visit they were going to make somewhere anyway. Sites near your branches convert best.' },
-    retail:     { conv: 0.8,  txn: 400,     att: 20, hint: 'Everyday products available in many stores. The billboard\u2019s job is brand preference at the shelf — conversion of 0.5–1.5% is a fair range for widely distributed brands.' },
-    telco:      { conv: 1.0,  txn: 300,     att: 20, hint: 'Load, promos and e-wallets are impulse-friendly. Note: \u20B1300 is a first transaction — a retained subscriber is worth many months of that, so this is the conservative case.' },
-    dining:     { conv: 0.4,  txn: 1200,    att: 20, hint: 'Dining out is a planned decision. Billboards within a few km of the restaurant, especially with directional copy (\u201c500m ahead\u201d), justify the higher end.' },
+    retail:     { conv: 0.8,  txn: 400,     att: 20, hint: 'Everyday products available in many stores. The billboard’s job is brand preference at the shelf — conversion of 0.5–1.5% is a fair range for widely distributed brands.' },
+    telco:      { conv: 1.0,  txn: 300,     att: 20, hint: 'Load, promos and e-wallets are impulse-friendly. Note: ₱300 is a first transaction — a retained subscriber is worth many months of that, so this is the conservative case.' },
+    dining:     { conv: 0.4,  txn: 1200,    att: 20, hint: 'Dining out is a planned decision. Billboards within a few km of the restaurant, especially with directional copy (“500m ahead”), justify the higher end.' },
     services:   { conv: 0.3,  txn: 2500,    att: 18, hint: 'Clinics, salons and local services convert from nearby traffic. A site your actual customers pass daily beats a bigger board across town.' },
-    finance:    { conv: 0.15, txn: 5000,    att: 18, hint: 'Financial products have long consideration cycles — billboards mostly build trust and recall. \u20B15,000 is a placeholder for first-year customer value; adjust to your product.' },
+    finance:    { conv: 0.15, txn: 5000,    att: 18, hint: 'Financial products have long consideration cycles — billboards mostly build trust and recall. ₱5,000 is a placeholder for first-year customer value; adjust to your product.' },
     auto:       { conv: 0.03, txn: 1200000, att: 22, hint: 'Very few passersby buy a car this quarter — but each sale is enormous, so tiny conversion rates still produce strong ROI. Dealerships value billboards on routes to their showroom.' },
     realestate: { conv: 0.015,txn: 3500000, att: 22, hint: 'Property is the extreme case: conversion is measured in hundredths of a percent, but one unit sold can pay for a year of the billboard. Common near the development itself.' }
 };
@@ -547,39 +541,95 @@ function roiApplyPreset() {
     roiCompute();
 }
 
-function roiFreeSites() {
-    try { return JSON.parse(localStorage.getItem('oohph_roi_free_sites') || '[]'); } catch(e) { return []; }
+// ── Credit helpers (direct REST — no supabase-js on standalone pages) ──
+function roiFetchCredits(email) {
+    return fetch(SUPABASE_URL + '/rest/v1/free_users?email=eq.' + encodeURIComponent(email) + '&select=credits', {
+        headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + SUPABASE_ANON }
+    }).then(function(r){ return r.ok ? r.json() : null; }).then(function(rows){
+        if (rows && rows.length) return (rows[0].credits == null ? 0 : Number(rows[0].credits));
+        return null;
+    }).catch(function(){ return null; });
 }
-function roiSaveFreeSites(arr) {
-    try { localStorage.setItem('oohph_roi_free_sites', JSON.stringify(arr)); } catch(e) {}
+function roiSpendCreditRPC(email) {
+    return fetch(SUPABASE_URL + '/rest/v1/rpc/spend_credit', {
+        method: 'POST',
+        headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + SUPABASE_ANON, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ p_email: email })
+    }).then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; });
 }
-function roiFreeRemaining() {
-    return Math.max(0, ROI_FREE_LIMIT - roiFreeSites().length);
-}
-function roiRenderState() {
-    var locked = document.getElementById('roiLockedState');
-    var calc   = document.getElementById('roiCalcState');
-    var banner = document.getElementById('roiFreeBanner');
-    if (roiIsSubscriber) {
-        locked.style.display = 'none';
-        calc.style.display = 'block';
-        banner.style.display = 'none';
-        return;
+
+// Results are free for admin/subscriber; for credit users only once the site is unlocked.
+function roiResultsAllowed() {
+    if (roiIsSubscriber) return true;
+    if (roiUserMode === 'credits' && roiSelectedBillboard) {
+        return roiUnlockedSites.indexOf(roiSelectedBillboard['Site Name']) !== -1;
     }
-    var left = roiFreeRemaining();
-    if (left > 0) {
-        locked.style.display = 'none';
-        calc.style.display = 'block';
-        banner.innerHTML = '\uD83C\uDF81 Free preview \u2014 <strong>' + left + ' of ' + ROI_FREE_LIMIT + '</strong> site ' + (left === 1 ? 'analysis' : 'analyses') + ' remaining. <a href="pricing.html" style="color:#e65100;text-decoration:underline;">Subscribe for unlimited \u2192</a>';
+    return false;
+}
+
+function roiRenderState() {
+    var banner = document.getElementById('roiFreeBanner');
+    var calc   = document.getElementById('roiCalcState');
+    if (calc) calc.style.display = 'block';
+    if (!banner) return;
+    if (roiIsSubscriber) {
+        banner.style.display = 'none';
+    } else if (roiUserMode === 'credits') {
+        banner.innerHTML = '⭐ You have <strong>' + roiCredits + '</strong> credit' + (roiCredits === 1 ? '' : 's') +
+            '. Each site’s full ROI results cost <strong>1 credit</strong> — once unlocked, tweak your numbers free. ' +
+            '<a href="pricing.html" style="color:#e65100;text-decoration:underline;">Buy more →</a>';
         banner.style.display = 'block';
     } else {
-        locked.style.display = 'block';
-        calc.style.display = 'none';
-        banner.style.display = 'none';
+        banner.innerHTML = '🎁 <strong>Sign up free</strong> to get 5 credits and unlock full ROI results. ' +
+            '<a href="index.html" style="color:#e65100;text-decoration:underline;">Sign up / Log in →</a>';
+        banner.style.display = 'block';
+    }
+    if (roiSelectedBillboard) roiRenderUnlockPrompt();
+}
+
+function roiRenderUnlockPrompt() {
+    var el = document.getElementById('roiUnlockPrompt');
+    if (!el) return;
+    if (roiUserMode === 'guest') {
+        el.innerHTML = '<div style="font-size:42px;margin-bottom:10px;">🔒</div>' +
+            '<h2 style="margin:0 0 8px;font-size:20px;">Sign up free to see your ROI</h2>' +
+            '<p style="color:#5f6368;font-size:14px;line-height:1.6;margin:0 0 18px;">Create a free account and get <strong>5 credits</strong>. Each credit unlocks the full ROI breakdown for one billboard site.</p>' +
+            '<a href="index.html" class="btn-orange">✨ Sign Up Free →</a>';
+    } else if (roiCredits <= 0) {
+        el.innerHTML = '<div style="font-size:42px;margin-bottom:10px;">⭐</div>' +
+            '<h2 style="margin:0 0 8px;font-size:20px;">You’re out of credits</h2>' +
+            '<p style="color:#5f6368;font-size:14px;line-height:1.6;margin:0 0 18px;">Full ROI results cost <strong>1 credit</strong> per site. Top up to keep analyzing.</p>' +
+            '<a href="pricing.html" class="btn-orange">💳 Buy Credits →</a>';
+    } else {
+        el.innerHTML = '<div style="font-size:42px;margin-bottom:10px;">📈</div>' +
+            '<h2 style="margin:0 0 8px;font-size:20px;">Unlock this site’s ROI</h2>' +
+            '<p style="color:#5f6368;font-size:14px;line-height:1.6;margin:0 0 18px;">Spend <strong>1 credit</strong> to reveal CPM, projected ROI, break-even and the full breakdown for this site. You have <strong>' + roiCredits + '</strong> credit' + (roiCredits === 1 ? '' : 's') + '.</p>' +
+            '<button onclick="roiUnlock()" class="btn-orange" id="roiUnlockBtn">Use 1 credit →</button>';
     }
 }
 
-// Detect an existing subscriber session from the main site (silent fallback to freemium)
+function roiUnlock() {
+    if (!roiSelectedBillboard || roiUserMode !== 'credits') return;
+    var siteName = roiSelectedBillboard['Site Name'];
+    if (roiUnlockedSites.indexOf(siteName) !== -1) { roiCompute(); return; }
+    if (roiCredits <= 0) { roiRenderUnlockPrompt(); return; }
+    var btn = document.getElementById('roiUnlockBtn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Unlocking…'; }
+    roiSpendCreditRPC(roiUserEmail).then(function(){
+        return roiFetchCredits(roiUserEmail);
+    }).then(function(c){
+        if (c !== null) roiCredits = c;
+        if (roiUnlockedSites.indexOf(siteName) === -1) roiUnlockedSites.push(siteName);
+        try { localStorage.setItem('oohph_roi_unlocked_' + roiUserEmail.toLowerCase(), JSON.stringify(roiUnlockedSites)); } catch(e) {}
+        roiRenderState();
+        roiCompute();
+    }).catch(function(){
+        if (btn) { btn.disabled = false; btn.textContent = 'Use 1 credit →'; }
+        alert('Something went wrong unlocking. Please try again.');
+    });
+}
+
+// Detect an existing subscriber session from the main site (legacy grandfathering)
 function roiCheckSubscriber() {
     try {
         var raw = null;
@@ -601,24 +651,39 @@ function roiCheckSubscriber() {
                 if (rows && rows.length && rows[0].role === 'subscriber') {
                     roiIsSubscriber = true;
                     roiRenderState();
+                    if (roiSelectedBillboard) roiCompute();
                 }
             });
         }).catch(function(){});
     } catch(e) {}
 }
 
-// Admin/owner (darylabueva) = unlimited ROI, never metered
-function roiCheckAdmin() {
+// Determine the signed-in free user (admin unlimited, else credit mode); guests stay guests.
+function roiInitUser() {
     try {
         var raw = localStorage.getItem('oohph_free_user');
-        if (!raw) return;
-        var u = JSON.parse(raw);
-        var email = (u && u.email || '').toLowerCase();
-        if (email && ['darylabueva@gmail.com'].indexOf(email) !== -1) {
-            roiIsSubscriber = true; // admin unlimited
-            roiRenderState();
+        if (raw) {
+            var u = JSON.parse(raw);
+            var email = (u && u.email) ? String(u.email) : '';
+            if (email) {
+                roiUserEmail = email;
+                if (ROI_ADMIN_EMAILS.indexOf(email.toLowerCase()) !== -1) {
+                    roiUserMode = 'admin';
+                    roiIsSubscriber = true;
+                } else {
+                    roiUserMode = 'credits';
+                    try { roiUnlockedSites = JSON.parse(localStorage.getItem('oohph_roi_unlocked_' + email.toLowerCase()) || '[]'); } catch(e) { roiUnlockedSites = []; }
+                    if (u && typeof u.credits === 'number') roiCredits = u.credits; // optimistic cache
+                    roiFetchCredits(email).then(function(c){
+                        if (c !== null) { roiCredits = c; }
+                        roiRenderState();
+                        if (roiSelectedBillboard) roiCompute();
+                    });
+                }
+            }
         }
     } catch(e) {}
+    roiRenderState();
 }
 
 function roiSiteSearchInput() {
@@ -654,15 +719,6 @@ function roiSelectSite(siteName) {
         if (allBillboards[i]['Site Name'] === siteName) { b = allBillboards[i]; break; }
     }
     if (!b) return;
-    if (!roiIsSubscriber) {
-        var used = roiFreeSites();
-        if (used.indexOf(siteName) === -1) {
-            if (used.length >= ROI_FREE_LIMIT) { roiRenderState(); window.scrollTo(0,0); return; }
-            used.push(siteName);
-            roiSaveFreeSites(used);
-        }
-        roiRenderState();
-    }
     roiSelectedBillboard = b;
     document.getElementById('roiSiteResults').style.display = 'none';
     document.getElementById('roiSiteSearch').value = b['Display Name'] || b['Site Name'] || '';
@@ -676,7 +732,7 @@ function roiSelectSite(siteName) {
 
 function roiFmtPeso(n) {
     if (!isFinite(n)) return '–';
-    return '\u20B1' + Math.round(n).toLocaleString('en-PH');
+    return '₱' + Math.round(n).toLocaleString('en-PH');
 }
 
 function roiCompute() {
@@ -689,7 +745,22 @@ function roiCompute() {
     var avgTxn     = parseFloat(document.getElementById('roiAvgTxn').value) || 0;
     var results    = document.getElementById('roiResults');
     var hint       = document.getElementById('roiEmptyHint');
-    if (rate <= 0) { results.style.display = 'none'; hint.style.display = 'block'; return; }
+    var unlock     = document.getElementById('roiUnlockPrompt');
+    if (rate <= 0) {
+        results.style.display = 'none';
+        if (unlock) unlock.style.display = 'none';
+        hint.style.display = 'block';
+        return;
+    }
+
+    // Credit gate: full results cost 1 credit per site (admin/subscriber exempt)
+    if (!roiResultsAllowed()) {
+        results.style.display = 'none';
+        hint.style.display = 'none';
+        if (unlock) { roiRenderUnlockPrompt(); unlock.style.display = 'block'; }
+        return;
+    }
+    if (unlock) unlock.style.display = 'none';
 
     var d = estimateWeeklyImpressionsDetailed(roiSelectedBillboard);
     var totalImpressions = d.monthly * months;
@@ -726,7 +797,7 @@ function roiCompute() {
     var confLabel = d.confidence === 'High'
         ? 'Reach data: sourced official traffic data' + (d.measuredAt ? ' (' + d.measuredAt + ')' : '')
         : (d.confidence === 'Medium' ? 'Reach data: sourced but dated (2021 study)' : 'Reach data: preliminary estimate, pending verification');
-    document.getElementById('roiConfidenceLine').innerHTML = '<span style="color:' + confColor + ';">\u25CF ' + confLabel + '</span>';
+    document.getElementById('roiConfidenceLine').innerHTML = '<span style="color:' + confColor + ';">● ' + confLabel + '</span>';
 
     results.style.display = 'block';
     hint.style.display = 'none';
@@ -739,9 +810,8 @@ function closeAssumptionsGuide() { document.getElementById('assumptionsModal').s
 
 // ── Init ──
 (function(){
-    roiRenderState();
+    roiInitUser();
     roiCheckSubscriber();
-    roiCheckAdmin();
     loadLiveTraffic();
     fetch(SHEET_URL)
         .then(function(r){ return r.text(); })
