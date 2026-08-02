@@ -210,7 +210,8 @@ table.rtable td:last-child { text-align: right; font-weight: 700; color: #202124
                 <a href="ooh-audience-measurement-philippines.html" target="_blank" style="color:#1565c0;">Read the reach methodology →</a>
             </div>
             <div style="text-align:center;margin-top:14px;">
-                <a href="/" class="btn-primary">🔍 Browse 2,000+ billboard sites →</a>
+                <button onclick="roiGeneratePDF()" class="btn-orange" style="margin:0 6px 8px;">📄 Download PDF report</button>
+                <a href="/" class="btn-primary" style="margin:0 6px 8px;">🔍 Browse 2,000+ billboard sites →</a>
             </div>
         </div>
         <div id="roiEmptyHint" style="text-align:center;color:#9aa0a6;font-size:13px;padding:20px;">Select a site and enter the quoted monthly rate to see results.</div>
@@ -319,6 +320,7 @@ table.rtable td:last-child { text-align: right; font-weight: 700; color: #202124
     </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 // ════════════════════════════════════════════════════════════════
 // OTS ENGINE — extracted verbatim from index.html (keep in sync)
@@ -801,6 +803,98 @@ function roiCompute() {
 
     results.style.display = 'block';
     hint.style.display = 'none';
+}
+
+function roiGeneratePDF() {
+    if (!roiSelectedBillboard) return;
+    if (!window.jspdf || !window.jspdf.jsPDF) { alert('PDF tool is still loading — please try again in a second.'); return; }
+    var doc = new window.jspdf.jsPDF({ unit: 'pt', format: 'a4' });
+    var W = doc.internal.pageSize.getWidth();
+    var x = 40;
+    var b = roiSelectedBillboard;
+    var siteName = b['Display Name'] || b['Site Name'] || 'Billboard';
+    var loc = b['Tag'] || b['Location'] || '';
+    var d = estimateWeeklyImpressionsDetailed(b);
+
+    function txt(id){ var el = document.getElementById(id); return ((el && el.textContent) || '').replace(/₱/g, 'PHP '); }
+    function val(id){ return document.getElementById(id).value || '0'; }
+    function money(v){ var n = parseFloat(v) || 0; return 'PHP ' + n.toLocaleString('en-PH'); }
+
+    // Header band
+    doc.setFillColor(21,101,192); doc.rect(0,0,W,72,'F');
+    doc.setTextColor(255,255,255);
+    doc.setFont('helvetica','bold'); doc.setFontSize(19); doc.text('OOHPhilippines.com', x, 34);
+    doc.setFont('helvetica','normal'); doc.setFontSize(11); doc.text('Billboard ROI Report', x, 54);
+    var today = new Date().toLocaleDateString('en-PH', { year:'numeric', month:'long', day:'numeric' });
+    doc.setFontSize(9); doc.text(today, W - x, 54, { align:'right' });
+
+    var y = 104;
+    doc.setTextColor(32,33,36);
+    doc.setFont('helvetica','bold'); doc.setFontSize(15); doc.text(siteName, x, y); y += 16;
+    doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(95,99,104);
+    doc.text(loc, x, y); y += 14;
+    doc.text('Modeled audience reach: ~' + formatImpressions(d.monthly) + '/month  (' + d.corridor + ', ' + d.confidence + ' confidence)', x, y);
+    y += 24;
+
+    // Headline results box
+    doc.setFillColor(232,240,254); doc.roundedRect(x, y, W - 2*x, 56, 6, 6, 'F');
+    var col = (W - 2*x) / 3;
+    function head(cx, big, small){
+        doc.setTextColor(21,101,192); doc.setFont('helvetica','bold'); doc.setFontSize(18);
+        doc.text(String(big), cx, y+26, {align:'center'});
+        doc.setTextColor(95,99,104); doc.setFont('helvetica','normal'); doc.setFontSize(8);
+        doc.text(String(small), cx, y+42, {align:'center'});
+    }
+    head(x + col*0.5, txt('roiOutROI'), 'Projected ROI');
+    head(x + col*1.5, txt('roiOutCPM'), 'CPM (per 1,000 views)');
+    head(x + col*2.5, txt('roiOutBreakeven'), 'Break-even sales');
+    y += 78;
+
+    function section(title){
+        doc.setTextColor(32,33,36); doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.text(title, x, y); y += 6;
+        doc.setDrawColor(220); doc.line(x, y, W-x, y); y += 16;
+        doc.setFont('helvetica','normal'); doc.setFontSize(10);
+    }
+    function rowLine(label, value){
+        doc.setTextColor(95,99,104); doc.text(String(label), x, y);
+        doc.setTextColor(32,33,36); doc.text(String(value), W - x, y, {align:'right'});
+        y += 16;
+    }
+
+    section('Your campaign inputs');
+    rowLine('Monthly rate', money(val('roiRate')));
+    rowLine('Duration', val('roiMonths') + ' month(s)');
+    rowLine('Production cost', money(val('roiProduction')));
+    rowLine('Attention rate', val('roiAttention') + '%');
+    rowLine('Conversion rate', val('roiConversion') + '%');
+    rowLine('Avg. transaction value', money(val('roiAvgTxn')));
+    y += 10;
+
+    section('Projected results');
+    rowLine('Total campaign impressions (OTS)', txt('roiOutImp'));
+    rowLine('Total campaign cost', txt('roiOutCost'));
+    rowLine('Attentive reach', txt('roiOutAttentive'));
+    rowLine('Projected conversions', txt('roiOutConv'));
+    rowLine('Projected revenue', txt('roiOutRevenue'));
+    rowLine('Cost per attentive viewer', txt('roiOutCPV'));
+    y += 8;
+
+    var mbt = document.getElementById('roiMustBeTrue');
+    if (mbt && mbt.style.display !== 'none' && mbt.textContent) {
+        var clean = mbt.textContent.replace(/✅/g, '').trim();
+        var lines = doc.splitTextToSize(clean, W - 2*x - 20);
+        var boxH = lines.length * 13 + 16;
+        doc.setFillColor(232,245,233); doc.roundedRect(x, y, W - 2*x, boxH, 6, 6, 'F');
+        doc.setTextColor(27,94,32); doc.setFontSize(9.5); doc.text(lines, x + 10, y + 16);
+        y += boxH + 14;
+    }
+
+    doc.setTextColor(150,150,150); doc.setFontSize(8);
+    var disc = 'Reach figures are modeled Opportunity-To-See (OTS) estimates, not measured counts. ROI outputs are projections based on your own assumptions and do not guarantee campaign results. Generated at oohphilippines.com/roi-calculator.';
+    doc.text(doc.splitTextToSize(disc, W - 2*x), x, y);
+
+    var fname = 'OOH-ROI-' + siteName.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').slice(0, 40) + '.pdf';
+    doc.save(fname);
 }
 
 function openCpmGuide()  { document.getElementById('cpmGuideModal').style.display = 'flex'; }
