@@ -824,8 +824,8 @@ function roiStreetViewThumb(mapsUrl) {
     return 'https://streetviewpixels-pa.googleapis.com/v1/thumbnail?panoid=' + encodeURIComponent(pano) +
         '&cb_client=maps_sv.tactile&w=600&h=300&yaw=' + yaw + '&pitch=' + pitch + '&thumbfov=90';
 }
-// Load an image and return {dataURL,w,h} or null (null if missing / blocked by CORS).
-function roiLoadImageDataURL(url) {
+// Load an image, optionally centre-cropped to targetRatio (width/height); returns {dataURL,w,h} or null.
+function roiLoadImageDataURL(url, targetRatio) {
     return new Promise(function(resolve) {
         if (!url) { resolve(null); return; }
         var img = new Image();
@@ -834,10 +834,16 @@ function roiLoadImageDataURL(url) {
         img.onload = function() {
             clearTimeout(to);
             try {
+                var iw = img.naturalWidth || 600, ih = img.naturalHeight || 300;
+                var cw = iw, ch = ih, sx = 0, sy = 0;
+                if (targetRatio) {
+                    if (iw / ih > targetRatio) { cw = Math.round(ih * targetRatio); sx = Math.round((iw - cw) / 2); }
+                    else { ch = Math.round(iw / targetRatio); sy = Math.round((ih - ch) / 2); }
+                }
                 var c = document.createElement('canvas');
-                c.width = img.naturalWidth || 600; c.height = img.naturalHeight || 300;
-                c.getContext('2d').drawImage(img, 0, 0);
-                resolve({ dataURL: c.toDataURL('image/jpeg', 0.85), w: c.width, h: c.height });
+                c.width = cw; c.height = ch;
+                c.getContext('2d').drawImage(img, sx, sy, cw, ch, 0, 0, cw, ch);
+                resolve({ dataURL: c.toDataURL('image/jpeg', 0.85), w: cw, h: ch });
             } catch(e) { resolve(null); }
         };
         img.onerror = function(){ clearTimeout(to); resolve(null); };
@@ -859,7 +865,7 @@ async function roiGeneratePDF(btn) {
         // Resolve image: operator photo first, else Street View
         var photoUrl = roiResolvePhoto(b['Photo']); var isSV = false;
         if (!photoUrl) { photoUrl = roiStreetViewThumb(b['Maps URL']); isSV = true; }
-        var img = photoUrl ? await roiLoadImageDataURL(photoUrl) : null;
+        var img = photoUrl ? await roiLoadImageDataURL(photoUrl, 3/2) : null;   // 6x4 landscape crop
 
         var doc = new window.jspdf.jsPDF({ unit: 'pt', format: 'a4' });
         var W = doc.internal.pageSize.getWidth();
@@ -881,15 +887,15 @@ async function roiGeneratePDF(btn) {
         doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(95,99,104);
         doc.text(loc, x, y); y += 14;
 
-        // Site image (photo or Street View) — capped for single-page layout
+        // Site image — fixed 6x4 (4x6 print) landscape frame, centred
         if (img && img.dataURL) {
-            var maxW = W - 2*x, ratio = img.h / img.w, dispW = maxW, dispH = maxW * ratio;
-            if (dispH > 150) { dispH = 150; dispW = 150 / ratio; }
-            var ix = x + (maxW - dispW) / 2;
+            var dispW = 288, dispH = 192;   // 6x4 landscape (3:2)
+            var ix = x + ((W - 2*x) - dispW) / 2;
             try { doc.addImage(img.dataURL, 'JPEG', ix, y, dispW, dispH); } catch(e) {}
+            doc.setDrawColor(210); doc.rect(ix, y, dispW, dispH);
             y += dispH + 3;
             doc.setFontSize(7.5); doc.setTextColor(150,150,150);
-            doc.text(isSV ? 'Google Street View — approximate site view' : 'Operator-provided site photo', x, y + 7);
+            doc.text(isSV ? 'Google Street View — approximate site view' : 'Operator-provided site photo', W / 2, y + 7, {align:'center'});
             y += 16;
         }
 
