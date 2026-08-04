@@ -151,15 +151,15 @@ table.rtable td:last-child { text-align: right; font-weight: 700; color: #202124
             <div class="grid">
                 <div>
                     <label class="field-label">Monthly rate (₱) — as quoted by the operator</label>
-                    <input type="number" id="roiRate" class="field" placeholder="e.g. 250000" min="0" oninput="roiCompute()">
+                    <input type="number" id="roiRate" class="field" placeholder="e.g. 250000" min="0" oninput="roiInputsChanged()">
                 </div>
                 <div>
                     <label class="field-label">Campaign duration (months)</label>
-                    <input type="number" id="roiMonths" class="field" value="3" min="1" max="36" oninput="roiCompute()">
+                    <input type="number" id="roiMonths" class="field" value="3" min="1" max="36" oninput="roiInputsChanged()">
                 </div>
                 <div>
                     <label class="field-label">One-time production cost (₱, optional)</label>
-                    <input type="number" id="roiProduction" class="field" placeholder="e.g. 30000" min="0" oninput="roiCompute()">
+                    <input type="number" id="roiProduction" class="field" placeholder="e.g. 30000" min="0" oninput="roiInputsChanged()">
                 </div>
             </div>
         </div>
@@ -169,15 +169,15 @@ table.rtable td:last-child { text-align: right; font-weight: 700; color: #202124
             <div class="grid">
                 <div>
                     <label class="field-label">Attention rate (%) — share of passersby who notice the ad</label>
-                    <input type="number" id="roiAttention" class="field" value="20" min="0" max="100" step="1" oninput="roiCompute()">
+                    <input type="number" id="roiAttention" class="field" value="20" min="0" max="100" step="1" oninput="roiInputsChanged()">
                 </div>
                 <div>
                     <label class="field-label">Conversion rate (%) — share of noticers who eventually buy</label>
-                    <input type="number" id="roiConversion" class="field" value="0.5" min="0" max="100" step="0.01" oninput="roiCompute()">
+                    <input type="number" id="roiConversion" class="field" value="0.5" min="0" max="100" step="0.01" oninput="roiInputsChanged()">
                 </div>
                 <div>
                     <label class="field-label">Average transaction value (₱)</label>
-                    <input type="number" id="roiAvgTxn" class="field" value="500" min="0" oninput="roiCompute()">
+                    <input type="number" id="roiAvgTxn" class="field" value="500" min="0" oninput="roiInputsChanged()">
                 </div>
             </div>
         </div>
@@ -517,7 +517,6 @@ var ROI_ADMIN_EMAILS = ['darylabueva@gmail.com'];
 var roiUserEmail = null;                    // raw email as stored (used for REST + spend)
 var roiUserMode  = 'guest';                 // 'admin' | 'credits' | 'guest'
 var roiCredits   = 0;                       // current balance for credit-mode users
-var roiUnlockedSites = [];                  // site names already unlocked (persisted per user)
 
 var ROI_PRESETS = {
     qsr:        { conv: 1.0,  txn: 250,     att: 20, hint: 'Fast food is a frequent, low-commitment purchase — a noticed billboard plausibly nudges 0.5–2% of viewers into a visit they were going to make somewhere anyway. Sites near your branches convert best.' },
@@ -540,7 +539,7 @@ function roiApplyPreset() {
     document.getElementById('roiAvgTxn').value = p.txn;
     hintEl.innerHTML = '💡 ' + p.hint + ' <em>These are starting points — adjust them to your brand.</em>';
     hintEl.style.display = 'block';
-    roiCompute();
+    roiInputsChanged();
 }
 
 // ── Credit helpers (direct REST — no supabase-js on standalone pages) ──
@@ -560,13 +559,11 @@ function roiSpendCreditRPC(email) {
     }).then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; });
 }
 
-// Results are free for admin/subscriber; for credit users only once the site is unlocked.
-function roiResultsAllowed() {
-    if (roiIsSubscriber) return true;
-    if (roiUserMode === 'credits' && roiSelectedBillboard) {
-        return roiUnlockedSites.indexOf(roiSelectedBillboard['Site Name']) !== -1;
-    }
-    return false;
+// Any input/site change invalidates the last (paid) result and shows the Calculate call-to-action.
+function roiInputsChanged() {
+    var results = document.getElementById('roiResults');
+    if (results) results.style.display = 'none';
+    roiRenderPrompt();
 }
 
 function roiRenderState() {
@@ -578,56 +575,91 @@ function roiRenderState() {
         banner.style.display = 'none';
     } else if (roiUserMode === 'credits') {
         banner.innerHTML = '⭐ You have <strong>' + roiCredits + '</strong> credit' + (roiCredits === 1 ? '' : 's') +
-            '. Each site’s full ROI results cost <strong>1 credit</strong> — once unlocked, tweak your numbers free. ' +
+            '. Each ROI calculation costs <strong>1 credit</strong>. ' +
             '<a href="pricing.html" style="color:#e65100;text-decoration:underline;">Buy more →</a>';
         banner.style.display = 'block';
     } else {
-        banner.innerHTML = '🎁 <strong>Sign up free</strong> to get 5 credits and unlock full ROI results. ' +
+        banner.innerHTML = '🎁 <strong>Sign up free</strong> to get 5 credits. Each ROI calculation uses 1 credit. ' +
             '<a href="index.html" style="color:#e65100;text-decoration:underline;">Sign up / Log in →</a>';
         banner.style.display = 'block';
     }
-    if (roiSelectedBillboard) roiRenderUnlockPrompt();
+    if (roiSelectedBillboard) roiRenderPrompt();
 }
 
-function roiRenderUnlockPrompt() {
+// Shows the Calculate call-to-action (or sign-up / top-up), or a hint when inputs aren't ready.
+function roiRenderPrompt() {
     var el = document.getElementById('roiUnlockPrompt');
+    var hint = document.getElementById('roiEmptyHint');
+    var results = document.getElementById('roiResults');
+    if (!roiSelectedBillboard) {
+        if (el) el.style.display = 'none';
+        if (results) results.style.display = 'none';
+        if (hint) { hint.textContent = 'Select a site and enter the quoted monthly rate to calculate ROI.'; hint.style.display = 'block'; }
+        return;
+    }
+    var rate = parseFloat(document.getElementById('roiRate').value) || 0;
+    if (rate <= 0) {
+        if (el) el.style.display = 'none';
+        if (results) results.style.display = 'none';
+        if (hint) { hint.textContent = 'Enter the quoted monthly rate to calculate ROI.'; hint.style.display = 'block'; }
+        return;
+    }
+    if (hint) hint.style.display = 'none';
     if (!el) return;
-    if (roiUserMode === 'guest') {
+    if (roiIsSubscriber) {
+        el.innerHTML = '<div style="font-size:42px;margin-bottom:10px;">📈</div>' +
+            '<h2 style="margin:0 0 8px;font-size:20px;">Ready to calculate</h2>' +
+            '<p style="color:#5f6368;font-size:14px;line-height:1.6;margin:0 0 18px;">Run the projected ROI for this site and these numbers.</p>' +
+            '<button onclick="roiCalculate()" class="btn-orange" id="roiCalcBtn">Calculate ROI →</button>';
+    } else if (roiUserMode === 'guest') {
         el.innerHTML = '<div style="font-size:42px;margin-bottom:10px;">🔒</div>' +
-            '<h2 style="margin:0 0 8px;font-size:20px;">Sign up free to see your ROI</h2>' +
-            '<p style="color:#5f6368;font-size:14px;line-height:1.6;margin:0 0 18px;">Create a free account and get <strong>5 credits</strong>. Each credit unlocks the full ROI breakdown for one billboard site.</p>' +
+            '<h2 style="margin:0 0 8px;font-size:20px;">Sign up free to calculate ROI</h2>' +
+            '<p style="color:#5f6368;font-size:14px;line-height:1.6;margin:0 0 18px;">Create a free account and get <strong>5 credits</strong>. Each ROI calculation uses 1 credit.</p>' +
             '<a href="index.html" class="btn-orange">✨ Sign Up Free →</a>';
     } else if (roiCredits <= 0) {
         el.innerHTML = '<div style="font-size:42px;margin-bottom:10px;">⭐</div>' +
             '<h2 style="margin:0 0 8px;font-size:20px;">You’re out of credits</h2>' +
-            '<p style="color:#5f6368;font-size:14px;line-height:1.6;margin:0 0 18px;">Full ROI results cost <strong>1 credit</strong> per site. Top up to keep analyzing.</p>' +
+            '<p style="color:#5f6368;font-size:14px;line-height:1.6;margin:0 0 18px;">Each ROI calculation costs <strong>1 credit</strong>. Top up to keep going.</p>' +
             '<a href="pricing.html" class="btn-orange">💳 Buy Credits →</a>';
     } else {
         el.innerHTML = '<div style="font-size:42px;margin-bottom:10px;">📈</div>' +
-            '<h2 style="margin:0 0 8px;font-size:20px;">Unlock this site’s ROI</h2>' +
-            '<p style="color:#5f6368;font-size:14px;line-height:1.6;margin:0 0 18px;">Spend <strong>1 credit</strong> to reveal CPM, projected ROI, break-even and the full breakdown for this site. You have <strong>' + roiCredits + '</strong> credit' + (roiCredits === 1 ? '' : 's') + '.</p>' +
-            '<button onclick="roiUnlock()" class="btn-orange" id="roiUnlockBtn">Use 1 credit →</button>';
+            '<h2 style="margin:0 0 8px;font-size:20px;">Calculate ROI</h2>' +
+            '<p style="color:#5f6368;font-size:14px;line-height:1.6;margin:0 0 18px;">Each calculation uses <strong>1 credit</strong> and reveals CPM, projected ROI, break-even and the full breakdown. You have <strong>' + roiCredits + '</strong> credit' + (roiCredits === 1 ? '' : 's') + '.</p>' +
+            '<button onclick="roiCalculate()" class="btn-orange" id="roiCalcBtn">Calculate ROI (1 credit) →</button>';
     }
+    el.style.display = 'block';
 }
 
-function roiUnlock() {
-    if (!roiSelectedBillboard || roiUserMode !== 'credits') return;
-    var siteName = roiSelectedBillboard['Site Name'];
-    if (roiUnlockedSites.indexOf(siteName) !== -1) { roiCompute(); return; }
-    if (roiCredits <= 0) { roiRenderUnlockPrompt(); return; }
-    var btn = document.getElementById('roiUnlockBtn');
-    if (btn) { btn.disabled = true; btn.textContent = 'Unlocking…'; }
-    roiSpendCreditRPC(roiUserEmail).then(function(){
-        return roiFetchCredits(roiUserEmail);
-    }).then(function(c){
-        if (c !== null) roiCredits = c;
-        if (roiUnlockedSites.indexOf(siteName) === -1) roiUnlockedSites.push(siteName);
-        try { localStorage.setItem('oohph_roi_unlocked_' + roiUserEmail.toLowerCase(), JSON.stringify(roiUnlockedSites)); } catch(e) {}
-        roiRenderState();
-        roiCompute();
+// One calculation = one credit. Admin/subscriber are free; guests are sent to sign up.
+// A credit is granted ONLY after we confirm the balance actually went down (verified spend).
+function roiCalculate() {
+    if (!roiSelectedBillboard) return;
+    var rate = parseFloat(document.getElementById('roiRate').value) || 0;
+    if (rate <= 0) { roiRenderPrompt(); return; }
+    if (roiUserMode === 'guest') { window.location.href = 'index.html'; return; }
+    if (roiIsSubscriber) { roiDoCompute(); return; }          // admin / legacy subscriber: free
+    if (roiCredits <= 0) { roiRenderPrompt(); return; }
+
+    var btn = document.getElementById('roiCalcBtn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Calculating…'; }
+    var resetBtn = function(){ var b = document.getElementById('roiCalcBtn'); if (b) { b.disabled = false; b.textContent = 'Calculate ROI (1 credit) →'; } };
+
+    // Read balance, spend, read again — only reveal results if a credit was truly deducted.
+    roiFetchCredits(roiUserEmail).then(function(before){
+        var start = (before !== null) ? before : roiCredits;
+        if (start <= 0) { roiCredits = 0; roiRenderPrompt(); return; }
+        return roiSpendCreditRPC(roiUserEmail).then(function(){
+            return roiFetchCredits(roiUserEmail).then(function(after){
+                var spent = (before !== null && after !== null) ? (after < before) : true; // if unreadable, assume ok
+                if (after !== null) roiCredits = after;
+                else if (spent) roiCredits = Math.max(0, start - 1);
+                if (spent) { roiRenderState(); roiDoCompute(); }
+                else { resetBtn(); roiRenderPrompt(); alert('Your credit could not be applied — please try again.'); }
+            });
+        });
     }).catch(function(){
-        if (btn) { btn.disabled = false; btn.textContent = 'Use 1 credit →'; }
-        alert('Something went wrong unlocking. Please try again.');
+        resetBtn();
+        alert('Could not run the calculation. Please check your connection and try again.');
     });
 }
 
@@ -653,7 +685,7 @@ function roiCheckSubscriber() {
                 if (rows && rows.length && rows[0].role === 'subscriber') {
                     roiIsSubscriber = true;
                     roiRenderState();
-                    if (roiSelectedBillboard) roiCompute();
+                    if (roiSelectedBillboard) roiInputsChanged();
                 }
             });
         }).catch(function(){});
@@ -674,12 +706,11 @@ function roiInitUser() {
                     roiIsSubscriber = true;
                 } else {
                     roiUserMode = 'credits';
-                    try { roiUnlockedSites = JSON.parse(localStorage.getItem('oohph_roi_unlocked_' + email.toLowerCase()) || '[]'); } catch(e) { roiUnlockedSites = []; }
                     if (u && typeof u.credits === 'number') roiCredits = u.credits; // optimistic cache
                     roiFetchCredits(email).then(function(c){
                         if (c !== null) { roiCredits = c; }
                         roiRenderState();
-                        if (roiSelectedBillboard) roiCompute();
+                        if (roiSelectedBillboard) roiInputsChanged();
                     });
                 }
             }
@@ -729,7 +760,7 @@ function roiSelectSite(siteName) {
     sel.innerHTML = '<strong>' + (b['Display Name'] || b['Site Name'] || '') + '</strong> · ' + (b['Tag'] || b['Location'] || '') +
         '<br>Modeled audience reach: <strong>~' + formatImpressions(d.monthly) + '/month</strong> (' + d.corridor + ', ' + d.confidence + ' confidence)';
     sel.style.display = 'block';
-    roiCompute();
+    roiInputsChanged();
 }
 
 function roiFmtPeso(n) {
@@ -737,7 +768,8 @@ function roiFmtPeso(n) {
     return '₱' + Math.round(n).toLocaleString('en-PH');
 }
 
-function roiCompute() {
+// Runs the ROI math and reveals the results. Only called after roiCalculate() (credit handled there).
+function roiDoCompute() {
     if (!roiSelectedBillboard) return;
     var rate       = parseFloat(document.getElementById('roiRate').value) || 0;
     var months     = parseFloat(document.getElementById('roiMonths').value) || 1;
@@ -752,14 +784,6 @@ function roiCompute() {
         results.style.display = 'none';
         if (unlock) unlock.style.display = 'none';
         hint.style.display = 'block';
-        return;
-    }
-
-    // Credit gate: full results cost 1 credit per site (admin/subscriber exempt)
-    if (!roiResultsAllowed()) {
-        results.style.display = 'none';
-        hint.style.display = 'none';
-        if (unlock) { roiRenderUnlockPrompt(); unlock.style.display = 'block'; }
         return;
     }
     if (unlock) unlock.style.display = 'none';
