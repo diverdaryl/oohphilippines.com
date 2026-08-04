@@ -5619,12 +5619,16 @@ async function opUploadPhoto() {
         var publicUrl = urlData && urlData.publicUrl;
         if (!publicUrl) throw new Error('Could not retrieve public URL from storage.');
 
-        // Save to billboards table (source of truth for public listing + dashboard)
-        var { error: photoDbErr } = await _supabase
+        // Save to billboards table (source of truth for public listing + dashboard).
+        // .select() lets us confirm a row was actually updated — if RLS blocks it,
+        // PostgREST returns 0 rows with no error, which would otherwise fail silently.
+        var { data: updRows, error: photoDbErr } = await _supabase
             .from('billboards')
             .update({ photo: publicUrl })
-            .eq('site_name', siteName);
+            .eq('site_name', siteName)
+            .select('site_name');
         if (photoDbErr) throw new Error('Photo uploaded, but saving it to your listing failed: ' + photoDbErr.message);
+        if (!updRows || updRows.length === 0) throw new Error('Photo uploaded, but it could not be saved to your listing. Please make sure you are logged in as the operator that owns this site.');
 
         opWriteToSheet({ site: siteName, photo: publicUrl });
 
