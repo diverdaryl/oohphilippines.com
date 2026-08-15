@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TRKYRLSQHP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-TRKYRLSQHP');
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Billboard ROI Calculator Philippines – Free CPM &amp; Campaign ROI Tool | OOH Philippines</title>
+<meta name="description" content="Free billboard ROI calculator for the Philippines. Pick any of 2,000+ real billboard sites, enter your rate, and get CPM, projected conversions, break-even sales, and campaign ROI instantly.">
+<meta name="keywords" content="billboard roi calculator philippines, billboard cpm philippines, ooh roi calculator, billboard advertising roi, outdoor advertising cpm philippines">
+<link rel="canonical" href="https://oohphilippines.com/roi-calculator.html">
+
+<meta property="og:title" content="Billboard ROI Calculator Philippines – Free CPM &amp; ROI Tool">
+<meta property="og:description" content="Pick a real billboard site, enter your rate, and get CPM, conversions, break-even and ROI instantly.">
+<meta property="og:url" content="https://oohphilippines.com/roi-calculator.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="OOH Philippines">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Billboard ROI Calculator Philippines",
+  "url": "https://oohphilippines.com/roi-calculator.html",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "PHP" },
+  "publisher": { "@type": "Organization", "name": "OOH Philippines", "url": "https://oohphilippines.com" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is CPM in billboard advertising?",
+      "acceptedAnswer": { "@type": "Answer", "text": "CPM (cost per mille) is the cost to reach 1,000 people. For billboards it is computed as total campaign cost divided by total opportunity-to-see impressions, multiplied by 1,000. Major Philippine billboards typically work out to a much lower CPM than digital or TV advertising." }
+    },
+    {
+      "@type": "Question",
+      "name": "How is billboard audience reach estimated?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Reach is modeled as Opportunity-To-See (OTS): average daily traffic on the corridor multiplied by vehicle occupancy, the billboard's facing, and a visibility factor by format. Figures are estimates based on official traffic data where available, not measured counts." }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I compute billboard advertising ROI?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Multiply modeled impressions by an attention rate to get attentive reach, apply an expected conversion rate to project sales, multiply by your average transaction value to project revenue, and compare against total campaign cost. This calculator does all of it instantly for any listed site." }
+    }
+  ]
+}
+</script>
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    min-height: 100vh;
+    color: #202124;
+}
+.nav-wrapper { position: sticky; top: 0; z-index: 1000; background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+.nav-bar { display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; max-width: 1100px; margin: 0 auto; }
+.nav-logo { font-size: 22px; font-weight: 700; color: #1565c0; text-decoration: none; letter-spacing: -0.5px; }
+.nav-links { display: flex; gap: 8px; align-items: center; }
+.nav-link { color: #1565c0; text-decoration: none; font-weight: 600; padding: 8px 14px; border-radius: 7px; background: rgba(255,255,255,0.75); font-size: 13px; white-space: nowrap; }
+.nav-link.primary { background: #1565c0; color: white; }
+.wrap { max-width: 860px; margin: 0 auto; padding: 28px 16px 60px; }
+.card { background: white; border-radius: 14px; box-shadow: 0 4px 18px rgba(0,0,0,0.07); padding: 22px; margin-bottom: 18px; }
+.step-label { font-size: 12px; font-weight: 700; color: #1565c0; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+.field-label { display: block; font-size: 12px; font-weight: 600; color: #5f6368; margin-bottom: 5px; }
+.field { width: 100%; box-sizing: border-box; padding: 11px 13px; border: 1.5px solid #dadce0; border-radius: 10px; font-size: 14px; font-family: inherit; background: white; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+.btn-primary { background: #1565c0; color: white; border: none; padding: 12px 26px; border-radius: 50px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; text-decoration: none; display: inline-block; }
+.btn-orange { background: #e65100; color: white; border: none; padding: 13px 30px; border-radius: 50px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; text-decoration: none; display: inline-block; }
+.link-btn { background: none; border: none; color: #1565c0; font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: underline; font-family: inherit; }
+.site-footer { background: #0d2c54; color: white; padding: 28px 16px; margin-top: 40px; }
+.footer-content { max-width: 1100px; margin: 0 auto; text-align: center; }
+.footer-links { margin-bottom: 10px; }
+.footer-link { color: #bbdefb; text-decoration: none; margin: 0 10px; font-size: 13px; }
+.footer-copyright { font-size: 12px; color: #90a4c8; }
+table.rtable { width: 100%; font-size: 13px; color: #5f6368; border-collapse: collapse; }
+table.rtable td { padding: 6px 0; }
+table.rtable td:last-child { text-align: right; font-weight: 700; color: #202124; }
+</style>
+</head>
+<body>
+
+<div class="nav-wrapper">
+    <div class="nav-bar">
+        <a href="/" class="nav-logo">OOHPhilippines.com</a>
+        <div class="nav-links">
+            <a href="/" class="nav-link">🔍 Browse Billboards</a>
+            <a href="guides.html" class="nav-link">📝 OOH Insights</a>
+            <a href="pricing.html" class="nav-link primary">💎 Pricing</a>
+        </div>
+    </div>
+</div>
+
+<div class="wrap">
+
+    <div style="text-align:center;margin-bottom:8px;">
+        <h1 style="margin:0 0 6px;color:#202124;font-size:27px;">📈 Billboard ROI Calculator</h1>
+        <p style="color:#5f6368;font-size:14px;margin:0;max-width:620px;margin-left:auto;margin-right:auto;">
+            Pick any of our 2,000+ real billboard sites, enter the operator's quoted rate,
+            and see CPM, projected conversions, break-even sales, and campaign ROI — instantly.
+        </p>
+        <button onclick="openCpmGuide()" class="link-btn" style="margin-top:8px;">💡 New to media buying? Why billboards beat other channels on cost →</button>
+        <div style="font-size:12px;color:#5f6368;margin-top:6px;">Operators: send this page to your advertisers to show what your site's reach is worth.</div>
+    </div>
+
+    <div id="roiFreeBanner" style="display:none;background:#fff3e0;border:1px solid #ffcc80;color:#e65100;border-radius:10px;padding:10px 16px;margin:14px 0 4px;font-size:13px;font-weight:600;text-align:center;"></div>
+
+    <!-- Calculator -->
+    <div id="roiCalcState" style="margin-top:14px;">
+
+        <div class="card">
+            <div class="step-label">1 · Choose a site</div>
+            <input type="text" id="roiSiteSearch" class="field" placeholder="🔍 Search by site name, road, or city (e.g. EDSA Guadalupe)" oninput="roiSiteSearchInput()" autocomplete="off">
+            <div id="roiSiteResults" style="display:none;border:1px solid #e0e0e0;border-radius:10px;margin-top:6px;max-height:260px;overflow-y:auto;background:white;"></div>
+            <div id="roiSelectedSite" style="display:none;margin-top:12px;background:#e8f0fe;border-radius:10px;padding:12px 14px;font-size:13px;"></div>
+            <div id="roiLoading" style="font-size:12px;color:#9aa0a6;margin-top:8px;">Loading billboard inventory…</div>
+        </div>
+
+        <div class="card">
+            <div class="step-label">2 · What are you advertising?</div>
+            <select id="roiPreset" class="field" onchange="roiApplyPreset()">
+                <option value="custom">— Choose your industry (fills sensible starting numbers) —</option>
+                <option value="qsr">🍔 Fast food / QSR</option>
+                <option value="retail">🛒 Retail / FMCG / Grocery brand</option>
+                <option value="telco">📱 Telco / Prepaid / E-wallet</option>
+                <option value="dining">🍽️ Restaurant / Casual dining</option>
+                <option value="services">🏥 Clinic / Salon / Local services</option>
+                <option value="finance">🏦 Bank / Lending / Insurance</option>
+                <option value="auto">🚗 Automotive</option>
+                <option value="realestate">🏘️ Real estate / Property</option>
+            </select>
+            <div id="roiPresetHint" style="display:none;font-size:12px;color:#5f6368;background:#f8f9fa;border-radius:8px;padding:10px 12px;margin-top:10px;line-height:1.6;"></div>
+        </div>
+
+        <div class="card">
+            <div class="step-label">3 · Campaign cost</div>
+            <div class="grid">
+                <div>
+                    <label class="field-label">Monthly rate (₱) — as quoted by the operator</label>
+                    <input type="number" id="roiRate" class="field" placeholder="e.g. 250000" min="0" oninput="roiInputsChanged()">
+                </div>
+                <div>
+                    <label class="field-label">Campaign duration (months)</label>
+                    <input type="number" id="roiMonths" class="field" value="3" min="1" max="36" oninput="roiInputsChanged()">
+                </div>
+                <div>
+                    <label class="field-label">One-time production cost (₱, optional)</label>
+                    <input type="number" id="roiProduction" class="field" placeholder="e.g. 30000" min="0" oninput="roiInputsChanged()">
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="step-label">4 · Your assumptions <button onclick="openAssumptionsGuide()" class="link-btn" style="font-size:11px;text-transform:none;letter-spacing:0;">ⓘ how do I pick these?</button></div>
+            <div class="grid">
+                <div>
+                    <label class="field-label">Attention rate (%) — share of passersby who notice the ad</label>
+                    <input type="number" id="roiAttention" class="field" value="20" min="0" max="100" step="1" oninput="roiInputsChanged()">
+                </div>
+                <div>
+                    <label class="field-label">Conversion rate (%) — share of noticers who eventually buy</label>
+                    <input type="number" id="roiConversion" class="field" value="0.5" min="0" max="100" step="0.01" oninput="roiInputsChanged()">
+                </div>
+                <div>
+                    <label class="field-label">Average transaction value (₱)</label>
+                    <input type="number" id="roiAvgTxn" class="field" value="500" min="0" oninput="roiInputsChanged()">
+                </div>
+            </div>
+        </div>
+
+        <!-- Credit unlock prompt (shown when ROI results require a credit) -->
+        <div id="roiUnlockPrompt" class="card" style="display:none;text-align:center;max-width:560px;margin:14px auto;padding:36px 26px;"></div>
+
+        <div id="roiResults" style="display:none;">
+            <div style="background:linear-gradient(135deg,#1565c0,#0d47a1);border-radius:14px;color:white;padding:24px;margin-bottom:14px;">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:18px;text-align:center;">
+                    <div><div id="roiOutROI" style="font-size:30px;font-weight:800;">–</div><div style="font-size:12px;opacity:0.85;">Projected ROI</div></div>
+                    <div><div id="roiOutCPM" style="font-size:30px;font-weight:800;">–</div><div style="font-size:12px;opacity:0.85;">CPM · cost per 1,000 views <span onclick="openCpmGuide()" style="cursor:pointer;text-decoration:underline;font-weight:700;">ⓘ what's this?</span></div></div>
+                    <div><div id="roiOutBreakeven" style="font-size:30px;font-weight:800;">–</div><div style="font-size:12px;opacity:0.85;">Break-even sales</div></div>
+                </div>
+            </div>
+            <div id="roiMustBeTrue" style="background:#e8f5e9;border:1px solid #a5d6a7;color:#1b5e20;border-radius:12px;padding:14px 18px;margin-bottom:14px;font-size:14px;font-weight:600;text-align:center;"></div>
+            <div class="card">
+                <table class="rtable">
+                    <tr><td>Total campaign impressions (OTS)</td><td id="roiOutImp">–</td></tr>
+                    <tr><td>Total campaign cost</td><td id="roiOutCost">–</td></tr>
+                    <tr><td>Attentive reach</td><td id="roiOutAttentive">–</td></tr>
+                    <tr><td>Projected conversions</td><td id="roiOutConv">–</td></tr>
+                    <tr><td>Projected revenue</td><td id="roiOutRevenue">–</td></tr>
+                    <tr><td>Cost per attentive viewer</td><td id="roiOutCPV">–</td></tr>
+                </table>
+                <div id="roiConfidenceLine" style="margin-top:12px;font-size:11px;font-weight:700;"></div>
+            </div>
+            <div style="font-size:11px;color:#9aa0a6;line-height:1.6;padding:0 4px;">
+                Reach figures are modeled Opportunity-To-See (OTS) estimates, not measured counts. ROI outputs are projections based on your own assumptions and do not guarantee campaign results.
+                <a href="ooh-audience-measurement-philippines.html" target="_blank" style="color:#1565c0;">Read the reach methodology →</a>
+            </div>
+            <div style="text-align:center;margin-top:14px;">
+                <button onclick="roiGeneratePDF(this)" class="btn-orange" style="margin:0 6px 8px;">📄 Download PDF report</button>
+                <a href="/" class="btn-primary" style="margin:0 6px 8px;">🔍 Browse 2,000+ billboard sites →</a>
+            </div>
+        </div>
+        <div id="roiEmptyHint" style="text-align:center;color:#9aa0a6;font-size:13px;padding:20px;">Select a site and enter the quoted monthly rate to see results.</div>
+    </div>
+</div>
+
+<!-- CPM / Why OOH Guide Modal -->
+<div id="cpmGuideModal" onclick="if(event.target===this) closeCpmGuide()"
+    style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center;padding:16px;">
+    <div style="background:white;border-radius:16px;max-width:620px;width:100%;max-height:88vh;overflow-y:auto;position:relative;">
+        <button onclick="closeCpmGuide()" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:22px;color:#5f6368;cursor:pointer;line-height:1;">&times;</button>
+        <div style="padding:28px 26px;">
+            <div style="font-size:11px;font-weight:700;color:#1565c0;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Media Buying 101</div>
+            <h2 style="margin:0 0 12px;font-size:22px;">Why billboards deserve a spot on your media plan</h2>
+            <p style="font-size:14px;color:#5f6368;line-height:1.65;margin:0 0 14px;">
+                <strong style="color:#202124;">CPM (cost per mille)</strong> is how advertisers compare media prices across completely different channels:
+                it's the cost to put your message in front of <strong style="color:#202124;">1,000 people</strong>.
+                The lower the CPM, the more eyeballs every peso buys.
+            </p>
+            <table style="width:100%;font-size:13px;border-collapse:collapse;margin-bottom:8px;">
+                <tr style="background:#f8f9fa;">
+                    <th style="text-align:left;padding:9px 12px;color:#5f6368;font-size:11px;text-transform:uppercase;letter-spacing:0.4px;">Channel</th>
+                    <th style="text-align:right;padding:9px 12px;color:#5f6368;font-size:11px;text-transform:uppercase;letter-spacing:0.4px;">Typical CPM*</th>
+                </tr>
+                <tr style="background:#e8f5e9;">
+                    <td style="padding:9px 12px;font-weight:700;color:#2e7d32;">🏙️ Major billboard (this platform)</td>
+                    <td style="text-align:right;padding:9px 12px;font-weight:800;color:#2e7d32;">₱15–60</td>
+                </tr>
+                <tr><td style="padding:9px 12px;border-bottom:1px solid #f1f3f4;">📱 Facebook / Instagram ads</td><td style="text-align:right;padding:9px 12px;border-bottom:1px solid #f1f3f4;">₱150–400+</td></tr>
+                <tr><td style="padding:9px 12px;border-bottom:1px solid #f1f3f4;">▶️ YouTube pre-roll</td><td style="text-align:right;padding:9px 12px;border-bottom:1px solid #f1f3f4;">₱200–500</td></tr>
+                <tr><td style="padding:9px 12px;">📺 National TV spot</td><td style="text-align:right;padding:9px 12px;">₱300+</td></tr>
+            </table>
+            <p style="font-size:10px;color:#9aa0a6;line-height:1.5;margin:0 0 16px;">
+                *Billboard range computed from operator-quoted rates and modeled OTS reach on OOHPhilippines.com.
+                Digital and TV figures are indicative industry ranges — actual prices vary by targeting, season, and negotiation.
+            </p>
+            <div style="font-size:13px;font-weight:700;margin-bottom:8px;">Why the gap in OOH's favor:</div>
+            <div style="font-size:13.5px;color:#5f6368;line-height:1.9;margin-bottom:16px;">
+                🚫 <strong style="color:#202124;">Can't be skipped, blocked, or scrolled past</strong> — a billboard is 100% viewable, on duty 24/7<br>
+                🔁 <strong style="color:#202124;">Frequency is built in</strong> — the same commuters pass your site daily, and repetition builds brands<br>
+                🌆 <strong style="color:#202124;">Real-world presence</strong> — you reach people out where they shop, drive, and decide<br>
+                🏆 <strong style="color:#202124;">Instant credibility</strong> — a large physical placement signals an established brand<br>
+                📈 <strong style="color:#202124;">Multiplies your digital spend</strong> — people who see a brand outdoors are more likely to search for and engage with it online
+            </div>
+            <p style="font-size:12.5px;color:#5f6368;line-height:1.6;background:#f8f9fa;border-radius:10px;padding:12px 14px;margin:0 0 18px;">
+                <strong style="color:#202124;">The honest fine print:</strong> billboard reach is broad, not targeted, and nobody can click it.
+                That's exactly why smart media plans pair OOH's cheap mass reach with digital's precision — rather than choosing one or the other.
+            </p>
+            <div style="text-align:center;">
+                <a href="/" class="btn-primary">🔍 Browse 2,000+ billboard sites →</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Assumptions Guide Modal -->
+<div id="assumptionsModal" onclick="if(event.target===this) closeAssumptionsGuide()"
+    style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center;padding:16px;">
+    <div style="background:white;border-radius:16px;max-width:620px;width:100%;max-height:88vh;overflow-y:auto;position:relative;">
+        <button onclick="closeAssumptionsGuide()" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:22px;color:#5f6368;cursor:pointer;line-height:1;">&times;</button>
+        <div style="padding:28px 26px;">
+            <div style="font-size:11px;font-weight:700;color:#1565c0;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">How to pick your numbers</div>
+            <h2 style="margin:0 0 12px;font-size:22px;">Making sensible assumptions</h2>
+            <p style="font-size:13.5px;color:#5f6368;line-height:1.7;margin:0 0 14px;">
+                Billboards can't be clicked, so ROI is <strong style="color:#202124;">modeled, not tracked</strong>.
+                These three numbers are your hypothesis about the campaign — here's how to set each one:
+            </p>
+            <div style="font-size:13.5px;color:#5f6368;line-height:1.7;margin-bottom:14px;">
+                <strong style="color:#202124;">👀 Attention rate</strong> — of everyone who passes, who actually notices?
+                A huge lit board at a slow, congested choke point deserves <strong>25–35%</strong>.
+                A mid-size board on a fast, cluttered stretch: <strong>10–15%</strong>.
+                Simple, bold creative earns the higher end. Default 20% is a fair middle.
+            </div>
+            <div style="font-size:13.5px;color:#5f6368;line-height:1.7;margin-bottom:14px;">
+                <strong style="color:#202124;">🛒 Conversion rate</strong> — of those who noticed, who eventually buys?
+                This depends on your product more than the billboard:
+                everyday low-price products (fast food, load, drinks) <strong>0.5–2%</strong>;
+                considered purchases (appliances, clinics, banks) <strong>0.1–0.5%</strong>;
+                big-ticket (cars, condos) <strong>0.01–0.05%</strong> — tiny, but each sale is huge.
+                A billboard near your actual store converts far better than a general image site.
+            </div>
+            <div style="font-size:13.5px;color:#5f6368;line-height:1.7;margin-bottom:14px;">
+                <strong style="color:#202124;">💵 Average transaction value</strong> — your average receipt.
+                For repeat-purchase products, using first-purchase value is the conservative case;
+                a new customer's lifetime value is the upside case.
+            </div>
+            <p style="font-size:12.5px;color:#5f6368;line-height:1.6;background:#e8f5e9;border-radius:10px;padding:12px 14px;margin:0;">
+                <strong style="color:#1b5e20;">The professional's trick — work backwards:</strong> don't predict, gut-check.
+                The green box under your results tells you how few buyers are needed to break even.
+                If "1 in 4,000 people who noticed" sounds easily believable for your product, the campaign likely pays for itself.
+            </p>
+        </div>
+    </div>
+</div>
+
+<footer class="site-footer">
+    <div class="footer-content">
+        <div class="footer-links">
+            <a href="/" class="footer-link">Home</a>
+            <a href="guides.html" class="footer-link">OOH Insights</a>
+            <a href="pricing.html" class="footer-link">Pricing</a>
+            <a href="https://www.facebook.com/oohphilippines" target="_blank" class="footer-link">Facebook</a>
+            <a href="https://www.instagram.com/oohphilippines" target="_blank" class="footer-link">Instagram</a>
+        </div>
+        <div class="footer-copyright">© 2026 OOHPhilippines.com. All rights reserved.</div>
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+// ════════════════════════════════════════════════════════════════
+// OTS ENGINE — extracted verbatim from index.html (keep in sync)
+// ════════════════════════════════════════════════════════════════
+var SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTFpc0sNBQfrwAzsowLeSr4oEszOkjnSz7SrxTU32Vf1XDxtcDeozGmkrtSOVyvs8QSFY-RbC7J4OIO/pub?gid=1436750502&single=true&output=csv';
+var SUPABASE_URL = 'https://xecxfkuzexshafwuuizf.supabase.co';
+var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlY3hma3V6ZXhzaGFmd3V1aXpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTk1MTIsImV4cCI6MjA5MTMzNTUxMn0.sZrRmesCDn0DsuldUD8zIhi1gX1ajIKX0aULqNBX_To';
+
+function parseCSV(text) {
+    var lines = text.split('\n');
+    var headers = lines[0].split(',').map(function(h){ return h.trim().replace(/^"|"$/g,''); });
+    var rows = [];
+    for (var i = 1; i < lines.length; i++) {
+        if (!lines[i].trim()) continue;
+        var cols = [];
+        var cur = '';
+        var inQ = false;
+        for (var c = 0; c < lines[i].length; c++) {
+            var ch = lines[i][c];
+            if (ch === '"') { inQ = !inQ; }
+            else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
+            else { cur += ch; }
+        }
+        cols.push(cur.trim());
+        var obj = {};
+        headers.forEach(function(h, idx){ obj[h] = (cols[idx]||'').replace(/^"|"$/g,''); });
+        rows.push(obj);
+    }
+    return rows;
+}
+
+var OOHPH_CORRIDOR_ADT = [
+    { keys: ['EDSA'],                          adt: 407342, confidence: 'High',   name: 'EDSA' },
+    { keys: ['COMMONWEALTH'],                  adt: 407988, confidence: 'High',   name: 'Commonwealth Ave' },
+    { keys: ['QUEZON AVE'],                    adt: 312486, confidence: 'High',   name: 'Quezon Ave', excludeKeys: ['ALBAY','LEGAZPI'] },
+    { keys: ['NLEX'],                          adt: 320000, confidence: 'High',   name: 'NLEX' },
+    { keys: ['SLEX'],                          adt: 356594, confidence: 'High',   name: 'SLEX' },
+    { keys: ['ORTIGAS'],                       adt: 185699, confidence: 'Medium', name: 'Ortigas Ave' },
+    { keys: ['C5', 'KATIPUNAN', 'BONI SERRANO', 'BONNY SERRANO', 'KALAYAAN'], adt: 200000, confidence: 'Low', name: 'C5' },
+    { keys: ['ESPA', 'QUEZON BLVD', 'QUEZON BOULEVARD', 'QUIAPO'], adt: 120000, confidence: 'Low', name: 'España Blvd' },
+    { keys: ['MARCOS HIGHWAY', 'MARCOS HWY'],  adt: 150000, confidence: 'Low',    name: 'Marcos Highway (Metro Manila)', excludeKeys: ['BAGUIO'] },
+    { keys: ['SUMULONG'],                      adt: 90000,  confidence: 'Low',    name: 'Sumulong Highway' },
+    { keys: ['CAVITEX'],                       adt: 90000,  confidence: 'Low',    name: 'CAVITEX' },
+    { keys: ['CALAX'],                         adt: 50000,  confidence: 'Low',    name: 'CALAX' },
+    { keys: ['CCLEX'],                         adt: 25000,  confidence: 'Low',    name: 'CCLEX' },
+    { keys: ['SCTEX'],                         adt: 45000,  confidence: 'Low',    name: 'SCTEX' },
+    { keys: ['ROXAS BLVD', 'ROXAS BOULEVARD', 'MACAPAGAL', 'DIOKNO', 'ASEANA'], excludeKeys: ['DAVAO', 'CAGAYAN'],
+                                               adt: 100000, confidence: 'Low',    name: 'Manila Bay Area (Roxas Blvd-Macapagal-Diokno)' },
+    { keys: ['AURORA BLVD', 'AURORA BOULEVARD'], adt: 70000, confidence: 'Low',   name: 'Aurora Boulevard (Quezon City)' },
+    { keys: ['BINONDO', 'ESCOLTA', 'JONES BRIDGE', 'PADRE BURGOS', 'CARRIEDO', 'JUAN LUNA'],
+                                               adt: 60000,  confidence: 'Low',    name: 'Manila City Center (Binondo-Escolta-P. Burgos)' },
+    { keys: ['NAGTAHAN', 'LACSON'], excludeKeys: ['BACOLOD'],
+                                               adt: 80000,  confidence: 'Low',    name: 'Nagtahan-Lacson Ave (Sta. Mesa, Manila)' },
+    { keys: ['LAONG LAAN'],                    adt: 40000,  confidence: 'Low',    name: 'Laong Laan St (Manila)' },
+    { keys: ['VALENZUELA'],                    adt: 120000, confidence: 'Low',    name: 'MacArthur Highway (Valenzuela)' },
+    { keys: ['GIL PUYAT', 'PUYAT', 'PUIYAT', 'BUENDIA', 'AYALA', 'GLORIETTA', 'MAKATI AVE', 'JUPITER'], excludeKeys: ['DAVAO'],
+                                               adt: 90000,  confidence: 'Low',    name: 'Makati CBD (Ayala-Buendia-Makati Ave)' },
+    { keys: ['34TH STREET', '34TH ST', '11TH AVE', '7TH AVE', '5TH AVE', 'FORT BONIFACIO', 'BGC'], excludeKeys: ['CEBU'],
+                                               adt: 40000,  confidence: 'Low',    name: 'BGC Internal Roads (Taguig)' },
+    { keys: ['MONUMENTO', 'CALOOCAN'], excludeKeys: [],
+                                               adt: 90000,  confidence: 'Low',    name: 'Monumento / Caloocan (MacArthur)' },
+    // ── Provincial arterials — REAL counts from DPWH CY 2024 AADT (per-road). NCR
+    // isn't in the DPWH file, so Metro Manila stays on MMDA above. Davao before Pampanga.
+    { keys: ['BUHANGIN','DAVAO-COTABATO','DAVAO-COTOBATO','DAVAO CITY DIV'],   adt: 39000, confidence: 'High', name: 'Davao City Diversion / Buhangin',        source: 'DPWH CY 2024 AADT' },
+    { keys: ['MCARTHUR','MC ARTHUR','MACARTHUR','DOUGLAS MCARTHUR','ULAS','MATINA'], excludeKeys: ['PAMPANGA','ANGELES','SAN FERNANDO','TARLAC','BULACAN','NUEVA ECIJA','VALENZUELA','CALOOCAN'], adt: 41000, confidence: 'High', name: 'McArthur Hwy / Maharlika (Davao)', source: 'DPWH CY 2024 AADT' },
+    { keys: ['QUIMPO'],                                                        adt: 57800, confidence: 'High', name: 'Quimpo Blvd (Davao)',                   source: 'DPWH CY 2024 AADT' },
+    { keys: ['JP LAUREL','J.P. LAUREL','LANANG','BAJADA'],                     adt: 40000, confidence: 'High', name: 'JP Laurel–Lanang (Davao)',              source: 'DPWH CY 2024 AADT' },
+    { keys: ['CEBU NORTH ROAD'],                                              adt: 49000, confidence: 'High', name: 'Cebu North Rd (Mandaue/Cebu City)',     source: 'DPWH CY 2024 AADT' },
+    { keys: ['ML QUEZON','M.L. QUEZON'],                                       adt: 83000, confidence: 'High', name: 'M.L. Quezon Hwy (Lapu-Lapu/Mactan)',    source: 'DPWH CY 2024 AADT' },
+    { keys: ['OSMENA BLVD','OSMEÑA BLVD'],                                     adt: 58600, confidence: 'High', name: 'N. Bacalso / Osmeña Blvd (Cebu)',       source: 'DPWH CY 2024 AADT' },
+    { keys: ['MACTAN CIRCUM'],                                                 adt: 85000, confidence: 'High', name: 'Mactan Circumferential Rd',             source: 'DPWH CY 2024 AADT' },
+    { keys: ['MACARTHUR'], excludeKeys: ['DAVAO'],                            adt: 33000, confidence: 'High', name: 'MacArthur Hwy / Manila North Rd (Pampanga)', source: 'DPWH CY 2024 AADT' },
+    { keys: ['MARCOS HIGHWAY','MARCOS HI-WAY'],                                adt: 19000, confidence: 'High', name: 'Marcos Hwy (Baguio)',                   source: 'DPWH CY 2024 AADT' },
+    { keys: ['LIPA'],                                                         adt: 30000, confidence: 'High', name: 'Manila–Batangas Rd (Lipa)',             source: 'DPWH CY 2024 AADT' },
+    { keys: ['URDANETA'],                                                     adt: 21000, confidence: 'High', name: 'Urdaneta–Lingayen Rd (Pangasinan)',     source: 'DPWH CY 2024 AADT' },
+    { keys: ['DAGUPAN'],                                                      adt: 25000, confidence: 'High', name: 'Dagupan National Hwy (Pangasinan)',     source: 'DPWH CY 2024 AADT' },
+    { keys: ['TAGBILARAN','PANGLAO','DAUIS','BACLAYON'],                       adt: 9000,  confidence: 'High', name: 'Tagbilaran Coastal / CPG (Bohol)',      source: 'DPWH CY 2024 AADT' },
+    { keys: ['DIVERSION RD','SEN. BENIGNO','MANDURRIAO'], excludeKeys: ['DAVAO'], adt: 28000, confidence: 'High', name: 'Sen. Aquino Ave / Diversion (Iloilo)', source: 'DPWH CY 2024 AADT' },
+    { keys: ['LAPASAN'],                                                       adt: 22000, confidence: 'High', name: 'CDO National Hwy (Butuan–CDO–Iligan)',   source: 'DPWH CY 2024 AADT' }
+];
+// Regional classification tiers — placeholder ADT by area/road-type, pending DPWH/LGU verification.
+// All render as "early est." (Low confidence). Order matters: more specific areas listed before generic ones.
+var OOHPH_CITY_TIERS = [
+    { keys: ['CEBU'],                                                    adt: 60000, name: 'Cebu Metro Arterial' },
+    { keys: ['DAVAO'],                                                   adt: 60000, name: 'Davao Metro Arterial' },
+    { keys: ['BACOLOD'],                                                 adt: 40000, name: 'Bacolod Arterial' },
+    { keys: ['ILOILO'],                                                  adt: 40000, name: 'Iloilo Arterial' },
+    { keys: ['CAGAYAN DE ORO', 'CDO'],                                   adt: 40000, name: 'CDO Arterial' },
+    { keys: ['BAGUIO'],                                                  adt: 30000, name: 'Baguio Arterial' },
+    { keys: ['PAMPANGA', 'TARLAC', 'NUEVA ECIJA', 'BULACAN', 'BALAGTAS', 'ANGELES', 'MABALACAT', 'MEXICO'],
+                                                                          adt: 50000, name: 'Central Luzon Arterial' },
+    { keys: ['CAVITE', 'LAGUNA', 'BATANGAS', 'AGUINALDO', 'SARIAYA', 'DASMARIÑAS', 'DASMARINAS', 'BACOOR', 'IMUS', 'NOVELETA', 'CARMONA', 'SANTA ROSA', 'CALAMBA', 'CABUYAO'],
+                                                                          adt: 45000, name: 'CALABARZON Arterial' },
+    { keys: ['ILOCOS', 'LA UNION', 'PANGASINAN', 'CAGAYAN', 'ISABELA', 'URDANETA', 'DAGUPAN', 'VIGAN', 'LAOAG', 'TUGUEGARAO', 'ILAGAN', 'SANTIAGO', 'CAUAYAN', 'ZAMBALES', 'OLONGAPO', 'SUBIC'],
+                                                                          adt: 30000, name: 'Northern Luzon Arterial' },
+    { keys: ['CAMARINES', 'ALBAY', 'SORSOGON', 'NAGA', 'LEGAZPI', 'DAET', 'LIGAO'],
+                                                                          adt: 35000, name: 'Bicol Region Arterial' },
+    { keys: ['BOHOL', 'NEGROS ORIENTAL', 'CAPIZ', 'AKLAN', 'SAMAR', 'LEYTE', 'ORMOC', 'CALBAYOG', 'ROXAS CITY', 'KALIBO', 'CATICLAN', 'MALAY', 'TAGBILARAN', 'DUMAGUETE', 'PALAWAN', 'PUERTO PRINCESA'],
+                                                                          adt: 35000, name: 'Visayas Provincial Arterial' },
+    { keys: ['SOUTH COTABATO', 'GENSAN', 'ZAMBOANGA', 'AGUSAN', 'BUTUAN', 'LANAO', 'ILIGAN', 'COTABATO', 'KIDAPAWAN', 'KORONADAL'],
+                                                                          adt: 35000, name: 'Mindanao Provincial Arterial' },
+    { keys: ['MANILA', 'QUEZON CITY', 'MAKATI', 'PASIG', 'TAGUIG', 'MANDALUYONG', 'PARANAQUE', 'PARAÑAQUE', 'CALOOCAN', 'MARIKINA', 'ANTIPOLO', 'PASAY', 'MUNTINLUPA', 'LAS PINAS', 'LAS PIÑAS', 'VALENZUELA', 'MALABON', 'NAVOTAS', 'SAN JUAN', 'PATEROS'],
+                                                                          adt: 120000, name: 'Metro Manila Arterial' }
+];
+var OOHPH_PROVINCIAL_DEFAULT_ADT = 25000; // conservative catch-all for provincial highways / unmapped locations
+var OOHPH_OCCUPANCY    = 1.9;   // blended persons per vehicle
+var OOHPH_LTS          = { 'Static': 0.45, 'LED': 0.55, 'LPB': 0.35 }; // visibility / "eyes-on" factor by format
+
+function ooCorridor(location, tag) {
+    var text = ((location || '') + ' ' + (tag || '')).toString().toUpperCase();
+    for (var i = 0; i < OOHPH_CORRIDOR_ADT.length; i++) {
+        var road = OOHPH_CORRIDOR_ADT[i];
+        if (road.excludeKeys) {
+            var excluded = false;
+            for (var e = 0; e < road.excludeKeys.length; e++) {
+                if (text.indexOf(road.excludeKeys[e]) !== -1) { excluded = true; break; }
+            }
+            if (excluded) continue;
+        }
+        for (var k = 0; k < road.keys.length; k++) {
+            if (text.indexOf(road.keys[k]) !== -1) return road;
+        }
+    }
+    return null; // fall through to city-tier matching
+}
+function ooCityTier(b) {
+    var text = ((b['Location'] || '') + ' ' + (b['Tag'] || '')).toString().toUpperCase();
+    for (var i = 0; i < OOHPH_CITY_TIERS.length; i++) {
+        var tier = OOHPH_CITY_TIERS[i];
+        for (var k = 0; k < tier.keys.length; k++) {
+            if (text.indexOf(tier.keys[k]) !== -1) return tier;
+        }
+    }
+    return { adt: OOHPH_PROVINCIAL_DEFAULT_ADT, name: 'Provincial/Other' };
+}
+function ooDirectionFactor(tag) {
+    var t = (tag || '').toString().toLowerCase();
+    var dirs = ['northbound','southbound','eastbound','westbound'].filter(function(d){ return t.indexOf(d) !== -1; });
+    return dirs.length >= 2 ? 1.0 : 0.5; // double-facing sees ~full corridor traffic, single-facing ~half
+}
+
+function formatImpressions(n) {
+    if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+    if (n >= 1000) return Math.round(n / 1000) + 'K';
+    return String(n);
+}
+
+function estimateWeeklyImpressionsDetailed(b) {
+    var corridor = ooCorridor(b['Location'], b['Tag']);
+    var adt, confidence, corridorName;
+    var measuredAt = '';
+    if (corridor) {
+        adt = corridor.adt; confidence = corridor.confidence; corridorName = corridor.name;
+        measuredAt = corridor.measuredAt || '';
+    } else {
+        var tier = ooCityTier(b);
+        adt = tier.adt; confidence = tier.liveConfidence || 'Low'; corridorName = tier.name;
+        measuredAt = tier.measuredAt || '';
+    }
+    var type = b['Type'] || 'Static';
+    var lts = OOHPH_LTS[type] || OOHPH_LTS['Static'];
+    var dir = ooDirectionFactor(b['Tag']);
+    var dailyOTS = adt * OOHPH_OCCUPANCY * dir * lts;
+    return {
+        corridor: corridorName, confidence: confidence, adt: adt, occupancy: OOHPH_OCCUPANCY,
+        directionFactor: dir, facing: (dir === 1.0 ? 'Double-facing' : 'Single-facing'),
+        type: type, ltsFactor: lts,
+        daily: Math.round(dailyOTS), weekly: Math.round(dailyOTS * 7), monthly: Math.round(dailyOTS * 30.4),
+        measuredAt: measuredAt
+    };
+}
+
+// ── Live corridor traffic overrides (direct REST — no supabase-js on standalone pages) ──
+function ooFormatMeasuredAt(dateStr) {
+    if (!dateStr) return '';
+    try {
+        var d = new Date(dateStr);
+        if (isNaN(d.getTime())) return '';
+        var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        return months[d.getMonth()] + ' ' + d.getFullYear();
+    } catch(e) { return ''; }
+}
+function loadLiveTraffic() {
+    fetch(SUPABASE_URL + '/rest/v1/corridor_traffic?select=corridor_key,adt,confidence,measured_at', {
+        headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + SUPABASE_ANON }
+    }).then(function(r){ return r.json(); }).then(function(rows){
+        if (!rows || !rows.length) return;
+        var live = {};
+        rows.forEach(function(r) {
+            if (r.corridor_key && r.adt > 0) live[String(r.corridor_key).toUpperCase()] = r;
+        });
+        OOHPH_CORRIDOR_ADT.forEach(function(road) {
+            var l = live[road.name.toUpperCase()];
+            if (l) { road.adt = l.adt; if (l.confidence) road.confidence = l.confidence; road.measuredAt = ooFormatMeasuredAt(l.measured_at); }
+        });
+        OOHPH_CITY_TIERS.forEach(function(tier) {
+            var l = live[tier.name.toUpperCase()];
+            if (l) { tier.adt = l.adt; if (l.confidence) tier.liveConfidence = l.confidence; tier.measuredAt = ooFormatMeasuredAt(l.measured_at); }
+        });
+    }).catch(function(){});
+}
+
+// ════════════════════════════════════════════════════════════════
+// ROI CALCULATOR  (credit-gated: 1 credit per site's ROI results)
+// ════════════════════════════════════════════════════════════════
+var allBillboards = [];
+var roiSelectedBillboard = null;
+var roiIsSubscriber = false;               // admin or legacy subscriber → unlimited
+
+// Credit-system state
+var ROI_ADMIN_EMAILS = ['darylabueva@gmail.com'];
+var roiUserEmail = null;                    // raw email as stored (used for REST + spend)
+var roiUserMode  = 'guest';                 // 'admin' | 'credits' | 'guest'
+var roiCredits   = 0;                       // current balance for credit-mode users
+
+var ROI_PRESETS = {
+    qsr:        { conv: 1.0,  txn: 250,     att: 20, hint: 'Fast food is a frequent, low-commitment purchase — a noticed billboard plausibly nudges 0.5–2% of viewers into a visit they were going to make somewhere anyway. Sites near your branches convert best.' },
+    retail:     { conv: 0.8,  txn: 400,     att: 20, hint: 'Everyday products available in many stores. The billboard’s job is brand preference at the shelf — conversion of 0.5–1.5% is a fair range for widely distributed brands.' },
+    telco:      { conv: 1.0,  txn: 300,     att: 20, hint: 'Load, promos and e-wallets are impulse-friendly. Note: ₱300 is a first transaction — a retained subscriber is worth many months of that, so this is the conservative case.' },
+    dining:     { conv: 0.4,  txn: 1200,    att: 20, hint: 'Dining out is a planned decision. Billboards within a few km of the restaurant, especially with directional copy (“500m ahead”), justify the higher end.' },
+    services:   { conv: 0.3,  txn: 2500,    att: 18, hint: 'Clinics, salons and local services convert from nearby traffic. A site your actual customers pass daily beats a bigger board across town.' },
+    finance:    { conv: 0.15, txn: 5000,    att: 18, hint: 'Financial products have long consideration cycles — billboards mostly build trust and recall. ₱5,000 is a placeholder for first-year customer value; adjust to your product.' },
+    auto:       { conv: 0.03, txn: 1200000, att: 22, hint: 'Very few passersby buy a car this quarter — but each sale is enormous, so tiny conversion rates still produce strong ROI. Dealerships value billboards on routes to their showroom.' },
+    realestate: { conv: 0.015,txn: 3500000, att: 22, hint: 'Property is the extreme case: conversion is measured in hundredths of a percent, but one unit sold can pay for a year of the billboard. Common near the development itself.' }
+};
+
+function roiApplyPreset() {
+    var key = document.getElementById('roiPreset').value;
+    var hintEl = document.getElementById('roiPresetHint');
+    if (key === 'custom' || !ROI_PRESETS[key]) { hintEl.style.display = 'none'; return; }
+    var p = ROI_PRESETS[key];
+    document.getElementById('roiAttention').value = p.att;
+    document.getElementById('roiConversion').value = p.conv;
+    document.getElementById('roiAvgTxn').value = p.txn;
+    hintEl.innerHTML = '💡 ' + p.hint + ' <em>These are starting points — adjust them to your brand.</em>';
+    hintEl.style.display = 'block';
+    roiInputsChanged();
+}
+
+// ── Credit helpers (direct REST — no supabase-js on standalone pages) ──
+function roiFetchCredits(email) {
+    return fetch(SUPABASE_URL + '/rest/v1/free_users?email=eq.' + encodeURIComponent(email) + '&select=credits', {
+        headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + SUPABASE_ANON }
+    }).then(function(r){ return r.ok ? r.json() : null; }).then(function(rows){
+        if (rows && rows.length) return (rows[0].credits == null ? 0 : Number(rows[0].credits));
+        return null;
+    }).catch(function(){ return null; });
+}
+function roiSpendCreditRPC(email) {
+    return fetch(SUPABASE_URL + '/rest/v1/rpc/spend_credit', {
+        method: 'POST',
+        headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + SUPABASE_ANON, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ p_email: email })
+    }).then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; });
+}
+
+// Any input/site change invalidates the last (paid) result and shows the Calculate call-to-action.
+function roiInputsChanged() {
+    var results = document.getElementById('roiResults');
+    if (results) results.style.display = 'none';
+    roiRenderPrompt();
+}
+
+function roiRenderState() {
+    var banner = document.getElementById('roiFreeBanner');
+    var calc   = document.getElementById('roiCalcState');
+    if (calc) calc.style.display = 'block';
+    if (!banner) return;
+    if (roiIsSubscriber) {
+        banner.style.display = 'none';
+    } else if (roiUserMode === 'credits') {
+        banner.innerHTML = '⭐ You have <strong>' + roiCredits + '</strong> credit' + (roiCredits === 1 ? '' : 's') +
+            '. Each ROI calculation costs <strong>1 credit</strong>. ' +
+            '<a href="pricing.html" style="color:#e65100;text-decoration:underline;">Buy more →</a>';
+        banner.style.display = 'block';
+    } else {
+        banner.innerHTML = '🎁 <strong>Sign up free</strong> to get 5 credits. Each ROI calculation uses 1 credit. ' +
+            '<a href="index.html" style="color:#e65100;text-decoration:underline;">Sign up / Log in →</a>';
+        banner.style.display = 'block';
+    }
+    if (roiSelectedBillboard) roiRenderPrompt();
+}
+
+// Shows the Calculate call-to-action (or sign-up / top-up), or a hint when inputs aren't ready.
+function roiRenderPrompt() {
+    var el = document.getElementById('roiUnlockPrompt');
+    var hint = document.getElementById('roiEmptyHint');
+    var results = document.getElementById('roiResults');
+    if (!roiSelectedBillboard) {
+        if (el) el.style.display = 'none';
+        if (results) results.style.display = 'none';
+        if (hint) { hint.textContent = 'Select a site and enter the quoted monthly rate to calculate ROI.'; hint.style.display = 'block'; }
+        return;
+    }
+    var rate = parseFloat(document.getElementById('roiRate').value) || 0;
+    if (rate <= 0) {
+        if (el) el.style.display = 'none';
+        if (results) results.style.display = 'none';
+        if (hint) { hint.textContent = 'Enter the quoted monthly rate to calculate ROI.'; hint.style.display = 'block'; }
+        return;
+    }
+    if (hint) hint.style.display = 'none';
+    if (!el) return;
+    if (roiIsSubscriber) {
+        el.innerHTML = '<div style="font-size:42px;margin-bottom:10px;">📈</div>' +
+            '<h2 style="margin:0 0 8px;font-size:20px;">Ready to calculate</h2>' +
+            '<p style="color:#5f6368;font-size:14px;line-height:1.6;margin:0 0 18px;">Run the projected ROI for this site and these numbers.</p>' +
+            '<button onclick="roiCalculate()" class="btn-orange" id="roiCalcBtn">Calculate ROI →</button>';
+    } else if (roiUserMode === 'guest') {
+        el.innerHTML = '<div style="font-size:42px;margin-bottom:10px;">🔒</div>' +
+            '<h2 style="margin:0 0 8px;font-size:20px;">Sign up free to calculate ROI</h2>' +
+            '<p style="color:#5f6368;font-size:14px;line-height:1.6;margin:0 0 18px;">Create a free account and get <strong>5 credits</strong>. Each ROI calculation uses 1 credit.</p>' +
+            '<a href="index.html" class="btn-orange">✨ Sign Up Free →</a>';
+    } else if (roiCredits <= 0) {
+        el.innerHTML = '<div style="font-size:42px;margin-bottom:10px;">⭐</div>' +
+            '<h2 style="margin:0 0 8px;font-size:20px;">You’re out of credits</h2>' +
+            '<p style="color:#5f6368;font-size:14px;line-height:1.6;margin:0 0 18px;">Each ROI calculation costs <strong>1 credit</strong>. Top up to keep going.</p>' +
+            '<a href="pricing.html" class="btn-orange">💳 Buy Credits →</a>';
+    } else {
+        el.innerHTML = '<div style="font-size:42px;margin-bottom:10px;">📈</div>' +
+            '<h2 style="margin:0 0 8px;font-size:20px;">Calculate ROI</h2>' +
+            '<p style="color:#5f6368;font-size:14px;line-height:1.6;margin:0 0 18px;">Each calculation uses <strong>1 credit</strong> and reveals CPM, projected ROI, break-even and the full breakdown. You have <strong>' + roiCredits + '</strong> credit' + (roiCredits === 1 ? '' : 's') + '.</p>' +
+            '<button onclick="roiCalculate()" class="btn-orange" id="roiCalcBtn">Calculate ROI (1 credit) →</button>';
+    }
+    el.style.display = 'block';
+}
+
+// One calculation = one credit. Admin/subscriber are free; guests are sent to sign up.
+// A credit is granted ONLY after we confirm the balance actually went down (verified spend).
+function roiCalculate() {
+    if (!roiSelectedBillboard) return;
+    var rate = parseFloat(document.getElementById('roiRate').value) || 0;
+    if (rate <= 0) { roiRenderPrompt(); return; }
+    if (roiUserMode === 'guest') { window.location.href = 'index.html'; return; }
+    if (roiIsSubscriber) { roiDoCompute(); return; }          // admin / legacy subscriber: free
+    if (roiCredits <= 0) { roiRenderPrompt(); return; }
+
+    var btn = document.getElementById('roiCalcBtn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Calculating…'; }
+    var resetBtn = function(){ var b = document.getElementById('roiCalcBtn'); if (b) { b.disabled = false; b.textContent = 'Calculate ROI (1 credit) →'; } };
+
+    // Read balance, spend, read again — only reveal results if a credit was truly deducted.
+    roiFetchCredits(roiUserEmail).then(function(before){
+        var start = (before !== null) ? before : roiCredits;
+        if (start <= 0) { roiCredits = 0; roiRenderPrompt(); return; }
+        return roiSpendCreditRPC(roiUserEmail).then(function(){
+            return roiFetchCredits(roiUserEmail).then(function(after){
+                var spent = (before !== null && after !== null) ? (after < before) : true; // if unreadable, assume ok
+                if (after !== null) roiCredits = after;
+                else if (spent) roiCredits = Math.max(0, start - 1);
+                if (spent) { roiRenderState(); roiDoCompute(); }
+                else { resetBtn(); roiRenderPrompt(); alert('Your credit could not be applied — please try again.'); }
+            });
+        });
+    }).catch(function(){
+        resetBtn();
+        alert('Could not run the calculation. Please check your connection and try again.');
+    });
+}
+
+// Detect an existing subscriber session from the main site (legacy grandfathering)
+function roiCheckSubscriber() {
+    try {
+        var raw = null;
+        for (var i = 0; i < localStorage.length; i++) {
+            var k = localStorage.key(i);
+            if (k && k.indexOf('sb-') === 0 && k.indexOf('-auth-token') !== -1) { raw = localStorage.getItem(k); break; }
+        }
+        if (!raw) return;
+        var session = JSON.parse(raw);
+        var token = session && (session.access_token || (session.currentSession && session.currentSession.access_token));
+        if (!token) return;
+        fetch(SUPABASE_URL + '/auth/v1/user', {
+            headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + token }
+        }).then(function(r){ return r.ok ? r.json() : null; }).then(function(user){
+            if (!user || !user.id) return;
+            return fetch(SUPABASE_URL + '/rest/v1/profiles?id=eq.' + user.id + '&select=role', {
+                headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + token }
+            }).then(function(r){ return r.ok ? r.json() : null; }).then(function(rows){
+                if (rows && rows.length && rows[0].role === 'subscriber') {
+                    roiIsSubscriber = true;
+                    roiRenderState();
+                    if (roiSelectedBillboard) roiInputsChanged();
+                }
+            });
+        }).catch(function(){});
+    } catch(e) {}
+}
+
+// Determine the signed-in free user (admin unlimited, else credit mode); guests stay guests.
+function roiInitUser() {
+    try {
+        var raw = localStorage.getItem('oohph_free_user');
+        if (raw) {
+            var u = JSON.parse(raw);
+            var email = (u && u.email) ? String(u.email) : '';
+            if (email) {
+                roiUserEmail = email;
+                if (ROI_ADMIN_EMAILS.indexOf(email.toLowerCase()) !== -1) {
+                    roiUserMode = 'admin';
+                    roiIsSubscriber = true;
+                } else {
+                    roiUserMode = 'credits';
+                    if (u && typeof u.credits === 'number') roiCredits = u.credits; // optimistic cache
+                    roiFetchCredits(email).then(function(c){
+                        if (c !== null) { roiCredits = c; }
+                        roiRenderState();
+                        if (roiSelectedBillboard) roiInputsChanged();
+                    });
+                }
+            }
+        }
+    } catch(e) {}
+    roiRenderState();
+}
+
+function roiSiteSearchInput() {
+    var q = (document.getElementById('roiSiteSearch').value || '').trim().toUpperCase();
+    var box = document.getElementById('roiSiteResults');
+    if (q.length < 2) { box.style.display = 'none'; box.innerHTML = ''; return; }
+    var matches = [];
+    for (var i = 0; i < allBillboards.length && matches.length < 8; i++) {
+        var b = allBillboards[i];
+        var hay = ((b['Site Name'] || '') + ' ' + (b['Display Name'] || '') + ' ' + (b['Tag'] || '') + ' ' + (b['Location'] || '')).toUpperCase();
+        if (hay.indexOf(q) !== -1) matches.push(b);
+    }
+    if (matches.length === 0) {
+        box.innerHTML = '<div style="padding:12px 14px;font-size:13px;color:#9aa0a6;">No sites found. Try a road name or city.</div>';
+        box.style.display = 'block';
+        return;
+    }
+    var html = '';
+    for (var j = 0; j < matches.length; j++) {
+        var m = matches[j];
+        var nm = (m['Display Name'] || m['Site Name'] || '').replace(/"/g, '&quot;');
+        var sn = (m['Site Name'] || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        html += '<div onclick="roiSelectSite(\'' + sn + '\')" style="padding:10px 14px;font-size:13px;cursor:pointer;border-bottom:1px solid #f1f3f4;" onmouseover="this.style.background=\'#f8f9fa\'" onmouseout="this.style.background=\'white\'">' +
+            '<strong>' + nm + '</strong><br><span style="font-size:11px;color:#5f6368;">' + (m['Tag'] || m['Location'] || '') + '</span></div>';
+    }
+    box.innerHTML = html;
+    box.style.display = 'block';
+}
+
+function roiSelectSite(siteName) {
+    var b = null;
+    for (var i = 0; i < allBillboards.length; i++) {
+        if (allBillboards[i]['Site Name'] === siteName) { b = allBillboards[i]; break; }
+    }
+    if (!b) return;
+    roiSelectedBillboard = b;
+    document.getElementById('roiSiteResults').style.display = 'none';
+    document.getElementById('roiSiteSearch').value = b['Display Name'] || b['Site Name'] || '';
+    var d = estimateWeeklyImpressionsDetailed(b);
+    var sel = document.getElementById('roiSelectedSite');
+    sel.innerHTML = '<strong>' + (b['Display Name'] || b['Site Name'] || '') + '</strong> · ' + (b['Tag'] || b['Location'] || '') +
+        '<br>Modeled audience reach: <strong>~' + formatImpressions(d.monthly) + '/month</strong> (' + d.corridor + ', ' + d.confidence + ' confidence)';
+    sel.style.display = 'block';
+    roiInputsChanged();
+}
+
+function roiFmtPeso(n) {
+    if (!isFinite(n)) return '–';
+    return '₱' + Math.round(n).toLocaleString('en-PH');
+}
+
+// Runs the ROI math and reveals the results. Only called after roiCalculate() (credit handled there).
+function roiDoCompute() {
+    if (!roiSelectedBillboard) return;
+    var rate       = parseFloat(document.getElementById('roiRate').value) || 0;
+    var months     = parseFloat(document.getElementById('roiMonths').value) || 1;
+    var production = parseFloat(document.getElementById('roiProduction').value) || 0;
+    var attention  = (parseFloat(document.getElementById('roiAttention').value) || 0) / 100;
+    var conversion = (parseFloat(document.getElementById('roiConversion').value) || 0) / 100;
+    var avgTxn     = parseFloat(document.getElementById('roiAvgTxn').value) || 0;
+    var results    = document.getElementById('roiResults');
+    var hint       = document.getElementById('roiEmptyHint');
+    var unlock     = document.getElementById('roiUnlockPrompt');
+    if (rate <= 0) {
+        results.style.display = 'none';
+        if (unlock) unlock.style.display = 'none';
+        hint.style.display = 'block';
+        return;
+    }
+    if (unlock) unlock.style.display = 'none';
+
+    var d = estimateWeeklyImpressionsDetailed(roiSelectedBillboard);
+    var totalImpressions = d.monthly * months;
+    var totalCost  = (rate * months) + production;
+    var cpm        = totalCost / totalImpressions * 1000;
+    var attentive  = totalImpressions * attention;
+    var conv       = attentive * conversion;
+    var revenue    = conv * avgTxn;
+    var roiPct     = totalCost > 0 ? ((revenue - totalCost) / totalCost) * 100 : 0;
+    var breakeven  = avgTxn > 0 ? Math.ceil(totalCost / avgTxn) : 0;
+    var cpv        = attentive > 0 ? totalCost / attentive : 0;
+
+    document.getElementById('roiOutROI').textContent       = (roiPct >= 0 ? '+' : '') + Math.round(roiPct) + '%';
+    document.getElementById('roiOutROI').style.color       = roiPct >= 0 ? '#a5d6a7' : '#ef9a9a';
+    document.getElementById('roiOutCPM').textContent       = roiFmtPeso(cpm);
+    document.getElementById('roiOutBreakeven').textContent = breakeven.toLocaleString('en-PH');
+    document.getElementById('roiOutImp').textContent       = '~' + formatImpressions(totalImpressions);
+    document.getElementById('roiOutCost').textContent      = roiFmtPeso(totalCost);
+    document.getElementById('roiOutAttentive').textContent = '~' + formatImpressions(attentive);
+    document.getElementById('roiOutConv').textContent      = '~' + Math.round(conv).toLocaleString('en-PH');
+    document.getElementById('roiOutRevenue').textContent   = roiFmtPeso(revenue);
+    document.getElementById('roiOutCPV').textContent       = roiFmtPeso(cpv);
+
+    var mbt = document.getElementById('roiMustBeTrue');
+    if (breakeven > 0 && attentive > breakeven) {
+        var oneIn = Math.round(attentive / breakeven);
+        mbt.innerHTML = '✅ To break even, only <strong>1 in ' + oneIn.toLocaleString('en-PH') + '</strong> people who notice this billboard needs to buy once during your campaign. Believable for your product? Then it likely pays for itself.';
+        mbt.style.display = 'block';
+    } else {
+        mbt.style.display = 'none';
+    }
+
+    var confColor = d.confidence === 'High' ? '#2e7d32' : (d.confidence === 'Medium' ? '#e65100' : '#9aa0a6');
+    var confLabel = d.confidence === 'High'
+        ? 'Reach data: sourced official traffic data' + (d.measuredAt ? ' (' + d.measuredAt + ')' : '')
+        : (d.confidence === 'Medium' ? 'Reach data: sourced but dated (2021 study)' : 'Reach data: preliminary estimate, pending verification');
+    document.getElementById('roiConfidenceLine').innerHTML = '<span style="color:' + confColor + ';">● ' + confLabel + '</span>';
+
+    results.style.display = 'block';
+    hint.style.display = 'none';
+}
+
+// Resolve a billboard photo URL (same scheme as index.html); '' if none usable.
+var ROI_PHOTO_BASE = 'https://oohphilippines.com/';
+function roiResolvePhoto(photo) {
+    if (!photo) return '';
+    if (String(photo).toLowerCase().endsWith('.pdf')) return '';
+    if (photo.indexOf('http://') === 0 || photo.indexOf('https://') === 0) return photo;
+    return ROI_PHOTO_BASE + encodeURIComponent(photo);
+}
+// Keyless Street View thumbnail derived from the Google Maps embed URL.
+function roiStreetViewThumb(mapsUrl) {
+    if (!mapsUrl) return '';
+    var m = mapsUrl.match(/!1s([^!]+)!/);
+    if (!m) return '';
+    var pano = m[1];
+    var yaw   = (mapsUrl.match(/!3f([0-9.]+)/)   || [])[1] || '0';
+    var pitch = (mapsUrl.match(/!4f([0-9.-]+)/)  || [])[1] || '0';
+    return 'https://streetviewpixels-pa.googleapis.com/v1/thumbnail?panoid=' + encodeURIComponent(pano) +
+        '&cb_client=maps_sv.tactile&w=600&h=300&yaw=' + yaw + '&pitch=' + pitch + '&thumbfov=90';
+}
+// Load an image, optionally centre-cropped to targetRatio (width/height); returns {dataURL,w,h} or null.
+function roiLoadImageDataURL(url, targetRatio) {
+    return new Promise(function(resolve) {
+        if (!url) { resolve(null); return; }
+        var img = new Image();
+        img.crossOrigin = 'anonymous';
+        var to = setTimeout(function(){ resolve(null); }, 9000);
+        img.onload = function() {
+            clearTimeout(to);
+            try {
+                var iw = img.naturalWidth || 600, ih = img.naturalHeight || 300;
+                var cw = iw, ch = ih, sx = 0, sy = 0;
+                if (targetRatio) {
+                    if (iw / ih > targetRatio) { cw = Math.round(ih * targetRatio); sx = Math.round((iw - cw) / 2); }
+                    else { ch = Math.round(iw / targetRatio); sy = Math.round((ih - ch) / 2); }
+                }
+                var c = document.createElement('canvas');
+                c.width = cw; c.height = ch;
+                c.getContext('2d').drawImage(img, sx, sy, cw, ch, 0, 0, cw, ch);
+                resolve({ dataURL: c.toDataURL('image/jpeg', 0.85), w: cw, h: ch });
+            } catch(e) { resolve(null); }
+        };
+        img.onerror = function(){ clearTimeout(to); resolve(null); };
+        img.src = url;
+    });
+}
+
+async function roiGeneratePDF(btn) {
+    if (!roiSelectedBillboard) return;
+    if (!window.jspdf || !window.jspdf.jsPDF) { alert('PDF tool is still loading — please try again in a second.'); return; }
+    var oldTxt;
+    if (btn) { oldTxt = btn.textContent; btn.disabled = true; btn.textContent = 'Generating…'; }
+    try {
+        var b = roiSelectedBillboard;
+        var siteName = b['Display Name'] || b['Site Name'] || 'Billboard';
+        var loc = b['Tag'] || b['Location'] || '';
+        var d = estimateWeeklyImpressionsDetailed(b);
+
+        // Resolve image: operator photo first, else Street View
+        var photoUrl = roiResolvePhoto(b['Photo']); var isSV = false;
+        if (!photoUrl) { photoUrl = roiStreetViewThumb(b['Maps URL']); isSV = true; }
+        var img = photoUrl ? await roiLoadImageDataURL(photoUrl, 3/2) : null;   // 6x4 landscape crop
+
+        var doc = new window.jspdf.jsPDF({ unit: 'pt', format: 'a4' });
+        var W = doc.internal.pageSize.getWidth();
+        var x = 40, y;
+        function txt(id){ var el = document.getElementById(id); return ((el && el.textContent) || '').replace(/₱/g, 'PHP '); }
+        function val(id){ return document.getElementById(id).value || '0'; }
+        function money(v){ var n = parseFloat(v) || 0; return 'PHP ' + n.toLocaleString('en-PH'); }
+
+        // Header band
+        doc.setFillColor(21,101,192); doc.rect(0,0,W,60,'F');
+        doc.setTextColor(255,255,255);
+        doc.setFont('helvetica','bold'); doc.setFontSize(18); doc.text('OOHPhilippines.com', x, 28);
+        doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.text('Billboard ROI & Audience Report', x, 46);
+        var today = new Date().toLocaleDateString('en-PH', { year:'numeric', month:'long', day:'numeric' });
+        doc.setFontSize(9); doc.text(today, W - x, 46, { align:'right' });
+
+        y = 82; doc.setTextColor(32,33,36);
+        doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.text(siteName, x, y); y += 15;
+        doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(95,99,104);
+        doc.text(loc, x, y); y += 14;
+
+        // Site image — fixed 6x4 (4x6 print) landscape frame, centred
+        if (img && img.dataURL) {
+            var dispW = 288, dispH = 192;   // 6x4 landscape (3:2)
+            var ix = x + ((W - 2*x) - dispW) / 2;
+            try { doc.addImage(img.dataURL, 'JPEG', ix, y, dispW, dispH); } catch(e) {}
+            doc.setDrawColor(210); doc.rect(ix, y, dispW, dispH);
+            y += dispH + 3;
+            doc.setFontSize(7.5); doc.setTextColor(150,150,150);
+            doc.text(isSV ? 'Google Street View — approximate site view' : 'Operator-provided site photo', W / 2, y + 7, {align:'center'});
+            y += 16;
+        }
+
+        // Headline results box
+        doc.setFillColor(232,240,254); doc.roundedRect(x, y, W - 2*x, 50, 6, 6, 'F');
+        var col = (W - 2*x) / 3;
+        function head(cx, big, small){
+            doc.setTextColor(21,101,192); doc.setFont('helvetica','bold'); doc.setFontSize(17);
+            doc.text(String(big), cx, y+24, {align:'center'});
+            doc.setTextColor(95,99,104); doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
+            doc.text(String(small), cx, y+38, {align:'center'});
+        }
+        head(x + col*0.5, txt('roiOutROI'), 'Projected ROI');
+        head(x + col*1.5, txt('roiOutCPM'), 'CPM (per 1,000 views)');
+        head(x + col*2.5, txt('roiOutBreakeven'), 'Break-even sales');
+        y += 64;
+
+        function secHead(cx, cw, title){
+            doc.setTextColor(32,33,36); doc.setFont('helvetica','bold'); doc.setFontSize(10.5); doc.text(title, cx, y);
+            doc.setDrawColor(220); doc.line(cx, y+5, cx+cw, y+5);
+        }
+        function fullRow(l, v){
+            doc.setTextColor(95,99,104); doc.text(String(l), x, y);
+            doc.setTextColor(32,33,36); doc.text(String(v), W - x, y, {align:'right'}); y += 13.5;
+        }
+
+        // Audience measurement (full width)
+        secHead(x, W - 2*x, 'Audience measurement — how the reach was modeled'); y += 20;
+        doc.setFont('helvetica','normal'); doc.setFontSize(9.5);
+        var srcLine = d.confidence === 'High'
+            ? ('Sourced official traffic data' + (d.measuredAt ? ' (' + d.measuredAt + ')' : ''))
+            : (d.confidence === 'Medium' ? 'Sourced but dated (2021 study)' : 'Preliminary estimate, pending verification');
+        fullRow('Corridor', d.corridor + ' (' + d.confidence + ' confidence)');
+        fullRow('Average daily traffic (ADT)', Math.round(d.adt).toLocaleString('en-PH') + ' vehicles/day');
+        fullRow('Vehicle occupancy', '× ' + d.occupancy + ' persons');
+        fullRow('Facing / direction factor', d.facing + ' (× ' + d.directionFactor + ')');
+        fullRow('Format visibility (' + d.type + ')', '× ' + d.ltsFactor);
+        fullRow('= Daily opportunity-to-see (OTS)', '~' + formatImpressions(d.daily));
+        fullRow('Weekly OTS', '~' + formatImpressions(d.weekly));
+        fullRow('Monthly OTS', '~' + formatImpressions(d.monthly));
+        doc.setFontSize(8); doc.setTextColor(120,120,120); doc.text('Reach data: ' + srcLine, x, y); y += 16;
+
+        // What's nearby — traffic drivers (from Google Places, if available for this site)
+        var narr = roiSelectedBillboard['Location Narrative'];
+        if (narr) {
+            secHead(x, W - 2*x, 'What’s nearby — traffic drivers'); y += 20;
+            doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(80,84,88);
+            var nlines = doc.splitTextToSize(narr, W - 2*x);
+            doc.text(nlines, x, y); y += nlines.length * 12 + 12;
+        }
+
+        // Two columns: Campaign inputs (left) + Projected results (right)
+        var half = (W - 2*x - 20) / 2;
+        var lx = x, rx = x + half + 20, yStart = y;
+        secHead(lx, half, 'Campaign inputs');
+        secHead(rx, half, 'Projected results');
+        doc.setFont('helvetica','normal'); doc.setFontSize(9.5);
+        var ly = yStart + 20, ry = yStart + 20;
+        function colRow(cx, cw, l, v, yy){ doc.setTextColor(95,99,104); doc.text(String(l), cx, yy); doc.setTextColor(32,33,36); doc.text(String(v), cx+cw, yy, {align:'right'}); }
+        var inputs = [['Monthly rate', money(val('roiRate'))], ['Duration', val('roiMonths') + ' mo'], ['Production', money(val('roiProduction'))], ['Attention', val('roiAttention') + '%'], ['Conversion', val('roiConversion') + '%'], ['Avg. txn value', money(val('roiAvgTxn'))]];
+        inputs.forEach(function(r){ colRow(lx, half, r[0], r[1], ly); ly += 14; });
+        var res = [['Impressions (OTS)', txt('roiOutImp')], ['Total cost', txt('roiOutCost')], ['Attentive reach', txt('roiOutAttentive')], ['Conversions', txt('roiOutConv')], ['Revenue', txt('roiOutRevenue')], ['Cost / viewer', txt('roiOutCPV')]];
+        res.forEach(function(r){ colRow(rx, half, r[0], r[1], ry); ry += 14; });
+        y = Math.max(ly, ry) + 10;
+
+        // Break-even takeaway
+        var mbt = document.getElementById('roiMustBeTrue');
+        if (mbt && mbt.style.display !== 'none' && mbt.textContent) {
+            var clean = mbt.textContent.replace(/✅/g, '').trim();
+            var lines = doc.splitTextToSize(clean, W - 2*x - 20);
+            var boxH = lines.length * 12 + 14;
+            doc.setFillColor(232,245,233); doc.roundedRect(x, y, W - 2*x, boxH, 6, 6, 'F');
+            doc.setTextColor(27,94,32); doc.setFontSize(9); doc.text(lines, x + 10, y + 15);
+            y += boxH + 12;
+        }
+
+        doc.setTextColor(150,150,150); doc.setFontSize(7.5);
+        var disc = 'Reach figures are modeled Opportunity-To-See (OTS) estimates, not measured counts. ROI outputs are projections based on your own assumptions and do not guarantee campaign results. Generated at oohphilippines.com/roi-calculator.';
+        doc.text(doc.splitTextToSize(disc, W - 2*x), x, y);
+
+        // ── Page 2: plain-language explainer (for operators & advertisers) ──
+        doc.addPage();
+        doc.setFillColor(21,101,192); doc.rect(0,0,W,46,'F');
+        doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(15);
+        doc.text('How to read this report', x, 29);
+        var py = 70;
+        function p2para(t){ doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(60,64,67); var L=doc.splitTextToSize(t, W-2*x); doc.text(L, x, py); py += L.length*13 + 8; }
+        function p2head(t){ doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(21,101,192); doc.text(t, x, py); py += 8; doc.setDrawColor(220); doc.line(x, py, W-x, py); py += 14; }
+        function p2term(t, desc){ doc.setFont('helvetica','bold'); doc.setFontSize(9.7); doc.setTextColor(32,33,36); doc.text(t, x, py); py += 12; doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(80,84,88); var L=doc.splitTextToSize(desc, W-2*x-12); doc.text(L, x+12, py); py += L.length*12 + 7; }
+
+        p2para('This report has two parts. First it estimates how many people get a chance to see this billboard. Then it estimates whether advertising on it could pay off. Everything here is a transparent, documented estimate — never a guarantee.');
+
+        p2head('Part 1 — Audience measurement: how many people see it');
+        p2term('Average daily traffic (ADT)', 'How many vehicles pass the site each day. We use official road-count data where it exists; otherwise a clearly-labelled estimate.');
+        p2term('Vehicle occupancy (x 1.9)', 'Each vehicle usually carries more than one person — driver plus passengers — so we multiply traffic by about 1.9 people.');
+        p2term('Facing / direction', 'A billboard seen from only one direction catches about half the road traffic; one seen from both directions catches more.');
+        p2term('Format visibility', 'Big, lit and LED boards get noticed more than small static ones, so each format is given a visibility factor.');
+        p2term('Opportunity-to-see (OTS)', 'Multiply all of the above together and you get how many times people could see the board — per day, week and month. That is the site reach.');
+        p2term('Confidence label', 'High = based on official traffic data. Low = a preliminary estimate still being verified. It tells you how solid the reach number is.');
+
+        p2head('Part 2 — ROI: will the ad pay off?');
+        p2term('Total campaign cost', 'The monthly rate multiplied by the number of months, plus any one-time production cost.');
+        p2term('Attention rate', 'Not everyone who passes actually notices the ad. You choose a realistic percentage who do.');
+        p2term('Conversion rate', 'Of the people who noticed, a small percentage eventually buy. This depends mostly on your product.');
+        p2term('Projected revenue & ROI', 'Noticed x conversion x average sale = projected revenue. Compared against the cost, this gives the ROI percentage.');
+        p2term('CPM', 'The cost to reach 1,000 people. It lets you compare a billboard against online, TV or radio on a level footing.');
+        p2term('Break-even sales', 'How many sales are needed just to cover the cost. The green line turns this into a gut-check: "only 1 in X people who notice needs to buy." If that feels believable for your product, the campaign likely pays for itself.');
+
+        doc.setFont('helvetica','italic'); doc.setFontSize(8.5); doc.setTextColor(120,120,120);
+        var honest = 'Remember: billboard reach is modeled, not measured, and billboards cannot be clicked — so these are planning estimates based on the assumptions entered, not promises of results. Operators: send this report to advertisers to show what your site reach is worth.';
+        doc.text(doc.splitTextToSize(honest, W-2*x), x, py + 4);
+
+        var fname = 'OOH-ROI-' + siteName.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').slice(0, 40) + '.pdf';
+        doc.save(fname);
+    } catch(e) {
+        alert('Could not generate PDF: ' + ((e && e.message) || e));
+    } finally {
+        if (btn) { btn.disabled = false; btn.textContent = oldTxt || '📄 Download PDF report'; }
+    }
+}
+
+function openCpmGuide()  { document.getElementById('cpmGuideModal').style.display = 'flex'; }
+function closeCpmGuide() { document.getElementById('cpmGuideModal').style.display = 'none'; }
+function openAssumptionsGuide()  { document.getElementById('assumptionsModal').style.display = 'flex'; }
+function closeAssumptionsGuide() { document.getElementById('assumptionsModal').style.display = 'none'; }
+
+// ── Init ──
+(function(){
+    roiInitUser();
+    roiCheckSubscriber();
+    loadLiveTraffic();
+    function roiMapRow(row){
+        return {
+            'Site Name':          row.site_name    || '',
+            'Display Name':       row.display_name || '',
+            'Location':           row.location     || '',
+            'Size':               row.size         || '',
+            'Type':               row.type         || '',
+            'Photo':              row.photo        || '',
+            'Maps URL':           row.maps_url     || '',
+            'Tag':                row.tag          || '',
+            'Price':              row.price        || '',
+            'Operator Rate':      row.op_rate      || '',
+            'Location Narrative': row.location_narrative || '',
+            'Nearby Places':      row.nearby_places || null
+        };
+    }
+    function roiLoadFromSheet(){
+        fetch(SHEET_URL).then(function(r){ return r.text(); }).then(function(text){
+            allBillboards = parseCSV(text);
+            var l = document.getElementById('roiLoading'); if (l) l.style.display = 'none';
+        }).catch(function(){
+            var l = document.getElementById('roiLoading'); if (l) l.textContent = '❌ Failed to load billboard inventory. Please refresh.';
+        });
+    }
+    // Primary source: the Supabase billboards table (same as the directory) — includes the
+    // location narrative and stays in sync with uploads/edits. Falls back to the Google Sheet.
+    fetch(SUPABASE_URL + '/rest/v1/billboards?select=site_name,display_name,location,size,type,photo,maps_url,tag,price,op_rate,location_narrative,nearby_places&status=eq.active&limit=6000', {
+        headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + SUPABASE_ANON }
+    })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(rows){
+        if (!rows || !rows.length) { roiLoadFromSheet(); return; }
+        allBillboards = rows.map(roiMapRow);
+        var l = document.getElementById('roiLoading'); if (l) l.style.display = 'none';
+    })
+    .catch(function(){ roiLoadFromSheet(); });
+})();
+</script>
+
+</body>
+</html>
