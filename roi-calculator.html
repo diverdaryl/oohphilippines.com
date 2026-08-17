@@ -212,6 +212,7 @@ table.rtable td:last-child { text-align: right; font-weight: 700; color: #202124
             </div>
             <div style="text-align:center;margin-top:14px;">
                 <button onclick="roiGeneratePDF(this)" class="btn-orange" style="margin:0 6px 8px;">📄 Download PDF report</button>
+                <button onclick="roiGeneratePPTX(this)" class="btn-orange" style="margin:0 6px 8px;">📊 Editable deck (.pptx)</button>
                 <a href="/" class="btn-primary" style="margin:0 6px 8px;">🔍 Browse 2,000+ billboard sites →</a>
             </div>
         </div>
@@ -322,6 +323,7 @@ table.rtable td:last-child { text-align: right; font-weight: 700; color: #202124
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 <script>
 // ════════════════════════════════════════════════════════════════
 // OTS ENGINE — extracted verbatim from index.html (keep in sync)
@@ -1058,6 +1060,91 @@ async function roiGeneratePDF(btn) {
     } finally {
         if (btn) { btn.disabled = false; btn.textContent = oldTxt || '📄 Download PDF report'; }
     }
+}
+
+// Pull lat/lng out of a Google Maps URL (place !3d/!4d, @lat,lng, or embed patterns).
+function roiCoords(mapsUrl){
+    if(!mapsUrl) return null;
+    var la=(mapsUrl.match(/!3d(-?[0-9.]+)/)||[])[1], lo=(mapsUrl.match(/!4d(-?[0-9.]+)/)||[])[1];
+    if(!(la&&lo)){ var at=mapsUrl.match(/@(-?[0-9.]+),(-?[0-9.]+)/); if(at){ la=at[1]; lo=at[2]; } }
+    if(la&&lo){ var a=parseFloat(la), o=parseFloat(lo); if(isFinite(a)&&isFinite(o)) return { lat:a, lng:o }; }
+    return null;
+}
+
+// Editable PowerPoint version of the ROI report — photo is replaceable, map pin is clickable.
+async function roiGeneratePPTX(btn){
+    if(!roiSelectedBillboard) return;
+    if(typeof PptxGenJS==='undefined'){ alert('The deck generator is still loading — please try again in a second.'); return; }
+    var oldTxt; if(btn){ oldTxt=btn.textContent; btn.disabled=true; btn.textContent='Generating…'; }
+    try{
+        var b=roiSelectedBillboard;
+        var siteName=b['Display Name']||b['Site Name']||'Billboard';
+        var loc=b['Tag']||b['Location']||'';
+        var d=estimateWeeklyImpressionsDetailed(b);
+        function txt(id){ var el=document.getElementById(id); return ((el&&el.textContent)||'').replace(/₱/g,'PHP '); }
+        function val(id){ var el=document.getElementById(id); return (el&&el.value)||'0'; }
+        function money(v){ var n=parseFloat(v)||0; return 'PHP '+n.toLocaleString('en-PH'); }
+        var GKEY='AIzaSyBcgToX2Ww065hrfcwxqDyJAi-ROTscBWM';
+
+        var photoU=roiResolvePhoto(b['Photo']); if(!photoU) photoU=roiStreetViewThumb(b['Maps URL']);
+        var photoImg=photoU? await roiLoadImageDataURL(photoU,3/2):null;
+        var co=roiCoords(b['Maps URL']);
+        var mapLink=co? ('https://www.google.com/maps?q='+co.lat+','+co.lng) : (b['Maps URL']||'');
+        var mapImg=co? await roiLoadImageDataURL('https://maps.googleapis.com/maps/api/staticmap?center='+co.lat+','+co.lng+'&zoom=16&size=600x400&markers=color:red%7C'+co.lat+','+co.lng+'&key='+GKEY,3/2):null;
+
+        var pptx=new PptxGenJS(); pptx.defineLayout({name:'W',width:13.33,height:7.5}); pptx.layout='W';
+        var NAVY='0D47A1', INK='1F2933', MUTE='607D8B', BODY='37474F';
+        function foot(sl){ sl.addText('Reach figures are modeled OTS estimates, not measured counts. ROI outputs are projections based on your assumptions, not guarantees. Generated at oohphilippines.com/roi-calculator.', { x:0.5, y:7.08, w:12.33, h:0.3, fontSize:7, color:'B0BEC7' }); }
+
+        // Slide 1 — overview + visuals
+        var s1=pptx.addSlide(); s1.background={ color:'FFFFFF' };
+        s1.addShape(pptx.ShapeType.rect,{ x:0, y:0, w:13.33, h:0.85, fill:{ color:'1565C0' } });
+        s1.addText('OOHPhilippines.com',{ x:0.5, y:0.12, w:8, h:0.35, fontSize:16, bold:true, color:'FFFFFF' });
+        s1.addText('Billboard ROI & Audience Report',{ x:0.5, y:0.48, w:8, h:0.3, fontSize:11, color:'D6E4FF' });
+        s1.addText(new Date().toLocaleDateString('en-PH',{ year:'numeric', month:'long', day:'numeric' }),{ x:5.33, y:0.3, w:7.5, h:0.3, fontSize:10, color:'FFFFFF', align:'right' });
+        s1.addText(String(siteName),{ x:0.5, y:1.05, w:12.33, h:0.5, fontSize:22, bold:true, color:NAVY });
+        s1.addText(String(loc),{ x:0.5, y:1.6, w:12.33, h:0.3, fontSize:12, color:MUTE });
+        var iy=2.1, iw=6.0, ih=iw*(2/3);
+        if(photoImg) s1.addImage({ data:photoImg.dataURL, x:0.5, y:iy, w:iw, h:ih });
+        else s1.addText('No photo yet — right-click to replace with your own',{ x:0.5, y:iy, w:iw, h:ih, fontSize:12, color:MUTE, align:'center', valign:'middle', fill:{ color:'ECEFF1' } });
+        if(mapImg) s1.addImage({ data:mapImg.dataURL, x:6.83, y:iy, w:iw, h:ih, hyperlink: mapLink?{ url:mapLink, tooltip:'Open location in Google Maps' }:undefined });
+        else s1.addText('Map preview unavailable',{ x:6.83, y:iy, w:iw, h:ih, fontSize:12, color:MUTE, align:'center', valign:'middle', fill:{ color:'F1F5FB' } });
+        if(mapLink) s1.addText([{ text:'📍 Open location in Google Maps', options:{ color:'1565C0', hyperlink:{ url:mapLink } } }],{ x:6.83, y:iy+ih+0.08, w:6, h:0.26, fontSize:10 });
+        var ry=iy+ih+0.55, cards=[['Projected ROI',txt('roiOutROI')],['CPM (per 1,000 views)',txt('roiOutCPM')],['Break-even sales',txt('roiOutBreakeven')]], cw=3.9, gap=0.31;
+        for(var i=0;i<3;i++){ var cx=0.5+i*(cw+gap);
+            s1.addShape(pptx.ShapeType.roundRect,{ x:cx, y:ry, w:cw, h:1.05, fill:{ color:'E8F0FE' }, rectRadius:0.08 });
+            s1.addText(String(cards[i][1]),{ x:cx, y:ry+0.12, w:cw, h:0.5, fontSize:20, bold:true, color:NAVY, align:'center' });
+            s1.addText(cards[i][0],{ x:cx, y:ry+0.64, w:cw, h:0.3, fontSize:10, color:MUTE, align:'center' });
+        }
+        foot(s1);
+
+        // Slide 2 — the numbers
+        var s2=pptx.addSlide(); s2.background={ color:'FFFFFF' };
+        s2.addText('Audience measurement — how the reach was modeled',{ x:0.5, y:0.4, w:12.33, h:0.4, fontSize:15, bold:true, color:NAVY });
+        var rows=[['Corridor', d.corridor+' ('+d.confidence+' confidence)'],['Average daily traffic (ADT)', Math.round(d.adt).toLocaleString('en-PH')+' vehicles/day'],['Vehicle occupancy', '× '+d.occupancy+' persons'],['Facing / direction factor', d.facing+' (× '+d.directionFactor+')'],['Format visibility ('+d.type+')', '× '+d.ltsFactor],['Daily OTS', '~'+formatImpressions(d.daily)],['Weekly OTS', '~'+formatImpressions(d.weekly)],['Monthly OTS', '~'+formatImpressions(d.monthly)]];
+        var ay=1.0; rows.forEach(function(r){ s2.addText(r[0],{ x:0.5, y:ay, w:6, h:0.28, fontSize:11, color:MUTE }); s2.addText(String(r[1]),{ x:6.5, y:ay, w:6.3, h:0.28, fontSize:11, bold:true, color:INK, align:'right' }); ay+=0.31; });
+        var cy=ay+0.12;
+        s2.addText('Campaign inputs',{ x:0.5, y:cy, w:6, h:0.3, fontSize:12, bold:true, color:NAVY });
+        s2.addText('Projected results',{ x:6.9, y:cy, w:6, h:0.3, fontSize:12, bold:true, color:NAVY });
+        var inputs=[['Monthly rate',money(val('roiRate'))],['Duration',val('roiMonths')+' mo'],['Production',money(val('roiProduction'))],['Attention',val('roiAttention')+'%'],['Conversion',val('roiConversion')+'%'],['Avg. txn value',money(val('roiAvgTxn'))]];
+        var results=[['Impressions (OTS)',txt('roiOutImp')],['Total cost',txt('roiOutCost')],['Attentive reach',txt('roiOutAttentive')],['Conversions',txt('roiOutConv')],['Revenue',txt('roiOutRevenue')],['Cost / viewer',txt('roiOutCPV')]];
+        var iyy=cy+0.38; for(var j=0;j<6;j++){
+            if(inputs[j]){ s2.addText(inputs[j][0],{ x:0.5, y:iyy, w:3.5, h:0.26, fontSize:10.5, color:MUTE }); s2.addText(String(inputs[j][1]),{ x:3.5, y:iyy, w:3, h:0.26, fontSize:10.5, bold:true, color:INK, align:'right' }); }
+            if(results[j]){ s2.addText(results[j][0],{ x:6.9, y:iyy, w:3.5, h:0.26, fontSize:10.5, color:MUTE }); s2.addText(String(results[j][1]),{ x:9.9, y:iyy, w:2.9, h:0.26, fontSize:10.5, bold:true, color:INK, align:'right' }); }
+            iyy+=0.3;
+        }
+        var by=iyy+0.12, mbt=document.getElementById('roiMustBeTrue');
+        if(mbt&&mbt.style.display!=='none'&&mbt.textContent){ var clean=mbt.textContent.replace(/✅/g,'').trim();
+            s2.addShape(pptx.ShapeType.roundRect,{ x:0.5, y:by, w:12.33, h:0.7, fill:{ color:'E8F5E9' }, rectRadius:0.06 });
+            s2.addText(clean,{ x:0.7, y:by+0.05, w:11.9, h:0.6, fontSize:11, color:'1B5E20', valign:'middle' }); by+=0.85;
+        }
+        var narr=b['Location Narrative']; if(narr) s2.addText([{ text:'What’s nearby: ', options:{ bold:true } },{ text:String(narr) }],{ x:0.5, y:by, w:12.33, h:0.6, fontSize:10, color:BODY, valign:'top' });
+        foot(s2);
+
+        var fname='OOH-ROI-'+String(siteName).replace(/[^a-z0-9]+/gi,'-').replace(/^-+|-+$/g,'').slice(0,40)+'.pptx';
+        pptx.writeFile({ fileName:fname });
+    }catch(e){ alert('Could not generate deck: '+((e&&e.message)||e)); }
+    finally{ if(btn){ btn.disabled=false; btn.textContent=oldTxt||'📊 Editable deck (.pptx)'; } }
 }
 
 function openCpmGuide()  { document.getElementById('cpmGuideModal').style.display = 'flex'; }
