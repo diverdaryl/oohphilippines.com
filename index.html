@@ -3893,7 +3893,14 @@ async function aiSmartSearch(query){
         }
         var sites = (body && body.sites) || [];
         var byName = {}; allBillboards.forEach(function(b){ byName[String(b['Site Name']||'').toLowerCase()] = b; });
-        var matched = sites.map(function(s){ return byName[String(s.code||'').toLowerCase()]; }).filter(Boolean);
+        // Featured (paid) sites always show first, on every search including AI.
+        var featuredSites = allBillboards.filter(function(b){ return parseInt(b['Featured']||'0') > 0; });
+        featuredSites.sort(function(a,b){ return (parseInt(a['Featured'])||0) - (parseInt(b['Featured'])||0); });
+        var isFeat = {}; featuredSites.forEach(function(b){ isFeat[String(b['Site Name']||'').toLowerCase()] = true; });
+        // AI matches, excluding any featured site so it isn't shown twice.
+        var matched = sites.map(function(s){ return byName[String(s.code||'').toLowerCase()]; })
+                           .filter(Boolean)
+                           .filter(function(b){ return !isFeat[String(b['Site Name']||'').toLowerCase()]; });
         allMatches = matched; visibleCount = 0;
         if(container){
             container.innerHTML = '';
@@ -3902,10 +3909,17 @@ async function aiSmartSearch(query){
             banner.innerHTML = '<span style="font-size:18px;">🤖</span><span style="color:#0d47a1;font-weight:600;">' + (body && body.summary ? String(body.summary) : ('Showing ' + matched.length + ' sites')) + '</span><span style="flex:1;"></span>' +
                 '<a href="javascript:void(0)" onclick="filterCards((document.getElementById(\'mainSearch\')||{}).value||\'\')" style="color:#1565c0;font-size:13px;">Plain keyword search</a> · <a href="javascript:void(0)" onclick="clearFilters()" style="color:#c62828;font-size:13px;">Clear</a>';
             container.appendChild(banner);
+            // ⭐ Featured (paid) sites first
+            if(featuredSites.length){
+                var fl=document.createElement('div'); fl.className='results-divider'; fl.innerHTML='<span>⭐ Featured Sites</span>'; container.appendChild(fl);
+                for(var fi=0; fi<featuredSites.length; fi++){ var fd=document.createElement('div'); fd.innerHTML=buildCard(featuredSites[fi]); if(fd.firstChild) container.appendChild(fd.firstChild); }
+            }
+            // Divider before the AI results
+            if(matched.length){ var rl=document.createElement('div'); rl.className='results-divider'; rl.innerHTML='<span>🔍 AI results</span>'; container.appendChild(rl); }
         }
-        if(counter) counter.textContent = matched.length + ' results';
+        if(counter) counter.textContent = (featuredSites.length ? featuredSites.length+' featured + ' : '') + matched.length + ' results';
         if(matched.length === 0){
-            if(container){ var none=document.createElement('div'); none.style.cssText='text-align:center;padding:24px;color:#78909c;'; none.textContent='No matching sites for that. Try a broader area or a different landmark.'; container.appendChild(none); }
+            if(container){ var none=document.createElement('div'); none.style.cssText='text-align:center;padding:24px;color:#78909c;'; none.textContent='No AI-matched sites for that. Try a broader area or a different landmark.'; container.appendChild(none); }
         } else { showMore(); }
     }catch(e){
         // If AI search fails for any reason, fall back to a normal keyword search.
