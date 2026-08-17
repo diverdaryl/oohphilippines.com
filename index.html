@@ -2192,7 +2192,7 @@
                 class="search-input" 
                 id="mainSearch"
                 autocomplete="off"
-                placeholder="Search by location, highway, or area..."
+                placeholder="Search a location, or ask: sites in Bacolod near schools & malls…"
             >
             <button class="search-btn" onclick="searchFromHome()">Search</button>
             <button class="search-btn" onclick="clearFilters(); document.getElementById('mainSearch').value='';" style="background:#e53935;">Clear all</button>
@@ -3857,7 +3857,60 @@ function searchFromHome() {
     var v = document.getElementById('mainSearch');
     var val = v ? v.value : '';
     showPage('inventory');
-    setTimeout(function(){ filterCards(val); }, 200);
+    setTimeout(function(){ routeSearch(val); }, 200);
+}
+
+// ── AI-assisted search: sentence-style queries go through smart_search; plain keywords don't ──
+var _AI_FN = 'https://xecxfkuzexshafwuuizf.supabase.co/functions/v1/ai-planner';
+var _AI_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlY3hma3V6ZXhzaGFmd3V1aXpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTk1MTIsImV4cCI6MjA5MTMzNTUxMn0.sZrRmesCDn0DsuldUD8zIhi1gX1ajIKX0aULqNBX_To';
+var _aiSearchCache = {};
+function looksLikeNaturalQuery(q){
+    var s = (q||'').toLowerCase();
+    if(/\b(near|beside|around|close to|within|nearby|next to|walking distance)\b/.test(s)) return true;
+    return s.split(/\s+/).filter(function(w){return w;}).length >= 5;
+}
+function routeSearch(val){
+    var q = (val||'').trim();
+    var isGuest = !subCurrentUser && !(typeof opCurrentUser!=='undefined' && opCurrentUser) && !isFreeUser();
+    if(q && !isGuest && looksLikeNaturalQuery(q)){ aiSmartSearch(q); }
+    else { filterCards(val); }
+}
+async function aiSmartSearch(query){
+    var container = document.getElementById('billboardContainer');
+    var promptEl = document.getElementById('searchPrompt'); if(promptEl) promptEl.style.display='none';
+    var counter = document.getElementById('resultCount'); if(counter) counter.textContent='';
+    var lmb = document.getElementById('loadMoreBtn'); if(lmb) lmb.style.display='none';
+    if(container) container.innerHTML = '<div style="text-align:center;padding:44px 20px;color:#1565c0;font-weight:600;">🤖 Understanding your search…</div>';
+    var key = query.toLowerCase().trim();
+    try{
+        var body = _aiSearchCache[key];
+        if(!body){
+            var email = (subCurrentUser&&subCurrentUser.email) || (typeof freeCurrentUser!=='undefined' && freeCurrentUser && freeCurrentUser.email) || '';
+            var r = await fetch(_AI_FN, { method:'POST', headers:{ 'Authorization':'Bearer '+_AI_ANON, 'apikey':_AI_ANON, 'Content-Type':'application/json' }, body: JSON.stringify({ action:'smart_search', query:query, email:email }) });
+            body = await r.json();
+            if(!r.ok || (body && body.error)) throw new Error((body&&body.error)||('HTTP '+r.status));
+            _aiSearchCache[key] = body;
+        }
+        var sites = (body && body.sites) || [];
+        var byName = {}; allBillboards.forEach(function(b){ byName[String(b['Site Name']||'').toLowerCase()] = b; });
+        var matched = sites.map(function(s){ return byName[String(s.code||'').toLowerCase()]; }).filter(Boolean);
+        allMatches = matched; visibleCount = 0;
+        if(container){
+            container.innerHTML = '';
+            var banner = document.createElement('div');
+            banner.style.cssText = 'background:#e8f0fe;border:1px solid #bbdefb;border-radius:12px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;';
+            banner.innerHTML = '<span style="font-size:18px;">🤖</span><span style="color:#0d47a1;font-weight:600;">' + (body && body.summary ? String(body.summary) : ('Showing ' + matched.length + ' sites')) + '</span><span style="flex:1;"></span>' +
+                '<a href="javascript:void(0)" onclick="filterCards((document.getElementById(\'mainSearch\')||{}).value||\'\')" style="color:#1565c0;font-size:13px;">Plain keyword search</a> · <a href="javascript:void(0)" onclick="clearFilters()" style="color:#c62828;font-size:13px;">Clear</a>';
+            container.appendChild(banner);
+        }
+        if(counter) counter.textContent = matched.length + ' results';
+        if(matched.length === 0){
+            if(container){ var none=document.createElement('div'); none.style.cssText='text-align:center;padding:24px;color:#78909c;'; none.textContent='No matching sites for that. Try a broader area or a different landmark.'; container.appendChild(none); }
+        } else { showMore(); }
+    }catch(e){
+        // If AI search fails for any reason, fall back to a normal keyword search.
+        filterCards(query);
+    }
 }
 function goToInventory(tag) {
     showPage('inventory');
