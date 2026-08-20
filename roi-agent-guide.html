@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROI Calculator — Sales Agent Cheat Sheet | OOHPhilippines.com</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #263238; background: #eceff1; }
+  .sheet { width: 210mm; margin: 0 auto; background: #fff; padding: 12mm 13mm; }
+  table { border-collapse: collapse; width: 100%; table-layout: fixed; }
+  td { vertical-align: top; }
+  .hd td { border-bottom: 3px solid #1565c0; padding-bottom: 7px; }
+  h1 { margin: 0; font-size: 19px; color: #0d47a1; }
+  .sub { font-size: 11.5px; color: #607d8b; margin-top: 3px; }
+  .brand { font-size: 13px; font-weight: 800; color: #1565c0; text-align: right; }
+  .brand small { display:block; font-weight: 600; color: #607d8b; font-size: 10.5px; }
+  h2 { font-size: 12px; color: #0d47a1; text-transform: uppercase; letter-spacing: .5px; margin: 13px 0 5px; }
+  p { font-size: 12px; line-height: 1.5; margin: 4px 0; }
+  .step { background: #e8f0fe; border: 1px solid #cfe0f5; border-radius: 8px; padding: 7px 4px; text-align: center; }
+  .step b { display: block; font-size: 11.5px; color: #0d47a1; }
+  .step span { font-size: 9.5px; color: #546e7a; }
+  .arrow { text-align: center; color: #90a4ae; font-weight: 700; font-size: 13px; width: 3%; }
+  .dial { border: 1px solid #e0e0e0; border-left: 4px solid #1565c0; border-radius: 8px; padding: 7px 10px; margin-bottom: 7px; }
+  .dial b { font-size: 12px; color: #263238; }
+  .rng { display: inline-block; background: #e3f2fd; color: #1565c0; font-weight: 700; font-size: 10.5px; padding: 1px 7px; border-radius: 10px; margin-left: 5px; }
+  .dial p { font-size: 11px; color: #546e7a; margin: 3px 0 0; }
+  .callout { background: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 9px; padding: 9px 11px; margin: 5px 0; font-size: 11.5px; line-height: 1.5; }
+  .callout b { color: #1b5e20; }
+  .box { border-radius: 8px; padding: 8px 10px; }
+  .box.data { background: #e8f5e9; border: 1px solid #a5d6a7; }
+  .box.assume { background: #fff3e0; border: 1px solid #ffcc80; }
+  .box h3 { margin: 0 0 4px; font-size: 11.5px; }
+  .box.data h3 { color: #1b5e20; } .box.assume h3 { color: #e65100; }
+  .box ul { margin: 0; padding-left: 15px; } .box li { font-size: 11px; line-height: 1.45; }
+  ul.tips { margin: 3px 0; padding-left: 15px; } ul.tips li { font-size: 11.5px; line-height: 1.45; margin: 2px 0; }
+  .do { color: #1b5e20; } .dont { color: #b71c1c; }
+  .gap { width: 3%; }
+  .close-line { background: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 9px; padding: 9px 11px; font-size: 12px; line-height: 1.5; }
+  .close-line b { color: #1b5e20; }
+  .script { background: #f5f7fa; border: 1px dashed #b0bec5; border-radius: 8px; padding: 9px 11px; font-size: 11.5px; font-style: italic; color: #37474f; line-height: 1.5; }
+  .foot { border-top: 1px solid #e0e0e0; margin-top: 11px; padding-top: 6px; font-size: 9.5px; color: #90a4ae; line-height: 1.5; }
+  @media print { body { background: #fff; } .sheet { margin: 0; padding: 11mm; width: auto; } @page { size: A4; margin: 0; } }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <table class="hd"><tr>
+    <td style="width:70%;"><h1>ROI Calculator — Sales Agent Cheat Sheet</h1>
+      <div class="sub">How the numbers work, and how to explain them to a client with confidence.</div></td>
+    <td class="brand" style="width:30%;">OOHPhilippines.com<br><span style="font-weight:600;color:#607d8b;font-size:10.5px;">oohphilippines.com/roi-calculator</span></td>
+  </tr></table>
+
+  <h2>The whole tool in one sentence</h2>
+  <table><tr>
+    <td class="step"><b>People pass</b><span>Reach from traffic data</span></td>
+    <td class="arrow">&rarr;</td>
+    <td class="step"><b>Some notice</b><span>Attention rate</span></td>
+    <td class="arrow">&rarr;</td>
+    <td class="step"><b>Some buy</b><span>Conversion rate</span></td>
+    <td class="arrow">&rarr;</td>
+    <td class="step"><b>Each spends</b><span>Avg. transaction</span></td>
+    <td class="arrow">=</td>
+    <td class="step"><b>Revenue vs cost</b><span>ROI &amp; break-even</span></td>
+  </tr></table>
+  <p>The calculator multiplies its way down this funnel, then compares the projected revenue against the campaign cost (monthly rate × months + production).</p>
+
+  <h2>The 3 dials the client sets (the "assumptions")</h2>
+  <table><tr>
+    <td style="width:48.5%;">
+      <div class="dial"><b>1. Attention rate</b><span class="rng">15–40%</span>
+        <p>Of people who pass, how many actually notice the ad. Dense city corners &amp; slow traffic = higher; open highways = lower.</p></div>
+      <div class="dial"><b>2. Conversion rate</b><span class="rng">0.1–2%</span>
+        <p>Of those who noticed, how many buy at least once during the whole campaign. Impulse/QSR &amp; low-price = higher; big-ticket = lower. Keep it small and honest.</p></div>
+    </td>
+    <td class="gap"></td>
+    <td style="width:48.5%;">
+      <div class="dial"><b>3. Average transaction value</b><span class="rng">client's real PHP</span>
+        <p>How much a customer spends in one purchase. Always ask the client for their real average — never inflate it.</p></div>
+      <div class="callout"><b>Golden rule:</b> Reach is measured data. These three are the client's own business reality — so the ROI is a <b>projection, not a promise</b>. Change a dial and the ROI moves a lot.</div>
+    </td>
+  </tr></table>
+
+  <h2>What's fact vs. what's an estimate — say this out loud</h2>
+  <table><tr>
+    <td style="width:48.5%;"><div class="box data"><h3>✔ Backed by data (our part)</h3>
+      <ul><li>Reach / impressions (OTS) from real traffic counts</li><li>CPM — cost per 1,000 views</li><li>The site, size, and location</li></ul></div></td>
+    <td class="gap"></td>
+    <td style="width:48.5%;"><div class="box assume"><h3>~ Client's assumptions (their part)</h3>
+      <ul><li>Attention rate</li><li>Conversion rate</li><li>Average transaction value</li></ul></div></td>
+  </tr></table>
+
+  <h2>Your strongest line: the "1 in N" close</h2>
+  <div class="close-line"><b>"To break even, only 1 in N people who notice this billboard has to buy once during the campaign."</b>
+    Lead with this — not the ROI %. It's concrete, honest, and lets the client judge for themselves. A huge "+1,000% ROI" looks too good and kills trust; "1 in 2,000 buyers" earns it.</div>
+
+  <table><tr>
+    <td style="width:48.5%;"><h2>Do</h2>
+      <ul class="tips">
+        <li class="do">Use <b>conservative</b> numbers — if it still works, it's a strong buy.</li>
+        <li class="do">Ask the client for their <b>real</b> transaction value &amp; conversion.</li>
+        <li class="do">Lead with <b>break-even</b>, then show ROI &amp; CPM as support.</li>
+        <li class="do">Compare CPM vs. what they pay online — a fair media comparison.</li>
+      </ul></td>
+    <td class="gap"></td>
+    <td style="width:48.5%;"><h2>Don't</h2>
+      <ul class="tips">
+        <li class="dont">Never call the ROI a <b>guarantee</b> of sales.</li>
+        <li class="dont">Don't inflate attention/conversion to win a "big" number.</li>
+        <li class="dont">Don't hide the assumptions — explain them; it builds trust.</li>
+        <li class="dont">Don't quote revenue without stating the assumptions behind it.</li>
+      </ul></td>
+  </tr></table>
+
+  <h2>30-second script</h2>
+  <div class="script">"This site is seen roughly <b>[reach]</b> times a month — that number comes from traffic data, not us guessing. Now let's use <i>your</i> real numbers: say <b>[X%]</b> of people notice it, a small <b>[Y%]</b> of those eventually buy, and each buyer spends about <b>[PHP Z]</b>. Put together, you'd only need <b>1 in [N]</b> people who notice it to buy once to break even. Does that feel achievable for your product? If yes, everything above that is profit."</div>
+
+  <div class="foot">
+    Reach figures are modeled Opportunity-To-See (OTS) estimates, not measured counts. ROI outputs are projections based on the client's own assumptions and do not guarantee campaign results.
+    Generated for OOHPhilippines.com operator partners · oohphilippines.com/roi-calculator
+  </div>
+
+</div>
+</body>
+</html>
