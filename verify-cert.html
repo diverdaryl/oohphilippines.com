@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Certificate of Posting — OOH Verify | OOHPhilippines.com</title>
+<meta name="description" content="A read-only Certificate of Posting from OOH Verify — independent proof that an out-of-home advertisement was posted at the right site, at the right time, in the right condition, with geo-tagged, server-timestamped photo evidence.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="favicon.ico" sizes="any">
+<meta name="theme-color" content="#1565c0">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:linear-gradient(135deg,#e3f2fd 0%,#bbdefb 100%); min-height:100vh; color:#202124; }
+  a { color:#1565c0; }
+  .nav-wrapper { position:sticky; top:0; z-index:1000; background:linear-gradient(135deg,#e3f2fd 0%,#bbdefb 100%); box-shadow:0 2px 10px rgba(0,0,0,0.1); }
+  .nav-bar { display:flex; justify-content:space-between; align-items:center; padding:14px 24px; max-width:1100px; margin:0 auto; flex-wrap:wrap; gap:10px; }
+  .nav-logo { font-size:22px; font-weight:700; color:#1565c0; text-decoration:none; letter-spacing:-0.5px; }
+  .nav-links { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .nav-link { color:#1565c0; text-decoration:none; font-weight:600; padding:8px 14px; border-radius:7px; background:rgba(255,255,255,0.75); font-size:13px; white-space:nowrap; }
+  .nav-link.primary { background:#1565c0; color:#fff; }
+  .wrap { max-width:820px; margin:0 auto; padding:24px 16px 60px; }
+  .cert { background:#fff; border-radius:16px; box-shadow:0 6px 26px rgba(0,0,0,0.1); overflow:hidden; }
+  .cert-head { background:linear-gradient(135deg,#0d47a1,#1565c0); color:#fff; padding:24px 26px; }
+  .cert-head .badge { display:inline-block; background:rgba(255,255,255,0.2); font-weight:700; font-size:11px; letter-spacing:.5px; padding:5px 13px; border-radius:50px; margin-bottom:10px; }
+  .cert-head h1 { font-size:23px; letter-spacing:-0.5px; }
+  .cert-head p { font-size:13px; opacity:.9; margin-top:4px; }
+  .cert-body { padding:22px 26px 26px; }
+  .status { display:inline-flex; align-items:center; gap:8px; font-weight:800; font-size:16px; padding:8px 18px; border-radius:50px; margin-bottom:6px; }
+  .status.ok { background:#e8f5e9; color:#1b5e20; border:1px solid #a5d6a7; }
+  .status.warn { background:#fff3e0; color:#e65100; border:1px solid #ffcc80; }
+  .status.pending { background:#eceff1; color:#455a64; border:1px solid #cfd8dc; }
+  .imgs { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:18px 0; }
+  .imgbox { border:1px solid #e0e6ef; border-radius:12px; overflow:hidden; background:#f6f9ff; }
+  .imgbox .cap { font-size:11px; font-weight:700; color:#5f6368; padding:8px 12px; border-bottom:1px solid #eef2f8; text-transform:uppercase; letter-spacing:.4px; }
+  .imgbox img { width:100%; max-height:300px; object-fit:contain; display:block; background:#fff; }
+  .imgbox .none { padding:26px 12px; text-align:center; color:#90a4ae; font-size:12.5px; }
+  table.det { width:100%; border-collapse:collapse; margin-top:6px; }
+  table.det td { padding:9px 4px; font-size:13.5px; border-bottom:1px solid #f0f2f6; vertical-align:top; }
+  table.det td.k { color:#5f6368; width:180px; font-weight:600; }
+  table.det td.v { color:#202124; }
+  .pill { display:inline-block; font-size:11px; font-weight:700; padding:2px 9px; border-radius:50px; }
+  .pill.g { background:#e8f5e9; color:#1b5e20; } .pill.r { background:#ffebee; color:#b71c1c; } .pill.y { background:#fff3e0; color:#e65100; }
+  .integrity { background:#f1f7ff; border:1px solid #cfe0f5; border-radius:12px; padding:14px 16px; margin-top:18px; font-size:12.5px; color:#37474f; line-height:1.7; word-break:break-all; }
+  .integrity strong { color:#0d47a1; }
+  .actions { margin-top:18px; display:flex; gap:10px; flex-wrap:wrap; }
+  .btn-primary { background:#1565c0; color:#fff; border:none; padding:12px 24px; border-radius:50px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; text-decoration:none; display:inline-block; }
+  .btn-ghost { background:#fff; color:#1565c0; border:1.5px solid #1565c0; padding:11px 22px; border-radius:50px; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; text-decoration:none; display:inline-block; }
+  .loading, .error { text-align:center; padding:60px 20px; color:#37474f; }
+  .error h2 { color:#b71c1c; margin-bottom:8px; }
+  footer { text-align:center; color:#5f6368; font-size:12.5px; padding:26px 20px 40px; line-height:1.6; }
+  @media (max-width:600px){ .imgs{grid-template-columns:1fr;} table.det td.k{width:130px;} }
+  @media print {
+    body { background:#fff; } .nav-wrapper, .actions, footer .noprint { display:none !important; }
+    .cert { box-shadow:none; border:1px solid #ccc; }
+  }
+</style>
+</head>
+<body>
+
+<div class="nav-wrapper"><div class="nav-bar">
+  <a class="nav-logo" href="/">OOHPhilippines.com</a>
+  <div class="nav-links">
+    <a class="nav-link" href="/">🔍 Search</a>
+    <a class="nav-link" href="ad-verifier.html">🛡️ Verify</a>
+    <a class="nav-link primary" href="ad-verifier.html">Verify your own ad →</a>
+  </div>
+</div></div>
+
+<div class="wrap">
+  <div id="cert-loading" class="loading">⏳ Loading certificate…</div>
+  <div id="cert-error" class="error" style="display:none;"></div>
+  <div id="cert" class="cert" style="display:none;"></div>
+</div>
+
+<footer>
+  <div>This certificate is generated by <strong>OOH Verify</strong> — OOHPhilippines.com. The record is stored with a
+  server-side timestamp and an integrity hash, so it cannot be silently edited after capture.</div>
+  <div class="noprint" style="margin-top:6px;">Proof images are shown through short-lived secure links and are not publicly indexed.</div>
+</footer>
+
+<script>
+var SUPABASE_URL = 'https://xecxfkuzexshafwuuizf.supabase.co';
+var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlY3hma3V6ZXhzaGFmd3V1aXpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTk1MTIsImV4cCI6MjA5MTMzNTUxMn0.sZrRmesCDn0DsuldUD8zIhi1gX1ajIKX0aULqNBX_To';
+
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+function fmtDate(s){ if(!s) return '—'; try{ return new Date(s).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'}); }catch(e){ return s; } }
+function getToken(){ return (new URLSearchParams(location.search).get('token')||'').trim(); }
+
+function showError(title, msg){
+  document.getElementById('cert-loading').style.display='none';
+  var e=document.getElementById('cert-error'); e.style.display='block';
+  e.innerHTML='<h2>'+esc(title)+'</h2><p>'+esc(msg)+'</p><p style="margin-top:14px;"><a class="btn-ghost" href="ad-verifier.html">Go to OOH Verify →</a></p>';
+}
+
+function statusBlock(st){
+  if(st==='verified') return '<div class="status ok">✅ VERIFIED — Proof of Posting confirmed</div>';
+  if(st==='issues')   return '<div class="status warn">⚠️ ISSUES FOUND — see notes below</div>';
+  return '<div class="status pending">🕓 PENDING REVIEW</div>';
+}
+
+function aiPill(m){
+  if(m==='match') return '<span class="pill g">creative match</span>';
+  if(m==='mismatch') return '<span class="pill r">creative mismatch</span>';
+  if(m==='uncertain') return '<span class="pill y">uncertain</span>';
+  return '—';
+}
+
+function render(rec){
+  document.getElementById('cert-loading').style.display='none';
+  var c=document.getElementById('cert'); c.style.display='block';
+
+  var maps = rec.gps ? ('https://www.google.com/maps/search/?api=1&query='+rec.gps.lat+','+rec.gps.lng) : null;
+  var flags=[];
+  if(rec.ai){ if(rec.ai.damaged) flags.push('damage'); if(rec.ai.obstructed) flags.push('obstruction'); if(rec.ai.poor_lighting) flags.push('poor lighting'); }
+
+  function row(k,v){ if(v==null||v==='') return ''; return '<tr><td class="k">'+esc(k)+'</td><td class="v">'+v+'</td></tr>'; }
+
+  var photoHtml = rec.photo_url ? '<img src="'+esc(rec.photo_url)+'" alt="On-site photo">' : '<div class="none">Photo not available</div>';
+  var refHtml   = rec.reference_url ? '<img src="'+esc(rec.reference_url)+'" alt="Approved artwork">' : '<div class="none">No reference artwork on file</div>';
+
+  var html =
+    '<div class="cert-head">'
+    + '<div class="badge">🛡️ OOH VERIFY · CERTIFICATE OF POSTING</div>'
+    + '<h1>'+esc(rec.brand||'Out-of-home advertisement')+'</h1>'
+    + '<p>'+esc(rec.format||'OOH')+(rec.site_code?(' · Site '+esc(rec.site_code)):'')+'</p>'
+    + '</div>'
+    + '<div class="cert-body">'
+    + statusBlock(rec.status)
+    + '<div class="imgs">'
+    +   '<div class="imgbox"><div class="cap">On-site photo</div>'+photoHtml+'</div>'
+    +   '<div class="imgbox"><div class="cap">Approved artwork</div>'+refHtml+'</div>'
+    + '</div>'
+    + '<table class="det">'
+    + row('Brand / advertiser', esc(rec.brand))
+    + row('Format', esc(rec.format))
+    + row('Booked site', esc(rec.site_code))
+    + row('Vehicle', esc(rec.vehicle_id))
+    + row('Lamp-post / unit', rec.unit_no ? (esc(rec.unit_no)+(rec.units_total?(' of '+esc(rec.units_total)):'')) : '')
+    + row('Capture type', esc(rec.capture_type))
+    + row('Time of day', esc(rec.time_of_day))
+    + row('Captured (server time)', '<strong>'+fmtDate(rec.captured_at)+'</strong>')
+    + row('Device-reported time', rec.captured_at_client ? fmtDate(rec.captured_at_client) : '')
+    + row('Location', rec.gps ? (rec.gps.lat.toFixed(5)+', '+rec.gps.lng.toFixed(5)+(rec.gps.acc?(' (±'+rec.gps.acc+'m)'):'')+(maps?(' · <a href="'+maps+'" target="_blank" rel="noopener">Open in Maps ↗</a>'):'')) : '')
+    + row('Location source', esc(rec.location_source))
+    + row('Distance from booked site', rec.distance_m!=null ? (rec.distance_m+' m') : '')
+    + row('Distance note', esc(rec.distance_reason))
+    + row('AI creative check', aiPill(rec.ai&&rec.ai.creative_match)+(rec.ai&&rec.ai.confidence!=null?(' · '+rec.ai.confidence+'% confidence'):''))
+    + row('AI condition flags', flags.length ? ('<span class="pill y">'+flags.join('</span> <span class="pill y">')+'</span>') : '<span class="pill g">none</span>')
+    + row('AI notes', esc(rec.ai&&rec.ai.reason))
+    + row('Human review — creative', rec.auditor&&rec.auditor.creative_ok!=null ? (rec.auditor.creative_ok?'<span class="pill g">confirmed</span>':'<span class="pill r">flagged</span>') : '')
+    + row('Human review — condition', rec.auditor&&rec.auditor.condition_ok!=null ? (rec.auditor.condition_ok?'<span class="pill g">confirmed</span>':'<span class="pill r">flagged</span>') : '')
+    + row('Captured by', esc(rec.captured_by)+(rec.capture_role?(' ('+esc(rec.capture_role)+')'):''))
+    + (rec.video_url ? row('Evidence clip', '<a href="'+esc(rec.video_url)+'" target="_blank" rel="noopener">View video ↗</a>') : '')
+    + '</table>'
+    + '<div class="integrity">'
+    +   '<div><strong>Integrity hash (SHA-256):</strong> '+esc(rec.integrity_hash||'—')+'</div>'
+    +   '<div style="margin-top:4px;"><strong>Certificate ID:</strong> '+esc(rec.cert_token)+'</div>'
+    +   '<div style="margin-top:6px;">Server-timestamped and hashed at capture — this record cannot be silently altered.</div>'
+    + '</div>'
+    + '<div class="actions">'
+    +   '<button class="btn-primary" onclick="window.print()">🖨️ Print / Save as PDF</button>'
+    +   (maps?('<a class="btn-ghost" href="'+maps+'" target="_blank" rel="noopener">📍 Open location in Maps</a>'):'')
+    +   '<a class="btn-ghost" href="ad-verifier.html">🛡️ Verify your own ad</a>'
+    + '</div>'
+    + '</div>';
+  c.innerHTML=html;
+}
+
+(async function(){
+  var token=getToken();
+  if(!token){ showError('No certificate specified', 'This link is missing its certificate token. Ask the operator for the full certificate link.'); return; }
+  try{
+    var r=await fetch(SUPABASE_URL+'/functions/v1/verify-cert?token='+encodeURIComponent(token),{
+      headers:{ apikey:SUPABASE_ANON, Authorization:'Bearer '+SUPABASE_ANON }
+    });
+    var b=await r.json();
+    if(!r.ok||b.error){
+      if(b.error==='not_found') showError('Certificate not found', 'No verification matches this token. The link may be mistyped or the record may have been removed.');
+      else if(b.error==='invalid_token') showError('Invalid certificate link', 'This token is not in the expected format.');
+      else showError('Could not load certificate', 'Please try again in a moment.');
+      return;
+    }
+    render(b.record);
+  }catch(e){ showError('Could not load certificate', 'Please check your connection and try again.'); }
+})();
+</script>
+</body>
+</html>
