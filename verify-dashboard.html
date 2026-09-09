@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ad Verifier Dashboard — OOH Verify | OOHPhilippines.com</title>
+<meta name="description" content="Your OOH Verify compliance dashboard — every verified posting for your campaigns, with photo evidence, GPS, timestamps, AI checks, and downloadable proof certificates.">
+<link rel="canonical" href="https://oohphilippines.com/verify-dashboard.html">
+<link rel="icon" href="favicon.ico" sizes="any">
+<meta name="theme-color" content="#1565c0">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:linear-gradient(135deg,#e3f2fd 0%,#bbdefb 100%); min-height:100vh; color:#202124; }
+  a { color:#1565c0; }
+  .nav-wrapper { position:sticky; top:0; z-index:1000; background:linear-gradient(135deg,#e3f2fd 0%,#bbdefb 100%); box-shadow:0 2px 10px rgba(0,0,0,0.1); }
+  .nav-bar { display:flex; justify-content:space-between; align-items:center; padding:14px 24px; max-width:1100px; margin:0 auto; flex-wrap:wrap; gap:10px; }
+  .nav-logo { font-size:22px; font-weight:700; color:#1565c0; text-decoration:none; letter-spacing:-0.5px; }
+  .nav-links { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .nav-link { color:#1565c0; text-decoration:none; font-weight:600; padding:8px 14px; border-radius:7px; background:rgba(255,255,255,0.75); font-size:13px; white-space:nowrap; }
+  .nav-link.active { background:#1565c0; color:#fff; }
+  .nav-link.primary { background:#1565c0; color:#fff; }
+  .hero { max-width:1000px; margin:0 auto; padding:28px 16px 4px; text-align:center; }
+  .hero .badge { display:inline-block; background:#1565c0; color:#fff; font-weight:700; font-size:12px; padding:5px 15px; border-radius:50px; margin-bottom:12px; }
+  .hero h1 { color:#202124; font-size:26px; margin-bottom:8px; letter-spacing:-0.5px; }
+  .hero p { max-width:640px; margin:0 auto; color:#37474f; font-size:14.5px; line-height:1.6; }
+  .wrap { max-width:1000px; margin:0 auto; padding:22px 16px 60px; }
+  .card { background:#fff; border-radius:14px; box-shadow:0 4px 18px rgba(0,0,0,0.07); padding:20px 22px; margin-bottom:18px; }
+  label.f { display:block; font-size:12px; font-weight:600; color:#5f6368; margin:0 0 5px; }
+  input[type=text], input[type=search], select { width:100%; box-sizing:border-box; padding:11px 13px; border:1.5px solid #dadce0; border-radius:10px; font-size:14px; font-family:inherit; background:#fff; }
+  .signin { display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; }
+  .signin > div { flex:1; min-width:220px; }
+  .btn-primary { background:#1565c0; color:#fff; border:none; padding:12px 24px; border-radius:50px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
+  .btn-ghost { background:#fff; color:#1565c0; border:1.5px solid #1565c0; padding:10px 18px; border-radius:50px; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; text-decoration:none; display:inline-block; }
+  button:disabled { opacity:.5; cursor:not-allowed; }
+  .summary { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:12px; }
+  .kpi { background:#f6f9ff; border:1px solid #e3ecfa; border-radius:12px; padding:14px 16px; text-align:center; }
+  .kpi .n { font-size:26px; font-weight:800; color:#0d47a1; line-height:1.1; }
+  .kpi .l { font-size:11.5px; color:#5f6368; margin-top:3px; text-transform:uppercase; letter-spacing:.3px; }
+  .filters { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; margin-bottom:4px; }
+  .filters > div { flex:1; min-width:150px; }
+  .recgrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px; margin-top:6px; }
+  .rec { background:#fff; border:1px solid #e6ebf3; border-radius:12px; overflow:hidden; box-shadow:0 3px 12px rgba(0,0,0,0.05); }
+  .rec .thumb { width:100%; height:150px; object-fit:cover; background:#eef3fb; display:block; }
+  .rec .thumb.none { display:flex; align-items:center; justify-content:center; color:#90a4ae; font-size:12px; }
+  .rec .body { padding:12px 14px; }
+  .rec .brand { font-weight:700; font-size:15px; color:#0d47a1; }
+  .rec .meta { font-size:12px; color:#5f6368; margin-top:2px; line-height:1.5; }
+  .badge2 { display:inline-block; font-size:10.5px; font-weight:700; padding:2px 9px; border-radius:50px; margin-top:8px; }
+  .b-ok { background:#e8f5e9; color:#1b5e20; } .b-warn { background:#fff3e0; color:#e65100; } .b-pend { background:#eceff1; color:#455a64; }
+  .pill { display:inline-block; font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:50px; margin-left:4px; }
+  .pill.g { background:#e8f5e9; color:#1b5e20; } .pill.r { background:#ffebee; color:#b71c1c; } .pill.y { background:#fff3e0; color:#e65100; }
+  .rec .links { margin-top:10px; display:flex; gap:8px; flex-wrap:wrap; }
+  .rec .links a { font-size:12px; font-weight:700; text-decoration:none; }
+  .muted { color:#5f6368; font-size:13px; line-height:1.6; }
+  .empty { text-align:center; padding:40px 20px; color:#5f6368; }
+  .tabbtn { background:rgba(255,255,255,0.85); color:#1565c0; border:1.5px solid #bcd4f0; padding:10px 18px; border-radius:50px; font-size:13.5px; font-weight:700; cursor:pointer; font-family:inherit; }
+  .tabbtn.active { background:#1565c0; color:#fff; border-color:#1565c0; }
+  .campcard { background:#fff; border:1px solid #e6ebf3; border-radius:12px; padding:14px 16px; box-shadow:0 3px 12px rgba(0,0,0,0.05); }
+  .camprow { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+  .bar { height:12px; border-radius:50px; background:#eceff1; overflow:hidden; margin-top:6px; }
+  .bar > span { display:block; height:100%; background:linear-gradient(90deg,#1b5e20,#43a047); }
+  table.sites { width:100%; border-collapse:collapse; margin-top:6px; }
+  table.sites th { text-align:left; font-size:11px; color:#5f6368; text-transform:uppercase; letter-spacing:.3px; padding:8px 6px; border-bottom:2px solid #eef2f8; }
+  table.sites td { font-size:13px; padding:9px 6px; border-bottom:1px solid #f0f2f6; vertical-align:middle; }
+  .st { display:inline-block; font-size:11px; font-weight:700; padding:2px 10px; border-radius:50px; }
+  .st.verified { background:#e8f5e9; color:#1b5e20; } .st.issues { background:#fff3e0; color:#e65100; }
+  .st.pending { background:#eceff1; color:#455a64; } .st.not_posted { background:#ffebee; color:#b71c1c; }
+  textarea { width:100%; box-sizing:border-box; padding:11px 13px; border:1.5px solid #dadce0; border-radius:10px; font-size:13.5px; font-family:inherit; min-height:120px; resize:vertical; }
+  footer { text-align:center; color:#5f6368; font-size:12.5px; padding:26px 20px 40px; line-height:1.6; }
+  @media (max-width:600px){ .hero h1{font-size:22px;} }
+</style>
+</head>
+<body>
+
+<div class="nav-wrapper"><div class="nav-bar">
+  <a class="nav-logo" href="/">OOHPhilippines.com</a>
+  <div class="nav-links">
+    <a class="nav-link" href="/">🔍 Search</a>
+    <a class="nav-link" href="roi-calculator.html">📈 ROI</a>
+    <a class="nav-link" href="ai-planner.html">🤖 AI Planner</a>
+    <a class="nav-link" href="ad-verifier.html">🛡️ Ad Verifier</a>
+    <a class="nav-link active" href="verify-dashboard.html">📊 Ad Verifier Dashboard</a>
+    <a class="nav-link primary" href="upload.html">📍 Upload Site</a>
+  </div>
+</div></div>
+
+<div class="hero">
+  <div class="badge">📊 Ad Verifier Dashboard · Compliance</div>
+  <h1>Every verified posting, in one place.</h1>
+  <p>See all the proofs captured under your account — verified sites, issues to chase, photo evidence, and a downloadable certificate for each one. Enter your account email to load your records.</p>
+</div>
+
+<div class="wrap">
+
+  <!-- Sign-in (free account: same one used for Search / ROI / AI Planner) -->
+  <div class="card" id="signinCard">
+    <h2 style="font-size:18px;color:#0d47a1;margin-bottom:4px;">Sign in to your dashboard</h2>
+    <p class="muted" style="margin-bottom:12px;">Advertisers, agencies, and media planners: sign in with your free OOH Philippines account (the same one you use for Search, the ROI Calculator, and the AI Planner). You'll see every verification your operators tagged to your email.</p>
+    <div class="signin">
+      <div>
+        <label class="f">Account email</label>
+        <input type="email" id="d-email" placeholder="you@company.com" autocomplete="username">
+      </div>
+      <div>
+        <label class="f">Password</label>
+        <input type="password" id="d-pass" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')dashLogin()">
+      </div>
+      <button class="btn-primary" id="d-load" onclick="dashLogin()">🔐 Sign in</button>
+    </div>
+    <p class="muted" style="margin-top:10px;">No account yet? <a href="index.html" target="_blank">Create a free account →</a> then come back.</p>
+    <div id="d-msg" class="muted" style="margin-top:8px;"></div>
+  </div>
+
+  <!-- Results -->
+  <div id="results" style="display:none;">
+
+    <div class="tabs" style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+      <button class="tabbtn active" id="tb-verifs" onclick="showTab('verifs')">🛡️ Verifications</button>
+      <button class="tabbtn" id="tb-campaigns" onclick="showTab('campaigns')">📋 Campaigns (booked vs posted)</button>
+    </div>
+
+    <div id="tab-verifs">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px;">
+        <h2 style="font-size:18px;color:#0d47a1;">Compliance summary <span id="d-scope" class="muted" style="font-weight:400;"></span></h2>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn-ghost" onclick="exportPdf()">📄 PDF report</button>
+          <button class="btn-ghost" onclick="exportCsv()">⬇️ Export CSV</button>
+          <button class="btn-ghost" onclick="resetView()">↩ Log out</button>
+        </div>
+      </div>
+      <div class="summary" id="d-summary"></div>
+    </div>
+
+    <div class="card">
+      <div class="filters">
+        <div>
+          <label class="f">Status</label>
+          <select id="f-status" onchange="applyFilters()">
+            <option value="">All statuses</option>
+            <option value="verified">Verified</option>
+            <option value="issues">Issues</option>
+            <option value="pending">Pending</option>
+          </select>
+        </div>
+        <div>
+          <label class="f">Brand</label>
+          <select id="f-brand" onchange="applyFilters()"><option value="">All brands</option></select>
+        </div>
+        <div style="flex:2;">
+          <label class="f">Search (site, vehicle, brand)</label>
+          <input type="search" id="f-search" placeholder="e.g. G4164, EDSA, Nestlé…" oninput="applyFilters()">
+        </div>
+      </div>
+      <div id="d-count" class="muted" style="margin:10px 0 2px;"></div>
+      <div class="recgrid" id="d-grid"></div>
+      <div id="d-empty" class="empty" style="display:none;">No records match these filters.</div>
+    </div>
+    </div><!-- /tab-verifs -->
+
+    <!-- Campaigns: booked vs posted -->
+    <div id="tab-campaigns" style="display:none;">
+
+      <div id="camp-home">
+        <div class="card">
+          <div class="camprow" style="margin-bottom:8px;">
+            <h2 style="font-size:18px;color:#0d47a1;">Campaigns</h2>
+            <button class="btn-ghost" onclick="toggleCreate()">＋ New campaign</button>
+          </div>
+          <p class="muted">A campaign lists the sites you <strong>booked</strong>. We match them against captured proofs to show how much is actually posted — no change to how operators capture. Matching is by site code, narrowed by the campaign's brand and flight dates when set.</p>
+
+          <div id="camp-create" style="display:none;margin-top:14px;border-top:1px solid #eef2f8;padding-top:14px;">
+            <div class="filters">
+              <div style="flex:2;"><label class="f">Brand / advertiser *</label><input type="text" id="c-brand" placeholder="e.g. Nestlé Coffee-Mate"></div>
+              <div><label class="f">Flight start</label><input type="date" id="c-start"></div>
+              <div><label class="f">Flight end</label><input type="date" id="c-end"></div>
+            </div>
+            <div class="filters" style="margin-top:10px;">
+              <div><label class="f">Advertiser email (optional)</label><input type="text" id="c-adv" placeholder="brand@company.com"></div>
+              <div><label class="f">Agency email (optional)</label><input type="text" id="c-agency" placeholder="planner@agency.com"></div>
+            </div>
+            <label class="f" style="margin-top:10px;">Booked sites — one per line. Just the site code, or <em>code, format, notes</em>.</label>
+            <textarea id="c-sites" placeholder="G4164&#10;EDSA-042, Billboard, southbound&#10;LP-118, Lamp-post banner"></textarea>
+            <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn-primary" id="c-save" onclick="createCampaign()">Create campaign</button>
+              <button class="btn-ghost" onclick="toggleCreate()">Cancel</button>
+            </div>
+            <div id="c-msg" class="muted" style="margin-top:8px;"></div>
+          </div>
+        </div>
+
+        <div id="camp-list"></div>
+      </div>
+
+      <div id="camp-detail" style="display:none;"></div>
+
+    </div><!-- /tab-campaigns -->
+
+  </div>
+
+</div>
+
+<footer>
+  <div><strong>OOH Verify</strong> — OOHPhilippines.com. Records are server-timestamped and hashed at capture. Proof images load through short-lived secure links.</div>
+</footer>
+
+<script>
+var SUPABASE_URL = 'https://xecxfkuzexshafwuuizf.supabase.co';
+var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlY3hma3V6ZXhzaGFmd3V1aXpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTk1MTIsImV4cCI6MjA5MTMzNTUxMn0.sZrRmesCDn0DsuldUD8zIhi1gX1ajIKX0aULqNBX_To';
+var ALL = [];   // all loaded records
+var VIEW = [];  // filtered
+
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+function fmtDate(s){ if(!s) return '—'; try{ return new Date(s).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'}); }catch(e){ return s; } }
+function q(id){ return document.getElementById(id); }
+
+// Sign in with the free account (same as Search/ROI/AI Planner): verify the
+// password against free_users (bcrypt), then persist the session site-wide.
+async function dashLogin(){
+  var email=(q('d-email').value||'').trim().toLowerCase();
+  var pass=(q('d-pass').value||'').trim();
+  var msg=q('d-msg');
+  if(!email||email.indexOf('@')<0){ msg.innerHTML='<span style="color:#b71c1c;">Enter a valid email.</span>'; return; }
+  if(!pass){ msg.innerHTML='<span style="color:#b71c1c;">Enter your password.</span>'; return; }
+  var btn=q('d-load'); btn.disabled=true; msg.textContent='⏳ Signing in…';
+  try{
+    var r=await fetch(SUPABASE_URL+'/rest/v1/free_users?select=name,email,company,password,credits&email=ilike.'+encodeURIComponent(email),
+      { headers:{ apikey:SUPABASE_ANON, Authorization:'Bearer '+SUPABASE_ANON } });
+    var rows=await r.json();
+    if(!Array.isArray(rows)||!rows.length){ btn.disabled=false; msg.innerHTML='<span style="color:#b71c1c;">Email or password incorrect. <a href="index.html" target="_blank">Create a free account →</a></span>'; return; }
+    var u=rows[0], ok=false;
+    try{ ok=window.dcodeIO && dcodeIO.bcrypt.compareSync(pass, u.password||''); }catch(e){ ok=false; }
+    if(!ok){ btn.disabled=false; msg.innerHTML='<span style="color:#b71c1c;">Email or password incorrect.</span>'; return; }
+    try{ localStorage.setItem('oohph_free_user', JSON.stringify({ name:u.name, email:u.email, company:u.company||'', credits:(typeof u.credits==='number'?u.credits:0) })); }catch(e){}
+    q('d-pass').value='';
+    loadRecords((u.email||email).toLowerCase());
+  }catch(e){ btn.disabled=false; msg.innerHTML='<span style="color:#b71c1c;">Sign-in failed — try again.</span>'; }
+}
+
+async function loadRecords(emailArg){
+  var email=(emailArg||q('d-email').value||'').trim().toLowerCase();
+  var msg=q('d-msg');
+  if(!email||email.indexOf('@')<0){ msg.innerHTML='<span style="color:#b71c1c;">Enter a valid email.</span>'; return; }
+  var btn=q('d-load'); btn.disabled=true; msg.textContent='⏳ Loading your verifications…';
+  try{
+    var r=await fetch(SUPABASE_URL+'/functions/v1/verify-list',{ method:'POST',
+      headers:{ apikey:SUPABASE_ANON, Authorization:'Bearer '+SUPABASE_ANON, 'Content-Type':'application/json' },
+      body:JSON.stringify({ email:email }) });
+    var b=await r.json();
+    if(!r.ok||b.error){ msg.innerHTML='<span style="color:#b71c1c;">Could not load — '+esc(b.error||r.status)+'</span>'; btn.disabled=false; return; }
+    ALL=b.records||[];
+    DASH_EMAIL=email; CAMP_REPORT=null;
+    try{ localStorage.setItem('oohverify_dash_email', email); }catch(e){}
+    q('d-scope').textContent = b.is_admin ? '· admin view (all accounts)' : ('· '+email);
+    msg.textContent='';
+    q('signinCard').style.display='none';
+    q('results').style.display='block';
+    buildBrandFilter(); renderSummary(); applyFilters();
+    if(b.capped) q('d-count').innerHTML += ' <span style="color:#e65100;">(showing the most recent '+ALL.length+')</span>';
+  }catch(e){ msg.innerHTML='<span style="color:#b71c1c;">Network error — try again.</span>'; btn.disabled=false; }
+}
+
+function statusOf(rec){ return rec.status||'pending'; }
+
+function renderSummary(){
+  var n=ALL.length, ver=0, iss=0, pen=0, day=0, night=0, aiFlag=0;
+  var sites={};
+  ALL.forEach(function(r){
+    var s=statusOf(r); if(s==='verified')ver++; else if(s==='issues')iss++; else pen++;
+    if((r.time_of_day||'').toLowerCase()==='day')day++; if((r.time_of_day||'').toLowerCase()==='night')night++;
+    if(r.ai_damaged||r.ai_obstructed||r.ai_poor_lighting||r.ai_creative_match==='mismatch')aiFlag++;
+    var key=r.site_code||r.vehicle_id||r.id; sites[key]=1;
+  });
+  var siteCount=Object.keys(sites).length;
+  var html='';
+  html+='<div class="kpi"><div class="n">'+n+'</div><div class="l">Verifications</div></div>';
+  html+='<div class="kpi"><div class="n">'+siteCount+'</div><div class="l">Sites / units</div></div>';
+  html+='<div class="kpi"><div class="n" style="color:#1b5e20;">'+ver+'</div><div class="l">Verified</div></div>';
+  html+='<div class="kpi"><div class="n" style="color:#e65100;">'+iss+'</div><div class="l">Issues</div></div>';
+  html+='<div class="kpi"><div class="n" style="color:#455a64;">'+pen+'</div><div class="l">Pending</div></div>';
+  html+='<div class="kpi"><div class="n">'+day+' / '+night+'</div><div class="l">Day / Night</div></div>';
+  html+='<div class="kpi"><div class="n" style="color:'+(aiFlag?'#e65100':'#1b5e20')+';">'+aiFlag+'</div><div class="l">AI flags</div></div>';
+  q('d-summary').innerHTML=html;
+}
+
+function buildBrandFilter(){
+  var sel=q('f-brand'); var brands={};
+  ALL.forEach(function(r){ if(r.brand) brands[r.brand]=1; });
+  var opts='<option value="">All brands</option>';
+  Object.keys(brands).sort().forEach(function(b){ opts+='<option value="'+esc(b)+'">'+esc(b)+'</option>'; });
+  sel.innerHTML=opts;
+}
+
+function applyFilters(){
+  var st=q('f-status').value, br=q('f-brand').value, s=(q('f-search').value||'').trim().toLowerCase();
+  VIEW=ALL.filter(function(r){
+    if(st && statusOf(r)!==st) return false;
+    if(br && r.brand!==br) return false;
+    if(s){
+      var hay=((r.site_code||'')+' '+(r.vehicle_id||'')+' '+(r.brand||'')+' '+(r.format||'')).toLowerCase();
+      if(hay.indexOf(s)<0) return false;
+    }
+    return true;
+  });
+  renderGrid();
+}
+
+function aiPill(r){
+  var m=r.ai_creative_match;
+  var out='';
+  if(m==='match') out='<span class="pill g">match</span>';
+  else if(m==='mismatch') out='<span class="pill r">mismatch</span>';
+  else if(m==='uncertain') out='<span class="pill y">uncertain</span>';
+  if(r.ai_damaged) out+='<span class="pill y">damage</span>';
+  if(r.ai_obstructed) out+='<span class="pill y">obstructed</span>';
+  if(r.ai_poor_lighting) out+='<span class="pill y">dim</span>';
+  return out;
+}
+
+function renderGrid(){
+  var g=q('d-grid'), empty=q('d-empty');
+  q('d-count').textContent=VIEW.length+' of '+ALL.length+' shown';
+  if(!VIEW.length){ g.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+  g.innerHTML=VIEW.map(function(r){
+    var st=statusOf(r);
+    var badge = st==='verified' ? '<span class="badge2 b-ok">✅ Verified</span>'
+              : st==='issues'   ? '<span class="badge2 b-warn">⚠️ Issues</span>'
+              : '<span class="badge2 b-pend">🕓 Pending</span>';
+    var thumb = r.photo_url ? '<img class="thumb" loading="lazy" src="'+esc(r.photo_url)+'" alt="">' : '<div class="thumb none">No photo</div>';
+    var loc = (r.site_code?('Site '+esc(r.site_code)):'') + (r.vehicle_id?(' · '+esc(r.vehicle_id)):'') + (r.unit_no?(' · unit '+esc(r.unit_no)):'');
+    var dist = (r.distance_m!=null)?(' · '+r.distance_m+'m'):'';
+    var certUrl='verify-cert.html?token='+encodeURIComponent(r.cert_token);
+    var maps = (r.gps_lat!=null)?('https://www.google.com/maps/search/?api=1&query='+r.gps_lat+','+r.gps_lng):null;
+    return '<div class="rec">'+thumb+'<div class="body">'
+      + '<div class="brand">'+esc(r.brand||'—')+'</div>'
+      + '<div class="meta">'+esc(r.format||'')+(loc?(' · '+loc):'')+'</div>'
+      + '<div class="meta">'+fmtDate(r.captured_at)+' · '+esc(r.time_of_day||'')+dist+'</div>'
+      + '<div style="margin-top:4px;">'+badge+' '+aiPill(r)+'</div>'
+      + '<div class="links"><a href="'+certUrl+'" target="_blank">📄 Certificate →</a>'
+      + (maps?(' <a href="'+maps+'" target="_blank" rel="noopener">📍 Maps</a>'):'')+'</div>'
+      + '</div></div>';
+  }).join('');
+}
+
+function exportCsv(){
+  var cols=['captured_at','brand','format','site_code','vehicle_id','unit_no','time_of_day','capture_type','status','distance_m','location_source','ai_creative_match','ai_confidence','ai_damaged','ai_obstructed','ai_poor_lighting','captured_by','capture_role','gps_lat','gps_lng','cert_token'];
+  var head=cols.join(',');
+  var lines=VIEW.map(function(r){
+    return cols.map(function(c){
+      var v=r[c]; if(v==null)v=''; v=String(v).replace(/"/g,'""');
+      return /[",\n]/.test(v)?('"'+v+'"'):v;
+    }).join(',');
+  });
+  var csv=head+'\n'+lines.join('\n');
+  var blob=new Blob([csv],{type:'text/csv'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='ooh-verify-records-'+new Date().toISOString().slice(0,10)+'.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+
+function exportPdf(){
+  if(!window.jspdf||!window.jspdf.jsPDF){ alert('PDF tool still loading — try again in a second.'); return; }
+  var rows=VIEW;
+  if(!rows.length){ alert('No records to include — adjust your filters.'); return; }
+  var scope=(q('d-scope').textContent||'').replace(/^·\s*/,'').trim();
+  var brand=q('f-brand').value; var stf=q('f-status').value;
+  var doc=new window.jspdf.jsPDF({unit:'pt',format:'a4'});
+  var W=doc.internal.pageSize.getWidth(), H=doc.internal.pageSize.getHeight(), x=40;
+
+  // counts on the filtered set
+  var ver=0,iss=0,pen=0, sites={};
+  rows.forEach(function(r){ var s=r.status||'pending'; if(s==='verified')ver++; else if(s==='issues')iss++; else pen++; sites[r.site_code||r.vehicle_id||r.id]=1; });
+
+  function header(){
+    doc.setFillColor(13,71,161); doc.rect(0,0,W,64,'F');
+    doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(16);
+    doc.text('OOHPhilippines.com — Verification Compliance Report', x, 30);
+    doc.setFont('helvetica','normal'); doc.setFontSize(10);
+    doc.text('OOH Verify · Proof of Posting', x, 48);
+  }
+  header();
+  var y=86; doc.setTextColor(32,33,36);
+  doc.setFont('helvetica','bold'); doc.setFontSize(12);
+  doc.text('Account: '+(scope||'—'), x, y); y+=16;
+  doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(95,99,104);
+  var filt=[]; if(brand)filt.push('Brand: '+brand); if(stf)filt.push('Status: '+stf);
+  doc.text('Generated '+new Date().toLocaleString('en-PH')+(filt.length?('  ·  '+filt.join('  ·  ')):''), x, y); y+=22;
+
+  // summary band
+  doc.setFillColor(246,249,255); doc.roundedRect(x,y,W-2*x,44,6,6,'F');
+  doc.setTextColor(13,71,161); doc.setFont('helvetica','bold'); doc.setFontSize(11);
+  var band=[ [rows.length,'Verifications'], [Object.keys(sites).length,'Sites/units'], [ver,'Verified'], [iss,'Issues'], [pen,'Pending'] ];
+  var bw=(W-2*x)/band.length;
+  band.forEach(function(b,i){
+    var cx=x+bw*i+bw/2;
+    doc.setFontSize(16); doc.setTextColor(13,71,161); doc.text(String(b[0]), cx, y+22, {align:'center'});
+    doc.setFontSize(8); doc.setTextColor(95,99,104); doc.text(b[1], cx, y+35, {align:'center'});
+  });
+  y+=60;
+
+  // table
+  var cols=[['Brand',110],['Site / unit',95],['Format',70],['Captured',95],['ToD',34],['Dist',34],['AI',34],['Status',60]];
+  function tableHead(){
+    doc.setFillColor(21,101,192); doc.rect(x,y,W-2*x,20,'F');
+    doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(8.5);
+    var cx=x+6; cols.forEach(function(c){ doc.text(c[0],cx,y+13); cx+=c[1]; }); y+=20;
+  }
+  tableHead();
+  doc.setFont('helvetica','normal'); doc.setTextColor(32,33,36);
+  rows.forEach(function(r,idx){
+    if(y>H-50){ doc.addPage(); header(); y=86; tableHead(); doc.setFont('helvetica','normal'); doc.setTextColor(32,33,36); }
+    if(idx%2===0){ doc.setFillColor(248,250,253); doc.rect(x,y,W-2*x,18,'F'); }
+    var ai = r.ai_creative_match==='match'?'✓':(r.ai_creative_match==='mismatch'?'✗':'?');
+    if(r.ai_damaged||r.ai_obstructed||r.ai_poor_lighting) ai+='!';
+    var site=(r.site_code||r.vehicle_id||'')+(r.unit_no?(' #'+r.unit_no):'');
+    var vals=[ r.brand||'—', site||'—', r.format||'—', fmtDate(r.captured_at), r.time_of_day||'', (r.distance_m!=null?r.distance_m+'m':''), ai, (r.status||'pending') ];
+    doc.setFontSize(8); var cx=x+6;
+    vals.forEach(function(v,i){
+      var t=String(v); var maxw=cols[i][1]-6;
+      while(doc.getTextWidth(t)>maxw && t.length>3){ t=t.slice(0,-2); }
+      if(t!==String(v)) t=t.slice(0,-1)+'…';
+      if(i===7){ // status color
+        var s=r.status||'pending';
+        doc.setTextColor(s==='verified'?27:(s==='issues'?230:95), s==='verified'?94:(s==='issues'?81:99), s==='verified'?32:(s==='issues'?0:104));
+        doc.setFont('helvetica','bold');
+      } else { doc.setTextColor(32,33,36); doc.setFont('helvetica','normal'); }
+      doc.text(t,cx,y+12); cx+=cols[i][1];
+    });
+    y+=18;
+  });
+
+  // footers with page numbers
+  var pages=doc.internal.getNumberOfPages();
+  for(var p=1;p<=pages;p++){
+    doc.setPage(p);
+    doc.setFontSize(8); doc.setTextColor(140,140,140);
+    doc.text('AI: ✓ match · ✗ mismatch · ? uncertain · ! condition flag.  Records are server-timestamped and hashed at capture. Verify any row at oohphilippines.com/verify-cert.', x, H-26);
+    doc.text('OOHPhilippines.com — OOH Verify', x, H-14);
+    doc.text('Page '+p+' of '+pages, W-x, H-14, {align:'right'});
+  }
+  doc.save('ooh-verify-report-'+new Date().toISOString().slice(0,10)+'.pdf');
+}
+
+// ===================== Campaigns: booked vs posted =====================
+var DASH_EMAIL='';   // set on load
+var CAMP_REPORT=null; // last-loaded compliance report
+
+function showTab(t){
+  var v=t==='verifs';
+  q('tab-verifs').style.display=v?'block':'none';
+  q('tab-campaigns').style.display=v?'none':'block';
+  q('tb-verifs').classList.toggle('active',v);
+  q('tb-campaigns').classList.toggle('active',!v);
+  if(!v && !CAMP_REPORT) loadCampaigns();
+}
+function toggleCreate(){ var c=q('camp-create'); c.style.display = c.style.display==='none'?'block':'none'; }
+
+async function campApi(payload){
+  var r=await fetch(SUPABASE_URL+'/functions/v1/verify-campaign',{ method:'POST',
+    headers:{ apikey:SUPABASE_ANON, Authorization:'Bearer '+SUPABASE_ANON, 'Content-Type':'application/json' },
+    body:JSON.stringify(Object.assign({ email:DASH_EMAIL }, payload)) });
+  return r.json();
+}
+
+function parseSites(text){
+  return (text||'').split('\n').map(function(ln){
+    var parts=ln.split(',').map(function(s){return s.trim();});
+    if(!parts[0]) return null;
+    return { site_code:parts[0], format:parts[1]||null, notes:parts[2]||null };
+  }).filter(Boolean);
+}
+
+async function createCampaign(){
+  var brand=(q('c-brand').value||'').trim();
+  var sites=parseSites(q('c-sites').value);
+  var msg=q('c-msg');
+  if(!brand){ msg.innerHTML='<span style="color:#b71c1c;">Brand is required.</span>'; return; }
+  if(!sites.length){ msg.innerHTML='<span style="color:#b71c1c;">Add at least one booked site.</span>'; return; }
+  var btn=q('c-save'); btn.disabled=true; msg.textContent='⏳ Creating…';
+  var b=await campApi({ action:'create', brand:brand,
+    advertiser_email:(q('c-adv').value||'').trim(), agency_email:(q('c-agency').value||'').trim(),
+    flight_start:q('c-start').value||null, flight_end:q('c-end').value||null, sites:sites });
+  btn.disabled=false;
+  if(b.error){ msg.innerHTML='<span style="color:#b71c1c;">Could not create — '+esc(b.error)+'</span>'; return; }
+  msg.innerHTML='<span style="color:#1b5e20;">✅ Created with '+b.sites+' booked sites.</span>';
+  q('c-brand').value=''; q('c-sites').value=''; q('c-adv').value=''; q('c-agency').value=''; q('c-start').value=''; q('c-end').value='';
+  toggleCreate(); loadCampaigns();
+}
+
+async function loadCampaigns(){
+  var list=q('camp-list'); list.innerHTML='<p class="muted" style="padding:10px 2px;">⏳ Loading campaigns…</p>';
+  var b=await campApi({ action:'list' });
+  if(b.error){ list.innerHTML='<p class="muted" style="color:#b71c1c;">Could not load campaigns — '+esc(b.error)+'</p>'; return; }
+  var camps=b.campaigns||[];
+  if(!camps.length){ list.innerHTML='<div class="empty">No campaigns yet. Click <strong>＋ New campaign</strong> to add your booked sites.</div>'; return; }
+  list.innerHTML=camps.map(function(c){
+    var flight=(c.flight_start||c.flight_end)?((c.flight_start||'…')+' → '+(c.flight_end||'…')):'no flight dates';
+    return '<div class="campcard" style="margin-top:12px;"><div class="camprow">'
+      + '<div><div style="font-weight:700;font-size:16px;color:#0d47a1;">'+esc(c.brand||'—')+'</div>'
+      + '<div class="muted">'+esc(flight)+' · '+c.booked+' booked site'+(c.booked===1?'':'s')+'</div></div>'
+      + '<button class="btn-ghost" onclick="openCampaign(\''+c.id+'\')">View compliance →</button>'
+      + '</div></div>';
+  }).join('');
+}
+
+async function openCampaign(id){
+  q('camp-home').style.display='none';
+  var d=q('camp-detail'); d.style.display='block'; d.innerHTML='<p class="muted" style="padding:14px 2px;">⏳ Building compliance report…</p>';
+  var b=await campApi({ action:'report', campaign_id:id });
+  if(b.error){ d.innerHTML='<div class="card"><p class="muted" style="color:#b71c1c;">Could not load — '+esc(b.error)+'</p><button class="btn-ghost" onclick="closeCampaign()">← Back</button></div>'; return; }
+  CAMP_REPORT=b; renderCampaign(b);
+}
+function closeCampaign(){ q('camp-detail').style.display='none'; q('camp-home').style.display='block'; }
+
+function renderCampaign(b){
+  var c=b.campaign, t=b.totals;
+  var flight=(c.flight_start||c.flight_end)?((c.flight_start||'…')+' → '+(c.flight_end||'…')):'no flight dates';
+  var kpis=[ [t.booked,'Booked'], [t.posted_pct+'%','Posted'], [t.verified,'Verified'], [t.issues,'Issues'], [t.pending,'Pending'], [t.missing,'Not posted'] ];
+  var rows=b.sites.map(function(s){
+    var label = s.status==='not_posted'?'Not posted yet':s.status.charAt(0).toUpperCase()+s.status.slice(1);
+    var cert = s.cert_token?('<a href="verify-cert.html?token='+encodeURIComponent(s.cert_token)+'" target="_blank">Certificate →</a>'):'<span class="muted">—</span>';
+    return '<tr><td><strong>'+esc(s.site_code)+'</strong>'+(s.format?('<br><span class="muted">'+esc(s.format)+'</span>'):'')+'</td>'
+      + '<td><span class="st '+s.status+'">'+esc(label)+'</span></td>'
+      + '<td>'+(s.captures||0)+'</td>'
+      + '<td>'+(s.captured_at?fmtDate(s.captured_at):'—')+'</td>'
+      + '<td>'+cert+'</td></tr>';
+  }).join('');
+  q('camp-detail').innerHTML=
+    '<div class="card"><button class="btn-ghost" onclick="closeCampaign()">← All campaigns</button>'
+    + '<div class="camprow" style="margin:12px 0 6px;"><h2 style="font-size:20px;color:#0d47a1;">'+esc(c.brand||'—')+'</h2>'
+    + '<div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn-ghost" onclick="campaignPdf()">📄 PDF report</button><button class="btn-ghost" onclick="campaignCsv()">⬇️ CSV</button></div></div>'
+    + '<div class="muted" style="margin-bottom:12px;">'+esc(flight)+(c.advertiser_email?(' · advertiser: '+esc(c.advertiser_email)):'')+(c.agency_email?(' · agency: '+esc(c.agency_email)):'')+'</div>'
+    + '<div class="bar"><span style="width:'+t.posted_pct+'%;"></span></div>'
+    + '<div class="muted" style="margin:6px 0 14px;"><strong>'+t.posted+' of '+t.booked+' booked sites posted ('+t.posted_pct+'%)</strong> · '+t.verified+' verified, '+t.issues+' with issues, '+t.pending+' pending, '+t.missing+' not yet posted.</div>'
+    + '<div class="summary">'+kpis.map(function(k){return '<div class="kpi"><div class="n">'+k[0]+'</div><div class="l">'+k[1]+'</div></div>';}).join('')+'</div>'
+    + '</div>'
+    + '<div class="card"><h3 style="font-size:15px;color:#0d47a1;margin-bottom:6px;">Site-by-site</h3>'
+    + '<div style="overflow-x:auto;"><table class="sites"><thead><tr><th>Booked site</th><th>Status</th><th>Captures</th><th>Latest</th><th>Proof</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+}
+
+function campaignCsv(){
+  if(!CAMP_REPORT) return;
+  var cols=['site_code','format','status','captures','captured_at','cert_token'];
+  var lines=CAMP_REPORT.sites.map(function(s){
+    return cols.map(function(c){ var v=s[c]==null?'':String(s[c]).replace(/"/g,'""'); return /[",\n]/.test(v)?('"'+v+'"'):v; }).join(',');
+  });
+  var csv=cols.join(',')+'\n'+lines.join('\n');
+  var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download='campaign-'+(CAMP_REPORT.campaign.brand||'report').replace(/[^a-z0-9]+/gi,'-').toLowerCase()+'-compliance.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+
+function campaignPdf(){
+  if(!window.jspdf||!window.jspdf.jsPDF||!CAMP_REPORT){ alert('PDF tool still loading — try again.'); return; }
+  var b=CAMP_REPORT, c=b.campaign, t=b.totals;
+  var doc=new window.jspdf.jsPDF({unit:'pt',format:'a4'});
+  var W=doc.internal.pageSize.getWidth(), H=doc.internal.pageSize.getHeight(), x=40;
+  function header(){
+    doc.setFillColor(13,71,161); doc.rect(0,0,W,64,'F');
+    doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(16);
+    doc.text('Campaign Compliance — Booked vs Posted', x, 30);
+    doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.text('OOHPhilippines.com · OOH Verify', x, 48);
+  }
+  header();
+  var y=88; doc.setTextColor(32,33,36); doc.setFont('helvetica','bold'); doc.setFontSize(13);
+  doc.text(String(c.brand||'—'), x, y); y+=16;
+  doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(95,99,104);
+  var flight=(c.flight_start||c.flight_end)?((c.flight_start||'…')+' to '+(c.flight_end||'…')):'no flight dates';
+  doc.text('Flight: '+flight+'   ·   Generated '+new Date().toLocaleString('en-PH'), x, y); y+=20;
+  // headline
+  doc.setFillColor(246,249,255); doc.roundedRect(x,y,W-2*x,46,6,6,'F');
+  doc.setTextColor(13,71,161); doc.setFont('helvetica','bold'); doc.setFontSize(15);
+  doc.text(t.posted+' of '+t.booked+' booked sites posted  ('+t.posted_pct+'%)', x+14, y+20);
+  doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(95,99,104);
+  doc.text(t.verified+' verified · '+t.issues+' issues · '+t.pending+' pending · '+t.missing+' not yet posted', x+14, y+37);
+  y+=64;
+  // table
+  var cols=[['Booked site',150],['Format',110],['Status',90],['Captures',55],['Latest',110]];
+  function thead(){ doc.setFillColor(21,101,192); doc.rect(x,y,W-2*x,20,'F'); doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(9); var cx=x+6; cols.forEach(function(cl){ doc.text(cl[0],cx,y+13); cx+=cl[1]; }); y+=20; }
+  thead(); doc.setFont('helvetica','normal');
+  b.sites.forEach(function(s,idx){
+    if(y>H-46){ doc.addPage(); header(); y=88; thead(); doc.setFont('helvetica','normal'); }
+    if(idx%2===0){ doc.setFillColor(248,250,253); doc.rect(x,y,W-2*x,18,'F'); }
+    var lbl=s.status==='not_posted'?'Not posted':s.status;
+    var vals=[ s.site_code||'—', s.format||'—', lbl, String(s.captures||0), s.captured_at?fmtDate(s.captured_at):'—' ];
+    var cx=x+6; doc.setFontSize(8.5);
+    vals.forEach(function(v,i){
+      var tx=String(v), maxw=cols[i][1]-6; while(doc.getTextWidth(tx)>maxw&&tx.length>3){tx=tx.slice(0,-2);} if(tx!==String(v))tx=tx.slice(0,-1)+'…';
+      if(i===2){ var st=s.status; doc.setTextColor(st==='verified'?27:(st==='issues'?230:(st==='not_posted'?183:95)), st==='verified'?94:(st==='issues'?81:(st==='not_posted'?28:99)), st==='verified'?32:(st==='issues'?0:(st==='not_posted'?28:104))); doc.setFont('helvetica','bold'); }
+      else { doc.setTextColor(32,33,36); doc.setFont('helvetica','normal'); }
+      doc.text(tx,cx,y+12); cx+=cols[i][1];
+    });
+    y+=18;
+  });
+  var pages=doc.internal.getNumberOfPages();
+  for(var p=1;p<=pages;p++){ doc.setPage(p); doc.setFontSize(8); doc.setTextColor(140,140,140);
+    doc.text('Matched by site code within the campaign brand + flight window. Verify any site at oohphilippines.com/verify-cert.', x, H-24);
+    doc.text('OOHPhilippines.com — OOH Verify', x, H-12); doc.text('Page '+p+' of '+pages, W-x, H-12, {align:'right'}); }
+  doc.save('campaign-'+(c.brand||'report').replace(/[^a-z0-9]+/gi,'-').toLowerCase()+'-compliance.pdf');
+}
+
+function resetView(){
+  try{ localStorage.removeItem('oohph_free_user'); }catch(e){}
+  q('results').style.display='none';
+  q('signinCard').style.display='block';
+  q('d-load').disabled=false; q('d-msg').textContent='';
+  var pw=q('d-pass'); if(pw) pw.value='';
+  ALL=[]; VIEW=[]; CAMP_REPORT=null; DASH_EMAIL='';
+  showTab('verifs'); closeCampaign();
+}
+
+// Auto-sign-in if they're already signed in on the site (shared free account session).
+(function dashAutoLogin(){
+  try{
+    var s=JSON.parse(localStorage.getItem('oohph_free_user')||'null');
+    if(s && s.email){ q('d-email').value=s.email; loadRecords(String(s.email).toLowerCase()); }
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
