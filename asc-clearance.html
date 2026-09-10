@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASC Clearance Assistant — Pre-screen your OOH ad | OOHPhilippines.com</title>
+<meta name="description" content="AI-powered pre-screening for Ad Standards Council (ASC) clearance of Philippine out-of-home ads. Check a billboard or LED creative against the ASC Code before you file, get revision suggestions, and a tailored document checklist.">
+<link rel="canonical" href="https://oohphilippines.com/asc-clearance.html">
+<link rel="icon" href="favicon.ico" sizes="any">
+<meta name="theme-color" content="#1565c0">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:linear-gradient(135deg,#e3f2fd 0%,#bbdefb 100%); min-height:100vh; color:#202124; }
+  a { color:#1565c0; }
+  .nav-wrapper { position:sticky; top:0; z-index:1000; background:linear-gradient(135deg,#e3f2fd 0%,#bbdefb 100%); box-shadow:0 2px 10px rgba(0,0,0,0.1); }
+  .nav-bar { display:flex; justify-content:space-between; align-items:center; padding:14px 24px; max-width:1100px; margin:0 auto; flex-wrap:wrap; gap:10px; }
+  .nav-logo { font-size:22px; font-weight:700; color:#1565c0; text-decoration:none; letter-spacing:-0.5px; }
+  .nav-links { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .nav-link { color:#1565c0; text-decoration:none; font-weight:600; padding:8px 14px; border-radius:7px; background:rgba(255,255,255,0.75); font-size:13px; white-space:nowrap; }
+  .nav-link.active { background:#1565c0; color:#fff; } .nav-link.primary { background:#1565c0; color:#fff; }
+  .hero { max-width:860px; margin:0 auto; padding:30px 16px 4px; text-align:center; }
+  .hero .badge { display:inline-block; background:#1565c0; color:#fff; font-weight:700; font-size:12px; padding:5px 15px; border-radius:50px; margin-bottom:14px; }
+  .hero h1 { color:#202124; font-size:28px; margin-bottom:8px; letter-spacing:-0.5px; }
+  .hero p { max-width:640px; margin:0 auto; color:#37474f; font-size:15px; line-height:1.6; }
+  .wrap { max-width:860px; margin:0 auto; padding:22px 16px 60px; }
+  .steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin:22px 0; }
+  .step { background:white; border-radius:14px; box-shadow:0 4px 18px rgba(0,0,0,0.07); padding:16px 18px; }
+  .step .n { width:28px; height:28px; border-radius:50%; background:#1565c0; color:#fff; font-weight:800; font-size:14px; display:flex; align-items:center; justify-content:center; margin-bottom:8px; }
+  .step h3 { font-size:14px; margin-bottom:4px; color:#0d47a1; } .step p { font-size:12.5px; color:#5f6368; line-height:1.5; }
+  .card { background:white; border-radius:14px; box-shadow:0 4px 18px rgba(0,0,0,0.07); padding:22px; margin-bottom:18px; }
+  .card h2 { font-size:20px; color:#0d47a1; margin-bottom:4px; } .card .sub { color:#5f6368; font-size:13px; margin-bottom:16px; }
+  label.f { display:block; font-size:12px; font-weight:600; color:#5f6368; margin:14px 0 5px; }
+  input[type=text], input[type=email], input[type=password], select, textarea { width:100%; box-sizing:border-box; padding:11px 13px; border:1.5px solid #dadce0; border-radius:10px; font-size:14px; font-family:inherit; background:white; }
+  textarea { min-height:70px; resize:vertical; }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .btn-primary { background:#1565c0; color:white; border:none; padding:12px 26px; border-radius:50px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; text-decoration:none; display:inline-block; }
+  .btn-ghost { background:white; color:#1565c0; border:1.5px solid #1565c0; padding:10px 20px; border-radius:50px; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; text-decoration:none; display:inline-block; }
+  button:disabled { opacity:.5; cursor:not-allowed; }
+  .imgbox { border:2px dashed #90caf9; border-radius:10px; min-height:150px; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#f8fbff; color:#7aa7cf; font-size:13px; text-align:center; padding:8px; cursor:pointer; flex-wrap:wrap; gap:6px; }
+  .imgbox img { max-width:31%; max-height:150px; object-fit:contain; border-radius:6px; }
+  .checks { display:grid; grid-template-columns:1fr 1fr; gap:6px 16px; margin-top:6px; }
+  .check { display:flex; align-items:center; gap:8px; font-size:13px; color:#455a64; }
+  .muted { color:#5f6368; font-size:12.5px; line-height:1.6; }
+  .note { background:#f1f7ff; border:1px solid #cfe0f5; border-radius:10px; padding:12px 14px; font-size:12.5px; color:#37474f; line-height:1.6; margin-top:10px; }
+  .disclaimer { background:#fff8e1; border:1px solid #ffe082; border-radius:12px; padding:12px 16px; font-size:13px; color:#5d4037; line-height:1.55; margin-bottom:18px; }
+  .disclaimer strong { color:#4e342e; }
+  .verdict { display:inline-block; font-weight:800; font-size:15px; padding:6px 16px; border-radius:50px; }
+  .v-ready { background:#e8f5e9; color:#1b5e20; } .v-minor { background:#e3f2fd; color:#0d47a1; }
+  .v-major { background:#fff3e0; color:#e65100; } .v-no { background:#ffebee; color:#b71c1c; }
+  .finding { border-left:4px solid #cfd8dc; background:#fafbfc; border-radius:8px; padding:10px 12px; margin:8px 0; font-size:13.5px; }
+  .finding.warn { border-left-color:#fb8c00; background:#fff8ef; } .finding.critical { border-left-color:#e53935; background:#fff5f5; } .finding.info { border-left-color:#43a047; background:#f3faf4; }
+  .finding .area { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:#78909c; }
+  .finding .fix { color:#1b5e20; margin-top:4px; } .finding.warn .fix { color:#e65100; } .finding.critical .fix { color:#b71c1c; }
+  .doc { display:flex; gap:10px; align-items:flex-start; padding:9px 0; border-bottom:1px solid #f0f2f6; font-size:13.5px; }
+  .doc .dot { color:#1565c0; font-weight:800; } .doc .why { color:#5f6368; font-size:12.5px; }
+  .acctbar { display:none; background:#e8f5e9; border:1px solid #a5d6a7; border-radius:12px; padding:10px 14px; margin-bottom:14px; font-size:13.5px; color:#1b5e20; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+  footer { text-align:center; color:#5f6368; font-size:13px; padding:30px 20px 40px; line-height:1.6; }
+  @media (max-width:600px){ .row,.checks{grid-template-columns:1fr;} .hero h1{font-size:23px;} .imgbox img{max-width:47%;} }
+</style>
+</head>
+<body>
+
+<div class="nav-wrapper"><div class="nav-bar">
+  <a class="nav-logo" href="/">OOHPhilippines.com</a>
+  <div class="nav-links">
+    <a class="nav-link" href="/">🔍 Search</a>
+    <a class="nav-link" href="roi-calculator.html">📈 ROI</a>
+    <a class="nav-link" href="ai-planner.html">🤖 AI Planner</a>
+    <a class="nav-link" href="ad-verifier.html">🛡️ Ad Verifier</a>
+    <a class="nav-link active" href="asc-clearance.html">📋 ASC Clearance</a>
+    <a class="nav-link" href="tutorials.html">🎬 Tutorials</a>
+    <a class="nav-link primary" href="upload.html">📍 Upload Site</a>
+  </div>
+</div></div>
+
+<div class="hero">
+  <div class="badge">📋 ASC Clearance Assistant · AI-Powered</div>
+  <h1>Pre-screen your ad before you file with ASC.</h1>
+  <p>Help your clients clear the <strong>Ad Standards Council</strong> faster. Upload the billboard artwork or LED video and our AI checks it against the ASC Code — flagging risky claims and readability issues, suggesting revisions, and listing exactly which documents to prepare. Guidance only; the ASC issues the actual clearance.</p>
+</div>
+
+<div class="wrap">
+
+  <div class="disclaimer">⚠️ <strong>Pre-screening only — this is not an ASC clearance.</strong> This AI check helps you catch likely issues and prepare your documents before you file, but it does <strong>not</strong> guarantee that the Ad Standards Council will approve or issue clearance. The ASC makes the final decision based on its own review.</div>
+
+  <div class="steps">
+    <div class="step"><div class="n">1</div><h3>Upload the creative</h3><p>Billboard artwork (image) or the LED/digital video — we sample key frames.</p></div>
+    <div class="step"><div class="n">2</div><h3>AI pre-screens it</h3><p>Checked against the ASC Code: claims, decency, readability, required elements.</p></div>
+    <div class="step"><div class="n">3</div><h3>Fix &amp; prepare docs</h3><p>Get revision notes and a tailored list of documents to submit.</p></div>
+    <div class="step"><div class="n">4</div><h3>File with ASC</h3><p>Download a prep sheet, then apply for S1 (production) and S2 (display).</p></div>
+  </div>
+
+  <!-- account bar -->
+  <div id="acctBar" class="acctbar">
+    <span id="acctWho"></span>
+    <button class="btn-ghost" onclick="opLogout()" style="padding:6px 14px;">Log out</button>
+  </div>
+
+  <!-- login gate -->
+  <div class="card" id="authCard" style="display:none;">
+    <h2>🔐 Log in — operator or subscriber</h2>
+    <p class="sub">Log in with your OOH Philippines account. Both <strong>operators</strong> and <strong>subscribers</strong> (advertisers, ad agencies, media planners) can use this tool. A pre-screen costs <strong>5 credits</strong> and includes the first run plus <strong>up to 3 free re-runs</strong> so you can revise and re-check.</p>
+    <label class="f">Account email</label>
+    <input type="email" id="op-email" placeholder="you@company.com" autocomplete="username">
+    <label class="f">Password</label>
+    <input type="password" id="op-pass" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')opLogin()">
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+      <button class="btn-primary" id="op-login-btn" onclick="opLogin()">🔐 Log in</button>
+      <a class="btn-ghost" href="index.html">No account yet? Create one free →</a>
+    </div>
+    <div id="op-login-msg" class="muted" style="margin-top:10px;"></div>
+  </div>
+
+  <!-- tool -->
+  <div class="card" id="toolCard" style="display:none;">
+    <h2>Pre-screen an ad for ASC</h2>
+    <p class="sub">Fill in what you know and upload the creative. The more context you give, the sharper the check.</p>
+
+    <div class="row">
+      <div><label class="f">Brand / advertiser</label><input type="text" id="a-brand" placeholder="e.g. Nestlé Coffee-Mate"></div>
+      <div><label class="f">Material type</label>
+        <select id="a-material" onchange="onMaterial()">
+          <option value="static">Static billboard / poster (image)</option>
+          <option value="led">LED / digital — moving (video)</option>
+        </select>
+      </div>
+    </div>
+
+    <label class="f">Product category</label>
+    <select id="a-category">
+      <option value="">General / other</option>
+      <option value="food">Food / beverage</option>
+      <option value="drug">Drug / pharmaceutical / medical device</option>
+      <option value="supplement">Food/health supplement</option>
+      <option value="cosmetic">Cosmetic / personal care</option>
+      <option value="real_estate">Real estate</option>
+      <option value="telco">Telecom</option>
+      <option value="bank">Bank / financial / insurance</option>
+      <option value="alcohol">Alcohol / tobacco / vape</option>
+      <option value="airline">Airline / travel fare</option>
+    </select>
+
+    <label class="f">Headline / copy / claims on the ad <span style="font-weight:400;color:#78909c;">(type the main text so the AI can check the wording)</span></label>
+    <textarea id="a-claims" placeholder="e.g. &quot;The #1 coffee creamer&quot; · &quot;Clinically proven&quot; · promo mechanics · price · &quot;up to 50% off&quot;"></textarea>
+
+    <label class="f">Does the ad contain any of these? <span style="font-weight:400;color:#78909c;">(tick all that apply)</span></label>
+    <div class="checks">
+      <label class="check"><input type="checkbox" id="f-superiority"> A superiority / #1 / "best" / comparative claim</label>
+      <label class="check"><input type="checkbox" id="f-health"> A health / medical / "clinically proven" claim</label>
+      <label class="check"><input type="checkbox" id="f-promo"> A promo / raffle / discount / "free"</label>
+      <label class="check"><input type="checkbox" id="f-testimonial"> A testimonial / endorser</label>
+      <label class="check"><input type="checkbox" id="f-price"> A specific price or "up to" claim</label>
+      <label class="check"><input type="checkbox" id="f-music"> Original music / a licensed song (LED)</label>
+      <label class="check"><input type="checkbox" id="f-symbols"> National symbols / flag / heroes</label>
+      <label class="check"><input type="checkbox" id="f-banknote"> Philippine banknotes or coins</label>
+      <label class="check"><input type="checkbox" id="f-children"> Targets or features children</label>
+    </div>
+
+    <label class="f" id="uplLabel">Upload the ad file <span style="font-weight:400;color:#78909c;">(image, PDF, or video)</span></label>
+    <div class="imgbox" id="a-box" onclick="document.getElementById('a-file').click()">Tap to upload your file here — image, PDF, or video</div>
+    <input type="file" id="a-file" accept="image/*,application/pdf,video/*" style="display:none;" onchange="onFile(this.files[0])">
+    <div id="a-fileMsg" class="muted" style="margin-top:6px;"></div>
+
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+      <button class="btn-primary" id="a-run" onclick="runScreen()">✨ Run AI pre-screen (5 credits)</button>
+      <span id="a-status" class="muted"></span>
+    </div>
+    <p class="muted" style="margin-top:8px;">5 credits covers this run + up to 3 free re-runs (revise and re-check). After that, the next run charges again. <strong>Pre-screening does not guarantee ASC clearance.</strong></p>
+
+    <div id="a-results" style="display:none;margin-top:18px;"></div>
+  </div>
+
+  <div class="note">
+    <strong>How ASC clearance works:</strong> screening is a two-step process — <strong>S1</strong> (Approval for Production, before you produce the material) and <strong>S2</strong> (Clearance to Display, before installation). One S1 form per material, submitted in two clear copies, and the mandatory <strong>ASC Reference Code</strong> must appear on the displayed ad. Static layouts must state the installed size; LED/moving ads need a frame-by-frame storyboard with audio description.
+  </div>
+
+  <!-- Official ASC forms & downloads -->
+  <div class="card">
+    <h2>📄 Official ASC forms &amp; downloads</h2>
+    <p class="sub">The actual application forms and references, straight from the Ad Standards Council. Fill these out for your submission — they open on asc.com.ph and are always the current versions.</p>
+
+    <div class="doc"><span class="dot">▶</span><div><a href="https://asc.com.ph/wp-content/uploads/2021/01/S1-New-2021.pdf" target="_blank" rel="noopener"><strong>Form S1 — Application for Screening</strong></a><div class="why">Step 1: Approval for Production (before you produce the material). One S1 per material.</div></div></div>
+    <div class="doc"><span class="dot">▶</span><div><a href="https://asc.com.ph/wp-content/uploads/2021/01/S2-New-2021.pdf" target="_blank" rel="noopener"><strong>Form S2 — Application for Clearance to Air/Publish/Post/Display</strong></a><div class="why">Step 2: Clearance to Display (before installation).</div></div></div>
+    <div class="doc"><span class="dot">▶</span><div><a href="https://asc.com.ph/wp-content/uploads/2023/10/ASC-RATES-2021.pdf" target="_blank" rel="noopener"><strong>ASC Rate Card</strong></a><div class="why">Screening fees by material type and member/non-member rate.</div></div></div>
+    <div class="doc"><span class="dot">▶</span><div><a href="https://asc.com.ph/wp-content/uploads/2023/03/ASC_Guidebook.pdf" target="_blank" rel="noopener"><strong>ASC Guidebook — Code of Ethics &amp; Manual of Procedures</strong></a><div class="why">The full rules your ad is screened against, plus the S1/S2 form samples.</div></div></div>
+    <div class="doc"><span class="dot">▶</span><div><a href="https://asc.com.ph/submission-requirements/" target="_blank" rel="noopener"><strong>Submission requirements</strong></a><div class="why">Exactly how to prepare billboard / LED / OOH materials and support documents.</div></div></div>
+    <div class="doc"><span class="dot">▶</span><div><a href="https://asc.com.ph/ad-pre-screening/how-to-submit-an-ad-application/" target="_blank" rel="noopener"><strong>How to submit an application</strong></a><div class="why">Step-by-step guide from the ASC.</div></div></div>
+
+    <div class="note" style="margin-top:14px;">💻 <strong>File online:</strong> the ASC now accepts applications through its online portal — <a href="https://asconlineapp.com/home/" target="_blank" rel="noopener">asconlineapp.com</a>. You can also bring the completed forms to the ASC office at 4th &amp; 6th Flr, LTA Bldg, 118 Perea St, Legaspi Village, Makati · <a href="mailto:inquiry@asc.com.ph">inquiry@asc.com.ph</a>. Links and forms are hosted by ASC and may be updated by them.</div>
+  </div>
+
+</div>
+
+<footer>
+  📋 ASC Clearance Assistant is a guidance tool by OOHPhilippines.com — it does not issue clearances. The Ad Standards Council makes all official decisions. Questions: <a href="mailto:info@oohphilippines.com">info@oohphilippines.com</a><br>
+  © <span id="yr"></span> OOHPhilippines.com
+</footer>
+
+<script>
+var SUPABASE_URL = 'https://xecxfkuzexshafwuuizf.supabase.co';
+var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlY3hma3V6ZXhzaGFmd3V1aXpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTk1MTIsImV4cCI6MjA5MTMzNTUxMn0.sZrRmesCDn0DsuldUD8zIhi1gX1ajIKX0aULqNBX_To';
+var ADMIN_EMAIL = 'darylabueva@gmail.com';
+document.getElementById('yr').textContent = new Date().getFullYear();
+function escH(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+var _sb = (window.supabase && window.supabase.createClient) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON) : null;
+function adminSignedIn(){ try{ var fu=JSON.parse(localStorage.getItem('oohph_free_user')||'null'); return fu && String(fu.email||'').toLowerCase()===ADMIN_EMAIL; }catch(e){ return false; } }
+
+var OP = { email:null, name:null, credits:null, admin:false };
+var A = { images:[], lastResult:null };
+
+// ── login gate ──
+function renderAcct(){
+  var who=document.getElementById('acctWho'); if(!who) return;
+  var c = OP.admin ? '<strong>admin · unlimited</strong>'
+        : (OP.credits===null ? '<span style="color:#b71c1c;">⚠ no credit account yet — ask admin to activate your credits</span>'
+        : '⭐ <strong>'+OP.credits+'</strong> credits'+(OP.credits<5?' <span style="color:#e65100;">· need 5 per pre-screen</span>':''));
+  who.innerHTML='👤 <strong>'+escH(OP.name||OP.email)+'</strong> ('+escH(OP.email)+') · '+c;
+}
+async function loadCredits(){
+  OP.admin=(OP.email===ADMIN_EMAIL); if(OP.admin){ renderAcct(); return; }
+  try{ var r=await _sb.from('free_users').select('credits').eq('email',OP.email).maybeSingle(); OP.credits=r.data?(r.data.credits==null?0:Number(r.data.credits)):null; }catch(e){ OP.credits=null; }
+  renderAcct();
+}
+function showGate(msg){
+  document.getElementById('authCard').style.display='block';
+  document.getElementById('toolCard').style.display='none';
+  document.getElementById('acctBar').style.display='none';
+  var m=document.getElementById('op-login-msg'); if(m) m.innerHTML=msg?('<span style="color:#b71c1c;">'+escH(msg)+'</span>'):'';
+}
+function showTool(email,name){
+  document.getElementById('authCard').style.display='none';
+  document.getElementById('toolCard').style.display='block';
+  document.getElementById('acctBar').style.display='flex';
+  OP.email=email; OP.name=name; OP.credits=null; OP.admin=(email===ADMIN_EMAIL);
+  renderAcct(); loadCredits();
+}
+// Login = the shared free account (same one used for Search / ROI / AI Planner /
+// Dashboard). Works for operators AND subscribers (advertisers/agencies/planners).
+function opInit(){
+  try{ var s=JSON.parse(localStorage.getItem('oohph_free_user')||'null');
+    if(s && s.email){ showTool(String(s.email).toLowerCase(), s.name||s.company||s.email); return; } }catch(e){}
+  showGate('');
+}
+async function opLogin(){
+  var email=(document.getElementById('op-email').value||'').trim().toLowerCase(), pass=(document.getElementById('op-pass').value||'').trim();
+  var msg=document.getElementById('op-login-msg');
+  if(!email||!pass){ msg.innerHTML='<span style="color:#b71c1c;">Enter your email and password.</span>'; return; }
+  var btn=document.getElementById('op-login-btn'); btn.disabled=true; msg.textContent='⏳ Signing in…';
+  try{
+    var r=await fetch(SUPABASE_URL+'/rest/v1/free_users?select=name,email,company,password,credits&email=ilike.'+encodeURIComponent(email),
+      { headers:{ apikey:SUPABASE_ANON, Authorization:'Bearer '+SUPABASE_ANON } });
+    var rows=await r.json();
+    if(!Array.isArray(rows)||!rows.length){ btn.disabled=false; msg.innerHTML='<span style="color:#b71c1c;">Email or password incorrect. <a href="index.html" target="_blank">Create a free account →</a></span>'; return; }
+    var u=rows[0], ok=false;
+    try{ ok=window.dcodeIO && dcodeIO.bcrypt.compareSync(pass, u.password||''); }catch(e){ ok=false; }
+    if(!ok){ btn.disabled=false; msg.innerHTML='<span style="color:#b71c1c;">Email or password incorrect.</span>'; return; }
+    try{ localStorage.setItem('oohph_free_user', JSON.stringify({ name:u.name, email:u.email, company:u.company||'', credits:(typeof u.credits==='number'?u.credits:0) })); }catch(e){}
+    document.getElementById('op-pass').value=''; btn.disabled=false;
+    showTool((u.email||email).toLowerCase(), u.name||u.company||email);
+  }catch(e){ btn.disabled=false; msg.innerHTML='<span style="color:#b71c1c;">Sign-in failed — try again.</span>'; }
+}
+function opLogout(){ try{ localStorage.removeItem('oohph_free_user'); }catch(e){} OP.email=null; OP.admin=false; showGate(''); }
+opInit();
+
+// ── upload / frames ──
+if(window.pdfjsLib){ try{ pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; }catch(e){} }
+function onMaterial(){
+  // Accept any file type on both material types; the AI is told the material type separately.
+  A.images=[]; document.getElementById('a-fileMsg').textContent='';
+  document.getElementById('a-box').innerHTML='Tap to upload your file here — image, PDF, or video';
+}
+async function renderPdf(file, maxPages, cb){
+  if(!window.pdfjsLib){ cb([]); return; }
+  try{
+    var buf=await file.arrayBuffer();
+    var pdf=await pdfjsLib.getDocument({data:buf}).promise;
+    var n=Math.min(pdf.numPages, maxPages), imgs=[];
+    for(var p=1;p<=n;p++){
+      var page=await pdf.getPage(p);
+      var vp=page.getViewport({scale:1});
+      var scale=Math.min(1.8, 1400/Math.max(vp.width,vp.height));
+      var v2=page.getViewport({scale:scale});
+      var c=document.createElement('canvas'); c.width=v2.width; c.height=v2.height;
+      await page.render({ canvasContext:c.getContext('2d'), viewport:v2 }).promise;
+      imgs.push(c.toDataURL('image/jpeg',0.85));
+    }
+    cb(imgs);
+  }catch(e){ cb([]); }
+}
+function downscale(dataUrl, max){ return new Promise(function(res){ var img=new Image(); img.onload=function(){ var s=Math.min(1, max/Math.max(img.width,img.height)); var c=document.createElement('canvas'); c.width=Math.round(img.width*s); c.height=Math.round(img.height*s); c.getContext('2d').drawImage(img,0,0,c.width,c.height); res(c.toDataURL('image/jpeg',0.85)); }; img.onerror=function(){res(dataUrl);}; img.src=dataUrl; }); }
+function fileToDataURL(f){ return new Promise(function(res,rej){ var fr=new FileReader(); fr.onload=function(){res(fr.result);}; fr.onerror=rej; fr.readAsDataURL(f); }); }
+function extractFrames(file, count, cb){
+  var v=document.createElement('video'); v.muted=true; v.playsInline=true; v.preload='auto';
+  var url=URL.createObjectURL(file); v.src=url; var frames=[];
+  v.onloadedmetadata=function(){ var dur=v.duration||0; if(!dur||!isFinite(dur)){ grab([0.1]); return; }
+    var ts=[]; for(var i=1;i<=count;i++){ ts.push(dur*(i/(count+1))); } grab(ts); };
+  function grab(ts){ var i=0; var c=document.createElement('canvas');
+    function next(){ if(i>=ts.length){ URL.revokeObjectURL(url); cb(frames); return; } v.currentTime=ts[i]; }
+    v.onseeked=function(){ var s=Math.min(1,1280/Math.max(v.videoWidth,v.videoHeight)); c.width=Math.round(v.videoWidth*s); c.height=Math.round(v.videoHeight*s); c.getContext('2d').drawImage(v,0,0,c.width,c.height); frames.push(c.toDataURL('image/jpeg',0.82)); i++; next(); };
+    next();
+  }
+  v.onerror=function(){ cb(frames); };
+}
+async function onFile(file){
+  if(!file) return;
+  var msg=document.getElementById('a-fileMsg'), t=(file.type||'').toLowerCase(), name=(file.name||'');
+  A.images=[];
+  if(t.indexOf('video')===0 || /\.(mp4|mov|webm|m4v)$/i.test(name)){
+    msg.textContent='⏳ Sampling frames from the video…';
+    extractFrames(file, 6, function(frames){ if(!frames.length){ msg.innerHTML='<span style="color:#b71c1c;">Could not read that video — try a shorter clip or an image.</span>'; return; } A.images=frames; renderThumbs(); msg.textContent=frames.length+' frames sampled from the video.'; });
+  } else if(t==='application/pdf' || /\.pdf$/i.test(name)){
+    msg.textContent='⏳ Reading the PDF…';
+    renderPdf(file, 3, function(imgs){ if(!imgs.length){ msg.innerHTML='<span style="color:#b71c1c;">Could not read that PDF — try exporting the artwork as an image.</span>'; return; } A.images=imgs; renderThumbs(); msg.textContent=imgs.length+' page(s) loaded from the PDF.'; });
+  } else if(t.indexOf('image')===0 || /\.(jpe?g|png|webp|gif)$/i.test(name)){
+    var du=await fileToDataURL(file); du=await downscale(du,1280); A.images=[du]; renderThumbs(); msg.textContent='Image ready.';
+  } else {
+    msg.innerHTML='<span style="color:#b71c1c;">Unsupported file — please upload an image, PDF, or video.</span>';
+  }
+}
+function renderThumbs(){
+  var box=document.getElementById('a-box');
+  if(!A.images.length){ box.textContent='Tap to upload'; return; }
+  box.innerHTML=A.images.map(function(u){ return '<img src="'+u+'" alt="">'; }).join('');
+}
+
+// ── deterministic document checklist from category + flags ──
+function baseDocs(){
+  var cat=document.getElementById('a-category').value;
+  function f(id){ return document.getElementById(id).checked; }
+  var d=[];
+  d.push({name:'ASC Application for Screening (S1) form', why:'One form per material; the core clearance application.'});
+  d.push({name:'Two clear full-color copies of the material', why:'Static: A4 layout stating installed size. LED: 6-frame storyboard with audio description.'});
+  if(cat==='food'||cat==='drug'||cat==='supplement') d.push({name:'FDA Certificate of Product Registration (CPR)', why:'Required for food, drug, and supplement products.'});
+  if(cat==='cosmetic') d.push({name:'FDA Certificate of Product Notification', why:'Required for cosmetic / personal-care products.'});
+  if(cat==='real_estate') d.push({name:'DHSUD/HLURB License to Sell & permit', why:'Required for real estate advertising.'});
+  if(cat==='telco') d.push({name:'NTC Promo Permit', why:'Required for telecom promos.'});
+  if(cat==='airline') d.push({name:'CAB Approval', why:'Required for airline promo fares.'});
+  if(cat==='bank'||f('f-banknote')) d.push({name:'BSP Clearance', why:'Required when depicting Philippine banknotes or coins.'});
+  if(f('f-promo')) d.push({name:'DTI Fair Trade Permit (and DOH-FDA permit if food/drug/cosmetic)', why:'Required for sales promotions, raffles, and discounts.'});
+  if(f('f-health')) d.push({name:'Scientific substantiation / clinical study', why:'Health, nutrition, or "clinically proven" claims must be scientifically supported.'});
+  if(f('f-superiority')) d.push({name:'Substantiation for superiority / comparative claim', why:'Third-party research proving the claim in all material respects.'});
+  if(f('f-testimonial')) d.push({name:'Signed affidavit / certification from the endorser', why:'Proof of actual product use or preference; performance testimonials need studies.'});
+  if(f('f-price')) d.push({name:'Basis for price / "up to" claim', why:'Documentation supporting the stated price or savings.'});
+  if(f('f-music')) d.push({name:'Music License', why:'Required when using an original or licensed music track (LED).'});
+  if(f('f-symbols')) d.push({name:'NHCP / NHI Clearance', why:'Required when using national symbols, the flag, or national heroes.'});
+  return d;
+}
+function mergeDocs(aiDocs){
+  var out=baseDocs(); var seen={}; out.forEach(function(d){ seen[d.name.toLowerCase().slice(0,20)]=1; });
+  (aiDocs||[]).forEach(function(d){ if(!d||!d.name) return; var k=String(d.name).toLowerCase().slice(0,20); if(!seen[k]){ seen[k]=1; out.push({name:d.name, why:d.why||''}); } });
+  return out;
+}
+
+// ── run the AI pre-screen ──
+async function runScreen(){
+  var status=document.getElementById('a-status');
+  if(!OP.email){ status.innerHTML='<span style="color:#b71c1c;">Log in first.</span>'; return; }
+  if(!A.images.length){ status.innerHTML='<span style="color:#b71c1c;">Upload the ad image or LED video first.</span>'; return; }
+  var flags=[]; ['f-superiority','f-health','f-promo','f-testimonial','f-price','f-music','f-symbols','f-banknote','f-children'].forEach(function(id){ if(document.getElementById(id).checked) flags.push(id.slice(2)); });
+  var payload={ account:OP.email, images:A.images, material_type:document.getElementById('a-material').value,
+    brand:(document.getElementById('a-brand').value||'').trim(), category:document.getElementById('a-category').value,
+    claims:(document.getElementById('a-claims').value||'').trim(), flags:flags.join(', ') };
+  var btn=document.getElementById('a-run'); btn.disabled=true; status.textContent='✨ Screening against the ASC Code…';
+  try{
+    var r=await fetch(SUPABASE_URL+'/functions/v1/asc-screen',{ method:'POST', headers:{ apikey:SUPABASE_ANON, Authorization:'Bearer '+SUPABASE_ANON, 'Content-Type':'application/json' }, body:JSON.stringify(payload) });
+    var b=await r.json(); btn.disabled=false;
+    if(!r.ok||b.error){
+      if(b.error==='insufficient_credits') status.innerHTML='<span style="color:#b71c1c;">Not enough credits — a pre-screen costs '+b.cost+', you have '+b.balance+'. <a href="pricing.html" target="_blank">Buy credits →</a></span>';
+      else if(b.error==='no_account') status.innerHTML='<span style="color:#b71c1c;">No credit account for your email.</span>';
+      else status.innerHTML='<span style="color:#b71c1c;">Screen failed — '+escH(b.error||r.status)+'</span>';
+      return;
+    }
+    if(b.balance!=null && !OP.admin){ OP.credits=b.balance; renderAcct(); }
+    var fr=(typeof b.free_reruns_left==='number')?b.free_reruns_left:null;
+    if(b.charged){ status.innerHTML='✓ '+b.charged+' credits used (balance '+b.balance+')'+(fr!=null?(' · '+fr+' free re-run'+(fr===1?'':'s')+' left'):''); }
+    else if(OP.admin){ status.innerHTML='✓ done (admin)'; }
+    else { status.innerHTML='✓ free re-run'+(fr!=null?(' · '+fr+' left'+(fr===0?' — next run costs 5 credits':'')):''); }
+    var runBtn=document.getElementById('a-run');
+    if(!OP.admin && fr!=null){ runBtn.textContent = fr>0 ? ('✨ Re-run (free · '+fr+' left)') : '✨ Run AI pre-screen (5 credits)'; }
+    A.lastResult=b.result; renderResult(b.result);
+  }catch(e){ btn.disabled=false; status.innerHTML='<span style="color:#b71c1c;">Network error — try again.</span>'; }
+}
+function verdictBadge(r){
+  var map={ ready:['v-ready','✅ Looks ready to file'], minor_revisions:['v-minor','📝 Minor revisions suggested'], major_revisions:['v-major','⚠️ Major revisions needed'], likely_disapproved:['v-no','⛔ Likely to be disapproved as-is'] };
+  var m=map[r.readiness]||['v-minor','📝 Review the notes'];
+  return '<span class="verdict '+m[0]+'">'+m[1]+'</span>';
+}
+function renderResult(r){
+  var el=document.getElementById('a-results'); el.style.display='block';
+  var find=(r.findings||[]).map(function(f){
+    var sev=(f.severity||'info'); return '<div class="finding '+sev+'"><div class="area">'+escH(f.area||'')+' · '+sev+'</div><div>'+escH(f.issue||'')+'</div>'+(f.suggestion?'<div class="fix">↳ '+escH(f.suggestion)+'</div>':'')+'</div>';
+  }).join('') || '<p class="muted">No specific issues returned.</p>';
+  var claims=(r.detected_claims||[]).length ? '<div class="note"><strong>Claims the AI flagged to double-check:</strong> '+r.detected_claims.map(escH).join(' · ')+'</div>' : '';
+  var docs=mergeDocs(r.documents).map(function(d){ return '<div class="doc"><span class="dot">▶</span><div><strong>'+escH(d.name)+'</strong><div class="why">'+escH(d.why||'')+'</div></div></div>'; }).join('');
+  el.innerHTML =
+    '<div class="disclaimer">⚠️ <strong>This is a pre-screen, not an ASC clearance.</strong> Passing this check does not guarantee the Ad Standards Council will issue clearance — they decide on their own review.</div>'
+    + '<div style="margin-bottom:8px;">'+verdictBadge(r)+'</div>'
+    + '<p style="font-size:14px;color:#37474f;line-height:1.6;margin-bottom:12px;">'+escH(r.summary||'')+'</p>'
+    + '<h3 style="font-size:15px;color:#0d47a1;margin:12px 0 2px;">What to check / revise</h3>'+find
+    + claims
+    + '<h3 style="font-size:15px;color:#0d47a1;margin:16px 0 2px;">Documents to prepare</h3><div>'+docs+'</div>'
+    + '<div style="margin-top:16px;"><button class="btn-primary" onclick="downloadPrep()">📄 Download ASC prep sheet</button></div>'
+    + '<p class="muted" style="margin-top:10px;">This is AI guidance to help you prepare — the ASC makes the official decision. Re-run after revisions to re-check.</p>';
+}
+
+// ── prep sheet PDF ──
+function downloadPrep(){
+  if(!window.jspdf||!window.jspdf.jsPDF||!A.lastResult){ alert('Nothing to export yet.'); return; }
+  var r=A.lastResult, doc=new window.jspdf.jsPDF({unit:'pt',format:'a4'});
+  var W=doc.internal.pageSize.getWidth(), H=doc.internal.pageSize.getHeight(), x=40, y=0;
+  function header(){ doc.setFillColor(13,71,161); doc.rect(0,0,W,60,'F'); doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.text('ASC Clearance — Pre-screen Prep Sheet', x, 30); doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.text('OOHPhilippines.com · guidance only, not an ASC decision', x, 47); }
+  function line(t,sz,color,gap,bold){ if(y>H-50){ doc.addPage(); header(); y=84; } doc.setFont('helvetica',bold?'bold':'normal'); doc.setFontSize(sz); doc.setTextColor(color[0],color[1],color[2]); var lines=doc.splitTextToSize(t, W-2*x); lines.forEach(function(ln){ if(y>H-50){ doc.addPage(); header(); y=84; } doc.text(ln,x,y); y+=sz+3; }); y+=gap||0; }
+  header(); y=84;
+  line('DISCLAIMER: This is an AI pre-screen to help you prepare — it is NOT an ASC clearance and does not guarantee approval. The Ad Standards Council makes the final decision.', 9.5, [183,28,28], 8, true);
+  line('Brand / advertiser: '+(document.getElementById('a-brand').value||'—'), 11, [32,33,36], 2);
+  line('Material: '+(document.getElementById('a-material').value==='led'?'LED / digital (moving)':'Static billboard')+'   ·   Category: '+(document.getElementById('a-category').value||'general'), 10, [95,99,104], 6);
+  var vmap={ready:'Looks ready to file',minor_revisions:'Minor revisions suggested',major_revisions:'Major revisions needed',likely_disapproved:'Likely to be disapproved as-is'};
+  line('Readiness: '+(vmap[r.readiness]||'Review'), 13, [13,71,161], 4, true);
+  line(r.summary||'', 10.5, [55,71,79], 8);
+  line('What to check / revise', 13, [13,71,161], 4, true);
+  (r.findings||[]).forEach(function(f){ line('• ['+(f.severity||'')+'] '+(f.area||'')+': '+(f.issue||''), 10, [32,33,36], 1); if(f.suggestion) line('   ↳ Fix: '+f.suggestion, 10, [27,94,32], 3); });
+  y+=4; line('Documents to prepare', 13, [13,71,161], 4, true);
+  mergeDocs(r.documents).forEach(function(d){ line('• '+d.name, 10.5, [32,33,36], 0, true); if(d.why) line('   '+d.why, 9.5, [95,99,104], 2); });
+  y+=6; line('Process: S1 = Approval for Production (before producing). S2 = Clearance to Display (before installation). One S1 per material, two clear copies, and the ASC Reference Code must appear on the displayed ad. File at asc.com.ph — 4th/6th Flr LTA Bldg, 118 Perea St, Legaspi Village, Makati · inquiry@asc.com.ph.', 9.5, [95,99,104], 4);
+  line('Official forms:  Form S1: https://asc.com.ph/wp-content/uploads/2021/01/S1-New-2021.pdf   ·   Form S2: https://asc.com.ph/wp-content/uploads/2021/01/S2-New-2021.pdf   ·   File online: https://asconlineapp.com', 9, [21,101,192], 4);
+  var pages=doc.internal.getNumberOfPages();
+  for(var p=1;p<=pages;p++){ doc.setPage(p); doc.setFontSize(8); doc.setTextColor(140,140,140); doc.text('OOHPhilippines.com — ASC Clearance Assistant (AI guidance, not an ASC decision)', x, H-16); doc.text('Page '+p+' of '+pages, W-x, H-16, {align:'right'}); }
+  doc.save('asc-prep-'+((document.getElementById('a-brand').value||'ad').replace(/[^a-z0-9]+/gi,'-').toLowerCase())+'.pdf');
+}
+</script>
+</body>
+</html>
