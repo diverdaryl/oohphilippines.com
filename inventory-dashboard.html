@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inventory Photo Manager — Admin | OOHPhilippines.com</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="favicon.ico" sizes="any">
+<meta name="theme-color" content="#1565c0">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:linear-gradient(135deg,#e3f2fd 0%,#bbdefb 100%); min-height:100vh; color:#202124; }
+  a { color:#1565c0; }
+  .nav-wrapper { position:sticky; top:0; z-index:1000; background:linear-gradient(135deg,#e3f2fd 0%,#bbdefb 100%); box-shadow:0 2px 10px rgba(0,0,0,0.1); }
+  .nav-bar { display:flex; justify-content:space-between; align-items:center; padding:14px 24px; max-width:1200px; margin:0 auto; flex-wrap:wrap; gap:10px; }
+  .nav-logo { font-size:22px; font-weight:700; color:#1565c0; text-decoration:none; letter-spacing:-0.5px; }
+  .nav-links a { color:#1565c0; text-decoration:none; font-weight:600; font-size:13px; background:rgba(255,255,255,0.75); padding:8px 14px; border-radius:7px; }
+  .hero { max-width:1000px; margin:0 auto; padding:26px 16px 4px; text-align:center; }
+  .hero .badge { display:inline-block; background:#1565c0; color:#fff; font-weight:700; font-size:12px; padding:5px 15px; border-radius:50px; margin-bottom:12px; }
+  .hero h1 { color:#202124; font-size:26px; margin-bottom:8px; letter-spacing:-0.5px; }
+  .hero p { max-width:660px; margin:0 auto; color:#37474f; font-size:14.5px; line-height:1.6; }
+  .wrap { max-width:1200px; margin:0 auto; padding:22px 16px 60px; }
+  .card { background:#fff; border-radius:14px; box-shadow:0 4px 18px rgba(0,0,0,0.07); padding:20px 22px; margin-bottom:18px; }
+  label.f { display:block; font-size:12px; font-weight:600; color:#5f6368; margin:0 0 5px; }
+  input[type=text],input[type=email],input[type=password],input[type=search],select { width:100%; box-sizing:border-box; padding:11px 13px; border:1.5px solid #dadce0; border-radius:10px; font-size:14px; font-family:inherit; background:#fff; }
+  .btn-primary { background:#1565c0; color:#fff; border:none; padding:11px 22px; border-radius:50px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
+  .btn-ghost { background:#fff; color:#1565c0; border:1.5px solid #1565c0; padding:8px 16px; border-radius:50px; font-size:12.5px; font-weight:700; cursor:pointer; font-family:inherit; }
+  .btn-danger { background:#fff; color:#b71c1c; border:1.5px solid #ef9a9a; padding:8px 14px; border-radius:50px; font-size:12.5px; font-weight:700; cursor:pointer; font-family:inherit; }
+  button:disabled { opacity:.5; cursor:not-allowed; }
+  .signin { display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; }
+  .signin > div { flex:1; min-width:200px; }
+  .kpis { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+  .kpi { background:#f6f9ff; border:1px solid #e3ecfa; border-radius:12px; padding:10px 16px; text-align:center; min-width:120px; }
+  .kpi .n { font-size:22px; font-weight:800; color:#0d47a1; } .kpi .l { font-size:11px; color:#5f6368; text-transform:uppercase; letter-spacing:.3px; }
+  .filters { display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; }
+  .filters > div { flex:1; min-width:150px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; margin-top:6px; }
+  .site { background:#fff; border:1px solid #e6ebf3; border-radius:12px; overflow:hidden; box-shadow:0 3px 12px rgba(0,0,0,0.05); display:flex; flex-direction:column; }
+  .site .imgwrap { position:relative; width:100%; height:160px; background:#eef3fb; }
+  .site .imgwrap img { width:100%; height:100%; object-fit:cover; display:block; }
+  .site .imgwrap .none { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:#90a4ae; gap:4px; font-size:12px; }
+  .site .tagbadge { position:absolute; top:8px; left:8px; font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:50px; color:#fff; }
+  .site .numbadge { position:absolute; top:8px; right:8px; background:rgba(13,71,161,0.88); color:#fff; font-size:10.5px; font-weight:800; padding:3px 8px; border-radius:50px; }
+  .site .imgwrap a { display:block; width:100%; height:100%; }
+  .b-photo { background:#1b5e20; } .b-sv { background:#1565c0; } .b-none { background:#c62828; }
+  .site .body { padding:11px 13px; display:flex; flex-direction:column; gap:2px; flex:1; }
+  .site .name { font-weight:700; font-size:14px; color:#0d47a1; line-height:1.25; }
+  .site .meta { font-size:11.5px; color:#5f6368; line-height:1.45; }
+  .site .ctrls { margin-top:auto; padding-top:10px; display:flex; gap:6px; flex-wrap:wrap; }
+  .site .msg { font-size:11px; margin-top:6px; min-height:14px; }
+  .urlrow { display:none; gap:6px; margin-top:8px; }
+  .urlrow input { padding:8px 10px; font-size:12px; }
+  .muted { color:#5f6368; font-size:13px; line-height:1.6; }
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(13,27,42,0.55); z-index:5000; align-items:flex-start; justify-content:center; padding:30px 16px; overflow:auto; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:#fff; border-radius:16px; padding:22px; width:min(640px,96vw); box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+  .egrid { display:grid; grid-template-columns:1fr 1fr; gap:10px 14px; }
+  .egrid label.f { margin:0 0 4px; }
+  textarea { width:100%; box-sizing:border-box; padding:10px 12px; border:1.5px solid #dadce0; border-radius:10px; font-size:13.5px; font-family:inherit; resize:vertical; }
+  @media (max-width:560px){ .egrid { grid-template-columns:1fr; } }
+  footer { text-align:center; color:#5f6368; font-size:12.5px; padding:26px 20px 40px; }
+</style>
+</head>
+<body>
+
+<div class="nav-wrapper"><div class="nav-bar">
+  <a class="nav-logo" href="/">OOHPhilippines.com</a>
+  <div class="nav-links"><a href="/">← Back to site</a></div>
+</div></div>
+
+<div class="hero">
+  <div class="badge">🗂️ Admin · Inventory Photo Manager</div>
+  <h1>Manage every billboard's photo</h1>
+  <p>Each site shows exactly how its card appears on the platform — its uploaded photo, or Google Street View when there's no photo. Upload or replace a photo for any site, or remove one to fall back to Street View.</p>
+</div>
+
+<div class="wrap">
+
+  <!-- admin sign-in -->
+  <div class="card" id="signinCard">
+    <h2 style="font-size:18px;color:#0d47a1;margin-bottom:4px;">Admin sign in</h2>
+    <p class="muted" style="margin-bottom:12px;">This tool edits the whole inventory, so it's restricted to the admin account.</p>
+    <div class="signin">
+      <div><label class="f">Admin email</label><input type="email" id="a-email" placeholder="you@company.com" autocomplete="username"></div>
+      <div><label class="f">Password</label><input type="password" id="a-pass" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')adminLogin()"></div>
+      <button class="btn-primary" id="a-btn" onclick="adminLogin()">🔐 Sign in</button>
+    </div>
+    <div id="a-msg" class="muted" style="margin-top:8px;"></div>
+  </div>
+
+  <!-- results -->
+  <div id="panel" style="display:none;">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
+        <span class="muted">Signed in as <strong id="whoami"></strong> · admin</span>
+        <span style="display:flex;gap:8px;">
+          <button class="btn-primary" onclick="openAdd()" style="padding:8px 16px;">＋ Add site</button>
+          <button class="btn-ghost" onclick="logout()">Log out</button>
+        </span>
+      </div>
+      <div class="kpis" id="kpis"></div>
+      <div class="filters">
+        <div><label class="f">Search (name, location, tag, description)</label><input type="search" id="q" placeholder="e.g. EDSA, MRT, Ortigas…" oninput="applyFilters()"></div>
+        <div style="max-width:230px;">
+          <label class="f">Show</label>
+          <select id="filt" onchange="applyFilters()">
+            <option value="all">All sites</option>
+            <option value="nophoto">No uploaded photo (Street View / none)</option>
+            <option value="sv">Using Street View</option>
+            <option value="noimg">No image at all</option>
+            <option value="hasphoto">Has a photo</option>
+          </select>
+        </div>
+      </div>
+      <div id="count" class="muted" style="margin-top:10px;"></div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+    <div style="text-align:center;margin-top:18px;">
+      <button class="btn-ghost" id="moreBtn" style="display:none;" onclick="renderMore()">Load more</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Edit details modal -->
+<div class="modal-overlay" id="editOverlay" onclick="if(event.target===this)closeEdit()">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <h3 style="color:#0d47a1;font-size:17px;">Edit <span id="editSiteName" style="color:#5f6368;font-weight:600;"></span></h3>
+      <button class="btn-ghost" onclick="closeEdit()" style="padding:6px 12px;">✕</button>
+    </div>
+    <div class="egrid">
+      <div style="grid-column:1/-1;"><label class="f">Site name (unique ID)</label><input type="text" id="e-site_name"><div class="muted" style="font-size:11px;margin-top:3px;">Editing this renames the site's ID. Availability/verification records keyed by the old name are not auto-migrated.</div></div>
+      <div style="grid-column:1/-1;"><label class="f">Display name</label><input type="text" id="e-display_name"></div>
+      <div><label class="f">Type</label><input type="text" id="e-type" placeholder="Static / LED / LPB"></div>
+      <div><label class="f">Illumination</label><input type="text" id="e-illumination"></div>
+      <div style="grid-column:1/-1;"><label class="f">Location</label><input type="text" id="e-location"></div>
+      <div style="grid-column:1/-1;"><label class="f">Tag</label><input type="text" id="e-tag"></div>
+      <div><label class="f">Size</label><input type="text" id="e-size"></div>
+      <div><label class="f">Operator size</label><input type="text" id="e-op_size"></div>
+      <div><label class="f">Price</label><input type="text" id="e-price"></div>
+      <div><label class="f">Operator rate</label><input type="text" id="e-op_rate"></div>
+      <div><label class="f">Status</label><input type="text" id="e-status" placeholder="active / inactive"></div>
+      <div><label class="f">Featured (0 = no)</label><input type="text" id="e-featured"></div>
+      <div><label class="f">Latitude</label><input type="text" id="e-lat" placeholder="14.65432"></div>
+      <div><label class="f">Longitude</label><input type="text" id="e-lng" placeholder="120.98765"></div>
+      <div style="grid-column:1/-1;"><label class="f">Maps URL</label><input type="text" id="e-maps_url" placeholder="Paste a Google Maps / Street View link"><div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;"><button type="button" class="btn-ghost" onclick="fillCoordsFromUrl()" style="padding:6px 12px;">↳ Get lat/lng from this link</button><button type="button" class="btn-ghost" onclick="buildEmbed()" style="padding:6px 12px;">↻ Street View embed from lat/lng</button><span id="fillCoordsMsg" class="muted" style="font-size:11px;flex-basis:100%;"></span></div></div>
+      <div style="grid-column:1/-1;"><label class="f">Description</label><textarea id="e-description" style="min-height:80px;"></textarea></div>
+    </div>
+    <div id="editMsg" class="muted" style="margin-top:10px;min-height:16px;"></div>
+    <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;">
+      <button class="btn-primary" id="editSaveBtn" onclick="saveEdit()">💾 Save changes</button>
+      <button class="btn-danger" id="editDeleteBtn" onclick="deleteFromModal()">🗑 Delete this row</button>
+    </div>
+  </div>
+</div>
+
+<footer>🗂️ Inventory Photo Manager — OOHPhilippines.com · admin tool</footer>
+
+<script>
+var SUPABASE_URL = 'https://xecxfkuzexshafwuuizf.supabase.co';
+var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlY3hma3V6ZXhzaGFmd3V1aXpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTk1MTIsImV4cCI6MjA5MTMzNTUxMn0.sZrRmesCDn0DsuldUD8zIhi1gX1ajIKX0aULqNBX_To';
+var ADMIN_EMAIL = 'darylabueva@gmail.com';
+var FN = SUPABASE_URL + '/functions/v1/inventory-photo';
+var PHOTO_BASE_URL = 'https://oohphilippines.com/';
+// ── Google Street View Static API ────────────────────────────────────────────
+// Paste your Google Maps API key below (with the "Street View Static API" enabled,
+// and the key restricted by HTTP referrer to your domain). When set, thumbnails
+// are fetched by lat/lng so they always resolve the CURRENT panorama — no more
+// black tiles from stale pano IDs. Leave '' to keep the old keyless behavior.
+var STREETVIEW_KEY = '';
+var svCalibrationCache = {};
+var ALL = [], VIEW = [], shown = 0, PAGE = 48;
+
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+function q(id){ return document.getElementById(id); }
+
+// —— Street View + photo resolvers (mirrors the public site) ——
+function getStreetViewThumb(mapsUrl, siteName){
+  if(!mapsUrl) return '';
+  var pano = mapsUrl.match(/!1s([^!]+)!/); if(!pano) return '';
+  var yawM = mapsUrl.match(/!3f([0-9.]+)/), pitchM = mapsUrl.match(/!4f([0-9.-]+)/);
+  var yaw = yawM?yawM[1]:'0', pitch = pitchM?pitchM[1]:'0';
+  return 'https://streetviewpixels-pa.googleapis.com/v1/thumbnail?panoid='+encodeURIComponent(pano[1])+'&cb_client=maps_sv.tactile&w=600&h=300&yaw='+yaw+'&pitch='+pitch+'&thumbfov=90';
+}
+function resolvePhoto(photo){
+  if(!photo) return '';
+  if(String(photo).toLowerCase().endsWith('.pdf')) return '';
+  if(/^https?:\/\//i.test(photo)) return photo;
+  return PHOTO_BASE_URL + encodeURIComponent(photo);
+}
+// Street View thumbnail: prefer the official Static API by lat/lng (reliable, current
+// pano) when a key is set; otherwise fall back to the keyless pano-ID thumbnail.
+function streetViewImg(s){
+  if(STREETVIEW_KEY && s.lat!=null && s.lat!=='' && s.lng!=null && s.lng!==''){
+    var head=''; var yawM=String(s.maps_url||'').match(/!3f([0-9.]+)/); if(yawM) head='&heading='+yawM[1];
+    return 'https://maps.googleapis.com/maps/api/streetview?size=600x300&location='+s.lat+','+s.lng+'&fov=90'+head+'&key='+STREETVIEW_KEY;
+  }
+  return getStreetViewThumb(s.maps_url, s.site_name);
+}
+
+// —— admin login ——
+function showPanel(email){ q('signinCard').style.display='none'; q('panel').style.display='block'; q('whoami').textContent=email; loadSites(); }
+function adminInit(){
+  try{ var s=JSON.parse(localStorage.getItem('oohph_free_user')||'null'); if(s && String(s.email||'').toLowerCase()===ADMIN_EMAIL){ showPanel(ADMIN_EMAIL); return; } }catch(e){}
+}
+async function adminLogin(){
+  var email=(q('a-email').value||'').trim().toLowerCase(), pass=(q('a-pass').value||'').trim(), msg=q('a-msg');
+  if(!email||!pass){ msg.innerHTML='<span style="color:#b71c1c;">Enter email and password.</span>'; return; }
+  if(email!==ADMIN_EMAIL){ msg.innerHTML='<span style="color:#b71c1c;">This tool is admin-only.</span>'; return; }
+  var btn=q('a-btn'); btn.disabled=true; msg.textContent='⏳ Signing in…';
+  try{
+    var r=await fetch(SUPABASE_URL+'/rest/v1/free_users?select=email,password&email=ilike.'+encodeURIComponent(email),{ headers:{ apikey:SUPABASE_ANON, Authorization:'Bearer '+SUPABASE_ANON } });
+    var rows=await r.json();
+    if(!Array.isArray(rows)||!rows.length){ btn.disabled=false; msg.innerHTML='<span style="color:#b71c1c;">No such account.</span>'; return; }
+    var ok=false; try{ ok=window.dcodeIO && dcodeIO.bcrypt.compareSync(pass, rows[0].password||''); }catch(e){ ok=false; }
+    if(!ok){ btn.disabled=false; msg.innerHTML='<span style="color:#b71c1c;">Incorrect password.</span>'; return; }
+    try{ localStorage.setItem('oohph_free_user', JSON.stringify({ email:ADMIN_EMAIL })); }catch(e){}
+    q('a-pass').value=''; btn.disabled=false; showPanel(ADMIN_EMAIL);
+  }catch(e){ btn.disabled=false; msg.innerHTML='<span style="color:#b71c1c;">Sign-in failed.</span>'; }
+}
+function logout(){ try{ localStorage.removeItem('oohph_free_user'); }catch(e){} location.reload(); }
+
+// —— load all inventory ——
+async function loadSites(){
+  var grid=q('grid'); grid.innerHTML='<p class="muted" style="padding:20px;">⏳ Loading inventory…</p>';
+  try{
+    var r=await fetch(FN,{ method:'POST', headers:{ apikey:SUPABASE_ANON, Authorization:'Bearer '+SUPABASE_ANON, 'Content-Type':'application/json' }, body:JSON.stringify({ action:'list', account:ADMIN_EMAIL }) });
+    var b=await r.json();
+    if(!r.ok||b.error){ grid.innerHTML='<p class="muted" style="color:#b71c1c;padding:20px;">Could not load — '+esc(b.error||r.status)+'</p>'; return; }
+    ALL=(b.sites||[]).map(function(s){
+      s._photo = resolvePhoto(s.photo);
+      s._sv = streetViewImg(s);
+      s._state = s._photo ? 'photo' : (s._sv ? 'sv' : 'none');
+      return s;
+    });
+    renderKpis(); applyFilters();
+  }catch(e){ grid.innerHTML='<p class="muted" style="color:#b71c1c;padding:20px;">Network error.</p>'; }
+}
+function renderKpis(){
+  var withPhoto=ALL.filter(function(s){return s._state==='photo';}).length;
+  var sv=ALL.filter(function(s){return s._state==='sv';}).length;
+  var none=ALL.filter(function(s){return s._state==='none';}).length;
+  q('kpis').innerHTML =
+    '<div class="kpi"><div class="n">'+ALL.length+'</div><div class="l">Total sites</div></div>'+
+    '<div class="kpi"><div class="n" style="color:#1b5e20;">'+withPhoto+'</div><div class="l">Have photo</div></div>'+
+    '<div class="kpi"><div class="n" style="color:#1565c0;">'+sv+'</div><div class="l">Street View</div></div>'+
+    '<div class="kpi"><div class="n" style="color:#c62828;">'+none+'</div><div class="l">No image</div></div>';
+}
+function applyFilters(){
+  var s=(q('q').value||'').trim().toLowerCase(), f=q('filt').value;
+  VIEW=ALL.filter(function(x){
+    if(f==='nophoto' && x._state==='photo') return false;
+    if(f==='sv' && x._state!=='sv') return false;
+    if(f==='noimg' && x._state!=='none') return false;
+    if(f==='hasphoto' && x._state!=='photo') return false;
+    if(s){
+      var hay=((x.site_name||'')+' '+(x.display_name||'')+' '+(x.location||'')+' '+(x.tag||'')+' '+(x.type||'')+' '+(x.description||'')).toLowerCase();
+      if(hay.indexOf(s)<0) return false;
+    }
+    return true;
+  });
+  q('grid').innerHTML=''; shown=0; renderMore();
+  q('count').textContent=VIEW.length+' of '+ALL.length+' sites';
+}
+// Build a link that actually opens in a browser tab. The stored maps_url is often
+// a Google Maps EMBED url (iframe-only), so we convert it to a real Street View
+// pano link, or use it directly if it's a normal share link, else fall back to coords.
+function mapLinkFor(s){
+  // Prefer coordinates: Google resolves the CURRENT panorama at the point, so
+  // stale/retired pano IDs (which cause the broken links) are avoided.
+  if(s.lat!=null && s.lat!=='' && s.lng!=null && s.lng!==''){
+    return 'https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=' + s.lat + ',' + s.lng;
+  }
+  var u = String(s.maps_url || '');
+  var pano = u.match(/!1s([^!]+)!/);
+  if(pano){
+    var yawM = u.match(/!3f([0-9.]+)/); var yaw = yawM ? yawM[1] : '';
+    return 'https://www.google.com/maps/@?api=1&map_action=pano&pano=' + encodeURIComponent(pano[1]) + (yaw ? ('&heading=' + yaw) : '');
+  }
+  if(u && !/\/maps\/embed/i.test(u) && /^https?:\/\//i.test(u)) return u;
+  return '';
+}
+function cardHtml(s, idx){
+  var img, badge;
+  var mapLink = esc(mapLinkFor(s));
+  function linked(inner){ return mapLink ? '<a href="'+mapLink+'" target="_blank" rel="noopener" title="Open in Google Maps / Street View">'+inner+'</a>' : inner; }
+  if(s._state==='photo'){ img=linked('<img loading="lazy" src="'+esc(s._photo)+'" alt="" onerror="this.style.display=\'none\'">'); badge='<span class="tagbadge b-photo">📷 Photo'+(mapLink?' ↗':'')+'</span>'; }
+  else if(s._state==='sv'){ img=linked('<img loading="lazy" src="'+esc(s._sv)+'" alt="Street View">'); badge='<span class="tagbadge b-sv">📍 Street View'+(mapLink?' ↗':'')+'</span>'; }
+  else { img=linked('<div class="none"><span style="font-size:28px;">🏙️</span><span>No image'+(mapLink?' · open map ↗':'')+'</span></div>'); badge='<span class="tagbadge b-none">⚠ No image</span>'; }
+  var meta=[s.type, s.size||s.op_size, (s.price||s.op_rate)].filter(Boolean).join(' · ');
+  var loc=s.tag||s.location||'';
+  var removeBtn = s._photo ? '<button class="btn-danger" onclick="removePhoto('+idx+')">Remove</button>' : '';
+  return '<div class="site" id="site-'+idx+'">'
+    + '<div class="imgwrap" id="img-'+idx+'">'+badge+'<span class="numbadge">#'+(idx+1)+'</span>'+img+'</div>'
+    + '<div class="body">'
+    +   '<div class="name">'+esc(s.display_name||s.site_name)+'</div>'
+    +   '<div class="meta">'+esc(loc)+'</div>'
+    +   (meta?'<div class="meta">'+esc(meta)+'</div>':'')
+    +   '<div class="ctrls">'
+    +     '<button class="btn-ghost" onclick="openEdit('+idx+')">✏️ Edit</button>'
+    +     '<button class="btn-ghost" onclick="document.getElementById(\'file-'+idx+'\').click()">'+(s._photo?'Replace photo':'Upload photo')+'</button>'
+    +     '<button class="btn-ghost" onclick="toggleUrl('+idx+')">URL</button>'
+    +     removeBtn
+    +   '</div>'
+    +   '<div class="urlrow" id="url-'+idx+'"><input type="text" id="urlin-'+idx+'" placeholder="https://…image.jpg"><button class="btn-ghost" onclick="saveUrl('+idx+')">Save</button></div>'
+    +   '<input type="file" id="file-'+idx+'" accept="image/*" style="display:none;" onchange="uploadPhoto('+idx+', this.files[0])">'
+    +   '<div class="msg" id="msg-'+idx+'"></div>'
+    + '</div></div>';
+}
+function renderMore(){
+  var end=Math.min(shown+PAGE, VIEW.length), grid=q('grid'), html='';
+  for(var i=shown;i<end;i++){ html+=cardHtml(VIEW[i], ALL.indexOf(VIEW[i])); }
+  grid.insertAdjacentHTML('beforeend', html);
+  shown=end;
+  q('moreBtn').style.display = shown<VIEW.length ? 'inline-block' : 'none';
+}
+
+// —— photo helpers (downscale then send to the edge function) ——
+function fileToDataURL(f){ return new Promise(function(res,rej){ var fr=new FileReader(); fr.onload=function(){res(fr.result);}; fr.onerror=rej; fr.readAsDataURL(f); }); }
+function downscale(dataUrl, max){ return new Promise(function(res){ var im=new Image(); im.onload=function(){ var sc=Math.min(1, max/Math.max(im.width,im.height)); var c=document.createElement('canvas'); c.width=Math.round(im.width*sc); c.height=Math.round(im.height*sc); c.getContext('2d').drawImage(im,0,0,c.width,c.height); res(c.toDataURL('image/jpeg',0.78)); }; im.onerror=function(){res(dataUrl);}; im.src=dataUrl; }); }
+function toggleUrl(idx){ var r=q('url-'+idx); r.style.display = r.style.display==='flex'?'none':'flex'; }
+
+async function callSet(idx, payload, msg){
+  var m=q('msg-'+idx); m.style.color='#5f6368'; m.textContent='⏳ Saving…';
+  try{
+    var r=await fetch(FN,{ method:'POST', headers:{ apikey:SUPABASE_ANON, Authorization:'Bearer '+SUPABASE_ANON, 'Content-Type':'application/json' }, body:JSON.stringify(Object.assign({ account:ADMIN_EMAIL }, payload)) });
+    var b=await r.json();
+    if(!r.ok||b.error){ m.style.color='#b71c1c'; m.textContent='Failed — '+esc(b.error||r.status); return null; }
+    m.style.color='#1b5e20'; m.textContent=msg||'✓ saved';
+    return b;
+  }catch(e){ m.style.color='#b71c1c'; m.textContent='Network error.'; return null; }
+}
+function applyResult(idx, photo){
+  var s=ALL[idx]; s.photo=photo; s._photo=resolvePhoto(photo); s._sv=streetViewImg(s);
+  s._state = s._photo ? 'photo' : (s._sv ? 'sv' : 'none');
+  // re-render just this card in place
+  var el=q('site-'+idx); if(el){ el.outerHTML=cardHtml(s, idx); }
+  renderKpis();
+}
+async function uploadPhoto(idx, file){
+  if(!file) return;
+  var m=q('msg-'+idx); m.style.color='#5f6368'; m.textContent='⏳ Preparing image…';
+  var du=await fileToDataURL(file); du=await downscale(du, 1280);
+  var b=await callSet(idx, { action:'set_photo', site_name:ALL[idx].site_name, image:du }, '✓ photo saved');
+  if(b) applyResult(idx, b.photo);
+}
+async function saveUrl(idx){
+  var url=(q('urlin-'+idx).value||'').trim();
+  if(!/^https?:\/\//i.test(url)){ var m=q('msg-'+idx); m.style.color='#b71c1c'; m.textContent='Enter a valid image URL.'; return; }
+  var b=await callSet(idx, { action:'set_photo', site_name:ALL[idx].site_name, photo_url:url }, '✓ photo URL saved');
+  if(b) applyResult(idx, b.photo);
+}
+async function removePhoto(idx){
+  if(!confirm('Remove this photo? The listing will fall back to Street View.')) return;
+  var b=await callSet(idx, { action:'remove_photo', site_name:ALL[idx].site_name }, '✓ removed');
+  if(b) applyResult(idx, '');
+}
+
+// —— edit / add details modal ——
+var EDIT_KEYS = ['display_name','type','illumination','location','tag','size','op_size','price','op_rate','status','featured','lat','lng','maps_url','description'];
+var editIdx = -1, editMode = 'edit';
+// Same coordinate extractor used server-side, so a pasted Maps link auto-fills lat/lng.
+function coordsFromMapsUrl(url){
+  var s=String(url||''), a=null, o=null, m;
+  if((m=s.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/))){ a=m[1]; o=m[2]; }
+  else if((m=s.match(/!3d(-?\d+\.\d+)[\s\S]*?!4d(-?\d+\.\d+)/))){ a=m[1]; o=m[2]; }
+  else if((m=s.match(/!1d(-?\d+\.\d+)[\s\S]*?!2d(-?\d+\.\d+)/))){ a=m[1]; o=m[2]; }
+  else if((m=s.match(/!2d(-?\d+\.\d+)!3d(-?\d+\.\d+)/))){ a=m[2]; o=m[1]; }
+  else if((m=s.match(/[?&](?:q|query|ll|center|destination|daddr)=(-?\d+\.\d+),(-?\d+\.\d+)/))){ a=m[1]; o=m[2]; }
+  else if((m=s.match(/(-?\d{1,2}\.\d{3,}),\s*(\d{2,3}\.\d{3,})/))){ a=m[1]; o=m[2]; }
+  if(a&&o){ var lat=parseFloat(a), lng=parseFloat(o); if(isFinite(lat)&&isFinite(lng)) return {lat:lat,lng:lng}; }
+  return null;
+}
+// Keyless Google Street View embed (iframe-embeddable) at a point.
+function svEmbedUrl(lat, lng){ return 'https://maps.google.com/maps?q=&layer=c&cbll=' + lat + ',' + lng + '&cbp=11,0,0,0,0&output=svembed'; }
+function fillCoordsFromUrl(){
+  var url=(q('e-maps_url').value||''), c=coordsFromMapsUrl(url), msg=q('fillCoordsMsg');
+  if(!c){ msg.style.color='#b71c1c'; msg.textContent='No coordinates in that link — use a link with @lat,lng, or right-click the map and copy the coordinates.'; return; }
+  q('e-lat').value=c.lat; q('e-lng').value=c.lng;
+  // If they pasted a plain Maps link (no Street View pano), turn maps_url into a
+  // Street View embed at those coords; keep it if it's already a Street View link.
+  if(!/!1s/.test(url)){ q('e-maps_url').value=svEmbedUrl(c.lat, c.lng); msg.style.color='#1b5e20'; msg.textContent='✓ lat/lng filled + Street View embed created'; }
+  else { msg.style.color='#1b5e20'; msg.textContent='✓ '+c.lat+', '+c.lng+' (kept the Street View link you pasted)'; }
+}
+function buildEmbed(){
+  var lat=(q('e-lat').value||'').trim(), lng=(q('e-lng').value||'').trim(), msg=q('fillCoordsMsg');
+  if(!lat||!lng){ msg.style.color='#b71c1c'; msg.textContent='Enter lat and lng first (or use “Get lat/lng”).'; return; }
+  q('e-maps_url').value=svEmbedUrl(lat, lng); msg.style.color='#1b5e20'; msg.textContent='✓ Street View embed created from lat/lng';
+}
+function fillModal(s){ EDIT_KEYS.forEach(function(k){ var el=q('e-'+k); if(el) el.value=(s&&s[k]!=null?s[k]:''); }); q('fillCoordsMsg').textContent=''; q('editMsg').textContent=''; }
+function openEdit(idx){
+  editIdx = idx; editMode='edit'; var s = ALL[idx];
+  q('editSiteName').textContent = s.site_name || '';
+  q('e-site_name').value = s.site_name || ''; q('e-site_name').readOnly = false;
+  fillModal(s);
+  q('editDeleteBtn').style.display='';
+  q('editOverlay').classList.add('open');
+}
+function openAdd(){
+  editIdx = -1; editMode='add';
+  q('editSiteName').textContent = '(new site)';
+  q('e-site_name').value=''; q('e-site_name').readOnly=false;
+  fillModal(null); q('e-status').value='active';
+  q('editDeleteBtn').style.display='none';
+  q('editOverlay').classList.add('open');
+  setTimeout(function(){ q('e-site_name').focus(); }, 50);
+}
+function closeEdit(){ q('editOverlay').classList.remove('open'); editIdx=-1; }
+async function saveEdit(){
+  var fields={}; EDIT_KEYS.forEach(function(k){ var el=q('e-'+k); if(el) fields[k]=el.value; });
+  var m=q('editMsg'), btn=q('editSaveBtn');
+  var payload;
+  if(editMode==='add'){
+    var name=(q('e-site_name').value||'').trim();
+    if(!name){ m.style.color='#b71c1c'; m.textContent='Site name is required.'; return; }
+    payload={ account:ADMIN_EMAIL, action:'add_site', site_name:name, fields:fields };
+  } else {
+    if(editIdx<0) return;
+    var newName=(q('e-site_name').value||'').trim();
+    if(!newName){ m.style.color='#b71c1c'; m.textContent='Site name cannot be empty.'; return; }
+    payload={ account:ADMIN_EMAIL, action:'update_fields', site_name:ALL[editIdx].site_name, new_site_name:newName, fields:fields };
+  }
+  btn.disabled=true; m.style.color='#5f6368'; m.textContent='⏳ Saving…';
+  try{
+    var r=await fetch(FN,{ method:'POST', headers:{ apikey:SUPABASE_ANON, Authorization:'Bearer '+SUPABASE_ANON, 'Content-Type':'application/json' }, body:JSON.stringify(payload) });
+    var b=await r.json(); btn.disabled=false;
+    if(!r.ok||b.error){ m.style.color='#b71c1c'; m.textContent='Failed — '+esc(b.message||b.error||r.status)+(b.field?(' ('+b.field+')'):''); return; }
+    var row=b.site||{};
+    if(editMode==='add'){
+      row._photo=resolvePhoto(row.photo); row._sv=streetViewImg(row); row._state=row._photo?'photo':(row._sv?'sv':'none');
+      ALL.unshift(row);           // show new site at the top
+      renderKpis(); applyFilters();
+      m.style.color='#1b5e20'; m.textContent='✓ site added';
+    } else {
+      var s=ALL[editIdx]; Object.keys(row).forEach(function(k){ s[k]=row[k]; });
+      s._photo=resolvePhoto(s.photo); s._sv=streetViewImg(s); s._state=s._photo?'photo':(s._sv?'sv':'none');
+      var el=q('site-'+editIdx); if(el) el.outerHTML=cardHtml(s, editIdx);
+      renderKpis();
+      m.style.color='#1b5e20'; m.textContent='✓ saved';
+    }
+    setTimeout(closeEdit, 600);
+  }catch(e){ btn.disabled=false; m.style.color='#b71c1c'; m.textContent='Network error.'; }
+}
+async function deleteFromModal(){
+  if(editIdx<0) return;
+  var s=ALL[editIdx];
+  if(!confirm('Delete "'+(s.site_name||'')+'" permanently from the billboards table? This cannot be undone.')) return;
+  var m=q('editMsg'); m.style.color='#5f6368'; m.textContent='⏳ Deleting…';
+  try{
+    var r=await fetch(FN,{ method:'POST', headers:{ apikey:SUPABASE_ANON, Authorization:'Bearer '+SUPABASE_ANON, 'Content-Type':'application/json' },
+      body:JSON.stringify({ account:ADMIN_EMAIL, action:'delete_site', site_name:s.site_name }) });
+    var b=await r.json();
+    if(!r.ok||b.error){ m.style.color='#b71c1c'; m.textContent='Failed — '+esc(b.error||r.status); return; }
+    ALL.splice(editIdx,1);
+    closeEdit(); renderKpis(); applyFilters();
+  }catch(e){ m.style.color='#b71c1c'; m.textContent='Network error.'; }
+}
+
+adminInit();
+</script>
+</body>
+</html>
