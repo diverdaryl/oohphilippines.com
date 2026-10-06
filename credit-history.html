@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex,nofollow" />
+<title>Credit History — OOH Philippines (Admin)</title>
+<style>
+  :root { --blue:#1565c0; --ink:#1b2733; --muted:#6b7a89; --line:#e3e9f0; --bg:#eef4fb; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--ink); }
+  .wrap { max-width:860px; margin:0 auto; padding:24px 16px 60px; }
+  h1 { font-size:22px; color:var(--blue); margin:0 0 4px; }
+  .sub { color:var(--muted); font-size:13px; margin:0 0 22px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:14px; padding:18px; margin-bottom:16px; box-shadow:0 4px 18px rgba(21,101,192,.06); }
+  label { display:block; font-size:12px; font-weight:700; color:var(--muted); margin:0 0 5px; text-transform:uppercase; letter-spacing:.03em; }
+  input { width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:9px; font-size:15px; margin-bottom:12px; }
+  .row { display:flex; gap:12px; flex-wrap:wrap; }
+  .row > div { flex:1; min-width:200px; }
+  button { background:var(--blue); color:#fff; border:none; padding:12px 24px; border-radius:9px; font-weight:700; font-size:15px; cursor:pointer; }
+  button:disabled { opacity:.5; cursor:default; }
+  .bal { display:flex; align-items:baseline; gap:10px; margin-bottom:4px; }
+  .bal .num { font-size:40px; font-weight:800; color:var(--blue); line-height:1; }
+  .bal .lbl { font-size:13px; color:var(--muted); }
+  .meta { font-size:13px; color:var(--muted); }
+  .recon { padding:11px 14px; border-radius:9px; font-size:13.5px; margin-top:12px; }
+  .recon.ok { background:#e8f5e9; color:#1b5e20; }
+  .recon.warn { background:#fff3e0; color:#b23c00; }
+  table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  th, td { text-align:left; padding:9px 10px; border-bottom:1px solid var(--line); }
+  th { color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.03em; }
+  td.delta { font-weight:800; font-variant-numeric:tabular-nums; }
+  .plus { color:#1b7a2f; }
+  .minus { color:#c62828; }
+  .bal-after { color:var(--muted); font-variant-numeric:tabular-nums; }
+  .err { color:#c62828; font-size:14px; margin-top:10px; }
+  .empty { color:var(--muted); font-size:14px; padding:14px 2px; }
+  .tag { display:inline-block; font-size:11px; color:var(--muted); background:#f2f6fb; border-radius:6px; padding:2px 7px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Credit History</h1>
+  <p class="sub">Admin lookup — see every credit movement for any account to settle disputes.</p>
+
+  <div class="card">
+    <div class="row">
+      <div>
+        <label for="email">User email</label>
+        <input id="email" type="email" placeholder="user@example.com" autocomplete="off" />
+      </div>
+      <div>
+        <label for="key">Admin key</label>
+        <input id="key" type="password" placeholder="admin lookup key" autocomplete="off" />
+      </div>
+    </div>
+    <button id="go" onclick="lookup()">Look up</button>
+    <div id="err" class="err" style="display:none;"></div>
+  </div>
+
+  <div id="result" style="display:none;">
+    <div class="card">
+      <div class="bal"><span id="balNum" class="num">—</span><span class="lbl">credits now</span></div>
+      <div id="acctMeta" class="meta"></div>
+      <div id="recon" class="recon"></div>
+    </div>
+    <div class="card">
+      <label style="margin-bottom:10px;">Credit timeline</label>
+      <div id="ledgerBox"></div>
+    </div>
+    <div class="card">
+      <label style="margin-bottom:10px;">Activity — searches &amp; tools</label>
+      <div id="activityBox"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+var FN = 'https://xecxfkuzexshafwuuizf.supabase.co/functions/v1/credit-history';
+// Supabase gateway requires an anon key on every function call (public key, same one every page uses).
+// The real access control is the admin key below, checked inside the function.
+var ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlY3hma3V6ZXhzaGFmd3V1aXpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTk1MTIsImV4cCI6MjA5MTMzNTUxMn0.sZrRmesCDn0DsuldUD8zIhi1gX1ajIKX0aULqNBX_To';
+
+function fmt(ts){ try { return new Date(ts).toLocaleString('en-PH',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); } catch(e){ return ts; } }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+
+async function lookup(){
+  var email = (document.getElementById('email').value||'').trim().toLowerCase();
+  var key   = (document.getElementById('key').value||'').trim();
+  var err = document.getElementById('err'); err.style.display='none';
+  var res = document.getElementById('result'); res.style.display='none';
+  var btn = document.getElementById('go');
+  if (!email || !key){ err.textContent='Enter both an email and the admin key.'; err.style.display='block'; return; }
+  btn.disabled = true; btn.textContent = 'Looking up…';
+  try {
+    var r = await fetch(FN, { method:'POST', headers:{ apikey:ANON, Authorization:'Bearer '+ANON, 'Content-Type':'application/json' }, body: JSON.stringify({ email: email, key: key }) });
+    var d = await r.json();
+    if (!r.ok || !d.ok){
+      err.textContent = d && d.error === 'unauthorized' ? 'Wrong admin key.' : (d && (d.message||d.error) || 'Lookup failed.');
+      err.style.display='block'; return;
+    }
+    render(d);
+    res.style.display='block';
+  } catch(e){
+    err.textContent = 'Network error — try again.'; err.style.display='block';
+  } finally {
+    btn.disabled=false; btn.textContent='Look up';
+  }
+}
+
+function render(d){
+  document.getElementById('balNum').textContent = (d.balance==null ? '—' : d.balance);
+  var meta = document.getElementById('acctMeta');
+  if (d.account){
+    meta.innerHTML = esc(d.account.name||'(no name)') + ' · ' + esc(d.account.company||'—') +
+      ' · joined ' + esc(fmt(d.account.created_at));
+  } else {
+    meta.textContent = 'No free_users account found for this email.';
+  }
+  var rc = d.reconcile || {};
+  var recon = document.getElementById('recon');
+  var ok = String(rc.note||'').indexOf('✓') === 0;
+  recon.className = 'recon ' + (ok ? 'ok' : 'warn');
+  recon.innerHTML = esc(rc.note||'') +
+    '<br><span class="tag">ledger net ' + esc(rc.ledger_net) + '</span> ' +
+    '<span class="tag">logged unlocks ' + esc(rc.logged_unlocks) + '</span> ' +
+    '<span class="tag">purchased ' + esc(rc.purchased_credits) + '</span>';
+
+  var box = document.getElementById('ledgerBox');
+  var L = d.ledger || [];
+  if (!L.length){ box.innerHTML = '<div class="empty">No ledger rows yet for this account.</div>'; return; }
+  var rows = L.map(function(e){
+    var dl = Number(e.delta)||0;
+    var cls = dl>0 ? 'plus' : (dl<0 ? 'minus' : '');
+    var sign = dl>0 ? '+'+dl : dl;
+    return '<tr>' +
+      '<td>'+esc(fmt(e.created_at))+'</td>' +
+      '<td class="delta '+cls+'">'+esc(sign)+'</td>' +
+      '<td class="bal-after">'+esc(e.balance_after)+'</td>' +
+      '<td>'+esc(e.reason)+'</td>' +
+      '<td class="tag">'+esc(e.source||'')+'</td>' +
+    '</tr>';
+  }).join('');
+  box.innerHTML = '<table><thead><tr><th>When</th><th>Change</th><th>Balance</th><th>Reason</th><th>Source</th></tr></thead><tbody>'+rows+'</tbody></table>';
+
+  renderActivity(d.activity || []);
+}
+
+var ACT_LABEL = { search: '🔍 Search', roi_calc: '📈 ROI calculation', ai_planner: '🤖 AI planner' };
+function actDetail(a){
+  var dt = a.detail;
+  if (dt == null) return '';
+  if (typeof dt === 'string') { try { dt = JSON.parse(dt); } catch(e){ return esc(dt); } }
+  var parts = [];
+  if (dt.q) parts.push('"'+esc(dt.q)+'"');
+  if (dt.tag) parts.push('category: '+esc(dt.tag));
+  if (dt.site) parts.push(esc(dt.site));
+  if (dt.mode) parts.push('mode: '+esc(dt.mode));
+  if (dt.via && !parts.length) parts.push(esc(dt.via));
+  return parts.join(' · ');
+}
+function renderActivity(A){
+  var box = document.getElementById('activityBox');
+  if (!A.length){ box.innerHTML = '<div class="empty">No logged searches or tool runs yet for this account.</div>'; return; }
+  var rows = A.map(function(a){
+    return '<tr>' +
+      '<td>'+esc(fmt(a.created_at))+'</td>' +
+      '<td>'+esc(ACT_LABEL[a.action] || a.action)+'</td>' +
+      '<td>'+actDetail(a)+'</td>' +
+    '</tr>';
+  }).join('');
+  box.innerHTML = '<table><thead><tr><th>When</th><th>Action</th><th>Detail</th></tr></thead><tbody>'+rows+'</tbody></table>';
+}
+
+document.getElementById('key').addEventListener('keydown', function(e){ if(e.key==='Enter') lookup(); });
+</script>
+</body>
+</html>
