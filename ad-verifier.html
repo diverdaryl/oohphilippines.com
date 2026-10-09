@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TRKYRLSQHP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-TRKYRLSQHP');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OOH Verify — Proof of Posting | OOHPhilippines.com</title>
+<meta name="description" content="Independent proof-of-posting verification for out-of-home advertising in the Philippines — confirm the right creative is up, at the right site, at the right time, in the right condition, with geo-tagged, timestamped photo evidence.">
+<link rel="canonical" href="https://oohphilippines.com/ad-verifier.html">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<meta name="theme-color" content="#1565c0">
+<!-- PWA: installable capture app + offline capture queue -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="OOH Verify">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<!-- Supabase is needed for login; jsPDF + exifr are loaded ON DEMAND (see loadScript) so the
+     capture page stays light on old phones / weak signal. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:linear-gradient(135deg,#e3f2fd 0%,#bbdefb 100%); min-height:100vh; color:#202124; }
+  a { color:#1565c0; }
+  .nav-wrapper { position:sticky; top:0; z-index:1000; background:linear-gradient(135deg,#e3f2fd 0%,#bbdefb 100%); box-shadow:0 2px 10px rgba(0,0,0,0.1); }
+  .nav-bar { display:flex; justify-content:space-between; align-items:center; padding:14px 24px; max-width:1100px; margin:0 auto; flex-wrap:wrap; gap:10px; }
+  .nav-logo { font-size:22px; font-weight:700; color:#1565c0; text-decoration:none; letter-spacing:-0.5px; }
+  .nav-links { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .nav-link { color:#1565c0; text-decoration:none; font-weight:600; padding:8px 14px; border-radius:7px; background:rgba(255,255,255,0.75); font-size:13px; white-space:nowrap; }
+  .nav-link.active { background:#1565c0; color:#fff; }
+  .nav-link.primary { background:#1565c0; color:#fff; }
+  .hero { max-width:860px; margin:0 auto; padding:30px 16px 4px; text-align:center; }
+  .hero .badge { display:inline-block; background:#1565c0; color:#fff; font-weight:700; font-size:12px; padding:5px 15px; border-radius:50px; margin-bottom:14px; }
+  .hero h1 { color:#202124; font-size:28px; margin-bottom:8px; letter-spacing:-0.5px; }
+  .hero p { max-width:620px; margin:0 auto; color:#37474f; font-size:15px; line-height:1.6; }
+  .wrap { max-width:860px; margin:0 auto; padding:22px 16px 60px; }
+  .steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin:22px 0; }
+  .step { background:white; border-radius:14px; box-shadow:0 4px 18px rgba(0,0,0,0.07); padding:16px 18px; }
+  .step .n { width:28px; height:28px; border-radius:50%; background:#1565c0; color:#fff; font-weight:800; font-size:14px; display:flex; align-items:center; justify-content:center; margin-bottom:8px; }
+  .step h3 { font-size:14px; margin-bottom:4px; color:#0d47a1; }
+  .step p { font-size:12.5px; color:#5f6368; line-height:1.5; }
+  .card { background:white; border-radius:14px; box-shadow:0 4px 18px rgba(0,0,0,0.07); padding:22px; margin-bottom:18px; }
+  .card h2 { font-size:20px; color:#0d47a1; margin-bottom:4px; }
+  .card .sub { color:#5f6368; font-size:13px; margin-bottom:16px; }
+  label.f { display:block; font-size:12px; font-weight:600; color:#5f6368; margin:14px 0 5px; }
+  input[type=text], input[type=date], select { width:100%; box-sizing:border-box; padding:11px 13px; border:1.5px solid #dadce0; border-radius:10px; font-size:14px; font-family:inherit; background:white; }
+  .row, .pair { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .row > *, .pair > * { min-width:0; }   /* let columns shrink so wide images can't blow out the grid */
+  .btn-primary { background:#1565c0; color:white; border:none; padding:12px 26px; border-radius:50px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; text-decoration:none; display:inline-block; }
+  .btn-orange { background:#e65100; color:white; border:none; padding:13px 30px; border-radius:50px; font-size:15px; font-weight:700; cursor:pointer; font-family:inherit; text-decoration:none; display:inline-block; }
+  .btn-ghost { background:white; color:#1565c0; border:1.5px solid #1565c0; padding:10px 20px; border-radius:50px; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; }
+  button:disabled { opacity:.5; cursor:not-allowed; }
+  .imgbox { border:2px dashed #90caf9; border-radius:10px; min-height:150px; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#f8fbff; color:#7aa7cf; font-size:13px; text-align:center; padding:8px; }
+  .imgbox { max-width:100%; }
+  .imgbox img { max-width:100%; width:auto; height:auto; max-height:260px; object-fit:contain; display:block; }
+  .check { display:flex; align-items:center; gap:8px; font-size:13px; color:#455a64; margin:6px 0; }
+  .result { border-radius:12px; padding:16px; margin-top:16px; }
+  .result.ok { background:#e8f5e9; border:1px solid #a5d6a7; }
+  .result.warn { background:#fff3e0; border:1px solid #ffcc80; }
+  .rline { display:flex; align-items:center; gap:8px; font-size:13.5px; margin:6px 0; }
+  .status { display:inline-block; font-weight:800; font-size:15px; padding:4px 14px; border-radius:50px; }
+  .status.ok { background:#1b5e20; color:#fff; } .status.warn { background:#e65100; color:#fff; }
+  .muted { color:#5f6368; font-size:12px; line-height:1.6; }
+  .note { background:#f1f7ff; border:1px solid #cfe0f5; border-radius:10px; padding:12px 14px; font-size:12.5px; color:#37474f; line-height:1.6; margin-top:10px; }
+  footer { text-align:center; color:#5f6368; font-size:13px; padding:30px 20px 40px; }
+  @media (max-width:600px){ .row,.pair{grid-template-columns:1fr;} .hero h1{font-size:23px;} }
+</style>
+</head>
+<body>
+
+<div class="nav-wrapper"><div class="nav-bar">
+  <a class="nav-logo" href="/">OOHPhilippines.com</a>
+  <div class="nav-links">
+    <a class="nav-link" href="/">🔍 Search</a>
+    <a class="nav-link" href="roi-calculator.html">📈 ROI</a>
+    <a class="nav-link" href="ai-planner.html">🤖 AI Planner</a>
+    <a class="nav-link active" href="ad-verifier.html">🛡️ Ad Verifier</a>
+    <a class="nav-link" href="asc-clearance.html">📋 ASC Clearance</a>
+    <a class="nav-link" href="verify-dashboard.html">📊 Ad Verifier Dashboard</a>
+    <a class="nav-link" href="tutorials.html">🎬 Tutorials</a>
+    <a class="nav-link primary" href="upload.html">📍 Upload Site</a>
+  </div>
+</div></div>
+
+<div class="hero">
+  <div class="badge">🛡️ OOH Verify · AI-Powered Proof of Posting</div>
+  <h1>Don't just be seen — be verified.</h1>
+  <p>Independent proof that your out-of-home campaign is really running — the right creative, at the right site, at the right time, in the right condition. Works across <strong>billboards, LED / digital boards, lamp-post banners, transit, and small-format ads</strong>, with geo-tagged, timestamped photo evidence.</p>
+</div>
+
+<div class="wrap">
+
+  <div class="steps">
+    <div class="step"><div class="n">1</div><h3>Right creative</h3><p>AI compares the on-site photo to the approved artwork — flagging the wrong ad, an expired one, damage, or obstruction.</p></div>
+    <div class="step"><div class="n">2</div><h3>Right site</h3><p>The photo's GPS matches the booked site's coordinates — or, for transit wraps, the vehicle is identified.</p></div>
+    <div class="step"><div class="n">3</div><h3>Right time</h3><p>The capture falls within the campaign's flight dates.</p></div>
+    <div class="step"><div class="n">4</div><h3>Right condition</h3><p>The face is undamaged, unobstructed, and properly lit.</p></div>
+  </div>
+
+  <!-- Operator account bar (shown when logged in) -->
+  <div id="opAccountBar" style="display:none;background:#e8f5e9;border:1px solid #a5d6a7;border-radius:12px;padding:10px 14px;margin-bottom:14px;font-size:13.5px;color:#1b5e20;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+    <span id="opAccountWho"></span>
+    <span style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn-ghost" id="opPwBtn" onclick="opTogglePwForm()" style="padding:6px 14px;display:none;">🔑 Account settings</button>
+      <button class="btn-ghost" onclick="opVerifyLogout()" style="padding:6px 14px;">Log out</button>
+    </span>
+  </div>
+
+  <!-- Change password (shown only for logged-in operators) -->
+  <div class="card" id="opPwCard" style="display:none;">
+    <h2>🔑 Account settings</h2>
+    <p class="sub">Update your email and/or password. Leave a section blank to keep it unchanged.</p>
+    <label class="f">Email address</label>
+    <input type="email" id="op-email-new" placeholder="you@company.com" autocomplete="email">
+    <p class="muted" style="margin:4px 0 0;font-size:12px;">Changing your email sends a confirmation link to the new address — the change finishes once you click it.</p>
+    <label class="f" style="margin-top:14px;">New password</label>
+    <input type="password" id="op-newpass" placeholder="At least 8 characters (leave blank to keep current)" autocomplete="new-password">
+    <label class="f">Confirm new password</label>
+    <input type="password" id="op-newpass2" placeholder="Re-enter new password" autocomplete="new-password" onkeydown="if(event.key==='Enter')opChangePassword()">
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="btn-primary" id="op-pw-btn" onclick="opChangePassword()">Save changes</button>
+      <button class="btn-ghost" onclick="opTogglePwForm(false)">Cancel</button>
+    </div>
+    <div id="op-pw-msg" class="muted" style="margin-top:10px;"></div>
+  </div>
+
+  <!-- Operator login gate (shown when NOT logged in as an operator) -->
+  <div class="card" id="opAuthCard" style="display:none;">
+    <h2>🔐 Operator login</h2>
+    <p class="sub">The Ad Verifier is for accredited operators. Log in with your operator account to capture and save proof — verifications are billed to your account.</p>
+    <label class="f">Operator email</label>
+    <input type="email" id="op-email" placeholder="you@company.com" autocomplete="username">
+    <label class="f">Password</label>
+    <input type="password" id="op-pass" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')opVerifyLogin()">
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+      <button class="btn-primary" id="op-login-btn" onclick="opVerifyLogin()">🔐 Log in</button>
+      <a class="btn-ghost" href="#" onclick="opForgotPassword();return false;">Forgot password?</a>
+      <a class="btn-ghost" href="#" onclick="opShowSignup();return false;">New operator / reseller? Create account →</a>
+    </div>
+    <div id="op-login-msg" class="muted" style="margin-top:10px;"></div>
+  </div>
+
+  <!-- Operator / reseller self-signup (shown from the login gate) -->
+  <div class="card" id="opSignupCard" style="display:none;">
+    <h2>🆕 Create operator account</h2>
+    <p class="sub">For operators and resellers who capture proof of posting. After you sign up, your account needs verification credits activated by OOH Philippines before you can save proof — email <a href="mailto:info@oohphilippines.com">info@oohphilippines.com</a> once registered.</p>
+    <label class="f">Company / operator name</label>
+    <input type="text" id="su-name" placeholder="e.g. Metro Outdoor Media">
+    <label class="f">Your email</label>
+    <input type="email" id="su-email" placeholder="you@company.com" autocomplete="email">
+    <label class="f">Password</label>
+    <input type="password" id="su-pass" placeholder="At least 8 characters" autocomplete="new-password">
+    <label class="f">Default client email <span style="font-weight:400;color:#78909c;">(optional — the advertiser/agency you report to; pre-fills on each proof)</span></label>
+    <input type="email" id="su-client" placeholder="client@brand.com" autocomplete="off" onkeydown="if(event.key==='Enter')opCreateAccount()">
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+      <button class="btn-primary" id="su-btn" onclick="opCreateAccount()">🆕 Create account</button>
+      <a class="btn-ghost" href="#" onclick="opShowLogin();return false;">← Back to log in</a>
+    </div>
+    <div id="su-msg" class="muted" style="margin-top:10px;"></div>
+  </div>
+
+  <!-- ===================== VERIFY TOOL (MVP) ===================== -->
+  <div class="card" id="captureCard" style="display:none;">
+    <div id="v-pending" style="display:none;background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:13px;color:#5d4037;"></div>
+    <div id="v-inbox" style="display:none;background:#e8f0fe;border:1px solid #c5d6f5;border-radius:10px;padding:12px;margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+        <strong style="color:#0d3b66;">📥 Incoming field captures <span id="v-inboxCount"></span></strong>
+        <button class="btn-ghost" style="padding:4px 10px;font-size:12px;" onclick="loadFieldCaptures()">↻ Refresh</button>
+      </div>
+      <div class="muted" style="font-size:12px;margin-top:2px;">Photos/videos sent by your field staff. Tap <strong>Use</strong>, then look up the site &amp; save as proof.</div>
+      <div id="v-inboxList" style="margin-top:8px;"></div>
+    </div>
+    <h2>Capture proof of posting</h2>
+    <p class="sub">Field demo — captures a live photo, your device GPS, and a timestamp, then checks it against the booked site. Works best on a phone at the site.</p>
+
+    <label class="f">Brand / advertiser</label>
+    <input type="text" id="v-brand" placeholder="e.g. Nestlé Coffee-Mate">
+
+    <label class="f">Client email <span style="font-weight:400;color:#78909c;">(the advertiser / agency / media planner's account — so they can see this proof in their dashboard)</span></label>
+    <input type="email" id="v-client" placeholder="client@brand.com (optional but recommended)">
+
+    <label class="f">Operator account <span style="font-weight:400;color:#78909c;">(you're billed to this account — 10 credits per new site)</span></label>
+    <input type="text" id="v-operator" readonly style="background:#f1f3f6;color:#455a64;cursor:not-allowed;" onchange="refreshCreativeDropdown()">
+    <p class="sub" style="margin:4px 0 0;">Verifying a new site uses <strong>10 credits</strong>. Extra captures for that same site within 45 days — day &amp; night, every lamp-post, transit spot-checks — are free.</p>
+
+    <label class="f">Format</label>
+    <select id="v-format" onchange="onFormatChange()">
+      <option value="billboard">Billboard (static)</option>
+      <option value="led">LED / Digital board</option>
+      <option value="lamppost">Lamp post banner</option>
+      <option value="transit_veh">Transit — vehicle (bus / jeepney / train wrap)</option>
+      <option value="transit_sta">Transit — station / terminal</option>
+      <option value="small">Small format / poster</option>
+      <option value="other">Other</option>
+    </select>
+
+    <div id="v-vehWrap" style="display:none;">
+      <label class="f">Vehicle ID / plate number <span style="font-weight:400;color:#78909c;">(capture it clearly in the photo)</span></label>
+      <input type="text" id="v-vehicle" placeholder="e.g. ABC-1234 / Bus 07 / Route Ayala–Fairview" onchange="updateVehStatus()">
+      <label class="f">Proof type</label>
+      <select id="v-captype" onchange="updateVehStatus()">
+        <option value="Installation">🔧 Installation — the wrap is on the vehicle</option>
+        <option value="In-service spot-check">🛣 In-service spot-check — seen out on the road</option>
+      </select>
+      <label class="f">Number of vehicles in this fleet <span style="font-weight:400;color:#78909c;">(upload one photo per vehicle below)</span></label>
+      <input type="text" id="v-vehCount" placeholder="e.g. 20" onchange="updateExtraCount()">
+      <div id="v-vehStatus" class="muted" style="margin-top:6px;"></div>
+    </div>
+    <div id="v-runWrap" style="display:none;">
+      <div class="row">
+        <div><label class="f">Unit no.</label><input type="text" id="v-unit" placeholder="e.g. 5" onchange="updateRunStatus()"></div>
+        <div><label class="f">of total units</label><input type="text" id="v-units" placeholder="e.g. 30" onchange="updateRunStatus()"></div>
+      </div>
+      <div id="v-runStatus" class="muted" style="margin-top:6px;"></div>
+    </div>
+
+    <div class="row">
+      <div><label class="f">Flight start</label><input type="date" id="v-start"></div>
+      <div><label class="f">Flight / contract end</label><input type="date" id="v-end"></div>
+    </div>
+    <div class="muted" style="margin-top:4px;color:#607d8b;">📹 We keep the proof video until the contract ends. Set the end date so old clips can be cleared afterward and your storage stays lean. Leave blank and the video is kept for the default retention window.</div>
+
+    <label class="f" id="v-codeLabel">Site code or name (booked site)</label>
+    <div style="display:flex;gap:8px;">
+      <input type="text" id="v-code" placeholder="e.g. G4164 or the site's display name" style="flex:1;">
+      <button class="btn-ghost" onclick="lookupSite()">Look up</button>
+    </div>
+    <div id="v-siteInfo" class="muted" style="margin-top:6px;"></div>
+
+    <label class="f">Time of day</label>
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+      <select id="v-tod" onchange="updateShotStatus()" style="max-width:170px;"><option value="Day">☀ Day shot</option><option value="Night">🌙 Night shot</option></select>
+      <label style="font-size:13px;color:#455a64;"><input type="checkbox" id="v-illum" onchange="updateShotStatus()"> Illuminated site — day or night accepted (both is stronger)</label>
+    </div>
+    <div id="v-shotStatus" class="muted" style="margin-top:6px;"></div>
+
+    <label class="f">Distance note <span style="font-weight:400;color:#78909c;">(if road access forced you to shoot from afar)</span></label>
+    <input type="text" id="v-distNote" placeholder="e.g. shot from across the highway — no closer access">
+
+    <div style="margin-top:14px;">
+      <label class="f">Approved creative — saved library</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <select id="v-savedCreatives" onchange="pickSavedCreative()" style="flex:1;min-width:160px;"><option value="">— Load a saved creative —</option></select>
+        <button type="button" class="btn-ghost" onclick="saveCreative()">💾 Save current</button>
+      </div>
+      <div class="muted" style="margin-top:4px;">Pre-upload the approved artwork in the office and tap <strong>Save current</strong> — it stays on this device, ready to load when you're at the site.</div>
+    </div>
+
+    <div class="pair" style="margin-top:14px;">
+      <div>
+        <label class="f">Approved creative (reference) <span style="font-weight:400;color:#78909c;">— image, or a video for LED (then pick the frame)</span></label>
+        <div class="imgbox" id="v-refBox" onclick="document.getElementById('v-ref').click()" style="cursor:pointer;">Tap to upload the approved artwork</div>
+        <input type="file" accept="image/*,video/*" id="v-ref" style="display:none;">
+        <button type="button" class="btn-ghost" style="margin-top:8px;width:100%;" onclick="document.getElementById('v-ref').click()">🖼️ Upload creative (image or video)</button>
+        <div id="v-refFrames" style="display:flex;gap:6px;overflow-x:auto;margin-top:8px;"></div>
+      </div>
+      <div>
+        <label class="f">Site photo (at the billboard)</label>
+        <div class="imgbox" id="v-photoBox" onclick="document.getElementById('v-photoUp').click()" style="cursor:pointer;">Tap to take or upload the on-site photo</div>
+        <input type="file" accept="image/*" capture="environment" id="v-photo" style="display:none;">
+        <input type="file" accept="image/*" id="v-photoUp" style="display:none;">
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button type="button" class="btn-ghost" style="flex:1;" onclick="document.getElementById('v-photo').click()">📷 Take photo</button>
+          <button type="button" class="btn-ghost" style="flex:1;" onclick="document.getElementById('v-photoUp').click()">🖼️ Upload photo</button>
+        </div>
+      </div>
+    </div>
+    <div id="v-useSiteLocWrap" style="display:none;margin-top:10px;background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:10px 12px;">
+      <label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#5d4037;cursor:pointer;">
+        <input type="checkbox" id="v-useSiteLoc" onchange="showCapMeta()" style="margin-top:2px;">
+        <span>This photo has <strong>no GPS</strong> (common for digital cameras). Tick to record the <strong>booked site’s coordinates</strong> as the location — I confirm the photo was taken at this site. (The photo’s own capture time is still read from its EXIF.)</span>
+      </label>
+    </div>
+    <div style="margin-top:10px;">
+      <button type="button" id="v-extraBtn" class="btn-ghost" onclick="document.getElementById('v-photo2').click()">➕ Add another on-site photo (up to 2 more)</button>
+      <input type="file" accept="image/*" multiple id="v-photo2" style="display:none;">
+      <div id="v-extraThumbs" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;"></div>
+      <div id="v-extraCount" class="muted" style="margin-top:4px;"></div>
+      <div class="muted" style="margin-top:4px;">Optional — up to 2 more angles / close-ups (3 photos total per capture). All appear on the certificate.</div>
+    </div>
+    <label style="display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;color:#455a64;">
+      <input type="checkbox" id="v-lowdata"> 📶 Low-data mode (weak signal / old phone) — smaller photos &amp; skip the video
+    </label>
+    <div id="v-videoBlock" style="margin-top:10px;">
+      <div class="muted" style="margin-bottom:6px;">LED / digital screen? Capture the loop live, or upload a clip you recorded at the site, then tap the frame showing your creative.</div>
+      <input type="file" accept="video/*" capture="environment" id="v-video" style="display:none;">
+      <input type="file" accept="video/*" id="v-videoUp" style="display:none;">
+      <div style="display:flex;gap:8px;">
+        <button type="button" class="btn-ghost" style="flex:1;" onclick="document.getElementById('v-video').click()">📹 Take video</button>
+        <button type="button" class="btn-ghost" style="flex:1;" onclick="document.getElementById('v-videoUp').click()">📤 Upload clip</button>
+      </div>
+      <div id="v-frames" style="display:flex;gap:6px;overflow-x:auto;margin-top:8px;"></div>
+      <div class="muted" id="v-frameHint" style="margin-top:4px;">Record ~10s of the loop, then tap the frame where your creative is on screen. We read GPS &amp; time from the video's own metadata when present.</div>
+      <button type="button" id="v-trimBtn" class="btn-ghost" style="display:none;margin-top:8px;width:100%;" onclick="openTrim()">✂️ Trim this clip (keep just the segment you need)</button>
+    </div>
+    <!-- Trim-clip modal -->
+    <div id="v-trimOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:9999;align-items:center;justify-content:center;padding:16px;">
+      <div style="background:#fff;border-radius:12px;max-width:640px;width:100%;padding:18px;max-height:92vh;overflow:auto;">
+        <h3 style="margin:0 0 6px;color:#1565c0;font-size:17px;">✂️ Trim clip</h3>
+        <p class="muted" style="margin:0 0 10px;">Play the clip, set the start and end to just the part showing your creative, then <strong>Trim &amp; use</strong>. The site location &amp; time are kept.</p>
+        <video id="v-trimVideo" controls playsinline style="width:100%;border-radius:8px;background:#000;max-height:44vh;"></video>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+          <button class="btn-ghost" style="flex:1;" onclick="trimSet('start')">⏮ Set start to playhead</button>
+          <button class="btn-ghost" style="flex:1;" onclick="trimSet('end')">Set end to playhead ⏭</button>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:10px;font-size:13px;color:#455a64;">
+          <label style="flex:1;">Start: <strong id="v-trimStartLbl">0.0s</strong><br><input type="range" id="v-trimStart" min="0" max="0" step="0.1" value="0" oninput="updateTrimLabels()" style="width:100%;"></label>
+          <label style="flex:1;">End: <strong id="v-trimEndLbl">0.0s</strong><br><input type="range" id="v-trimEnd" min="0" max="0" step="0.1" value="0" oninput="updateTrimLabels()" style="width:100%;"></label>
+        </div>
+        <div id="v-trimMsg" class="muted" style="margin-top:8px;"></div>
+        <div style="display:flex;gap:8px;margin-top:12px;">
+          <button class="btn-orange" style="flex:1;" id="v-trimGo" onclick="doTrim()">✂️ Trim &amp; use</button>
+          <button class="btn-ghost" style="flex:0 0 auto;" onclick="closeTrim()">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:10px;">
+      <label class="f">Proof-of-play report <span style="font-weight:400;color:#78909c;">(optional — for DOOH / LED: your CMS playout export, PDF / CSV / Excel)</span></label>
+      <button type="button" class="btn-ghost" onclick="document.getElementById('v-playout').click()">📄 Upload proof-of-play report</button>
+      <input type="file" accept=".pdf,.csv,.xls,.xlsx,application/pdf,text/csv" id="v-playout" style="display:none;">
+      <div id="v-playoutName" class="muted" style="margin-top:4px;"></div>
+    </div>
+
+    <div id="v-capMeta" class="muted" style="margin-top:8px;"></div>
+
+    <div style="margin-top:14px;">
+      <label class="f">🤖 AI creative verification</label>
+      <button class="btn-ghost" id="v-aiBtn" onclick="aiCreativeCheck()">🤖 Run AI creative check</button>
+      <div id="v-aiResult" class="muted" style="margin-top:8px;"></div>
+    </div>
+
+    <div style="margin-top:14px;">
+      <label class="f">Field checks (AI-assisted — auditor can override)</label>
+      <div class="check"><input type="checkbox" id="v-creative"> Correct creative is posted (matches the reference)</div>
+      <div class="check"><input type="checkbox" id="v-cond" checked> Face is undamaged, unobstructed, and lit</div>
+    </div>
+
+    <div style="text-align:center;margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn-orange" id="v-run" onclick="runVerify()">✅ Verify this posting</button>
+      <button type="button" class="btn-ghost" id="v-reset" onclick="resetProof()">🗑️ Reset</button>
+    </div>
+
+    <div id="v-result"></div>
+  </div>
+
+  <div class="note">
+    <strong>What this does today:</strong> real GPS + timestamp capture, a real distance check against the booked site's coordinates, a flight-window check, and <strong>AI creative verification</strong> — a vision model compares the on-site photo to the approved artwork and flags the wrong/expired creative, damage, obstruction, or poor lighting.
+    <br><strong>Saved records:</strong> "Save this proof" stores the verification with a <strong>server timestamp</strong> and integrity hash, so it becomes a permanent record — not just a local PDF.
+    <br><strong>Now live:</strong> a live compliance dashboard (posted-vs-booked per campaign) and shareable proof-of-posting certificates.
+    <br><strong>Still to come:</strong> for DOOH — automated playout-log verification.
+  </div>
+
+</div>
+
+<footer>
+  🛡️ OOH Verify is a proof-of-posting concept for OOHPhilippines.com. Questions: <a href="mailto:info@oohphilippines.com">info@oohphilippines.com</a><br>
+  © <span id="yr"></span> OOHPhilippines.com · <a href="privacy.html">Privacy Policy</a>
+</footer>
+
+<script>
+var SUPABASE_URL = 'https://xecxfkuzexshafwuuizf.supabase.co';
+var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlY3hma3V6ZXhzaGFmd3V1aXpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTk1MTIsImV4cCI6MjA5MTMzNTUxMn0.sZrRmesCDn0DsuldUD8zIhi1gX1ajIKX0aULqNBX_To';
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+// ── Operator login gate ─────────────────────────────────────────────────────
+// The Ad Verifier requires an operator account. Auth reuses the platform's
+// Supabase Auth (shared session across pages); an operator is a profile row
+// with operator_name set. The account email is used for billing.
+function escH(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+var ADMIN_EMAIL = 'darylabueva@gmail.com';
+var _sb = (window.supabase && window.supabase.createClient) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON) : null;
+// Admin has full access everywhere via the shared free-account session — no operator account needed.
+function adminSignedIn(){
+  try{ var fu=JSON.parse(localStorage.getItem('oohph_free_user')||'null'); return fu && String(fu.email||'').toLowerCase()===ADMIN_EMAIL; }catch(e){ return false; }
+}
+
+function showOpGate(msg){
+  var a=document.getElementById('opAuthCard'), c=document.getElementById('captureCard'), b=document.getElementById('opAccountBar');
+  if(a) a.style.display='block';
+  if(c) c.style.display='none';
+  if(b) b.style.display='none';
+  var m=document.getElementById('op-login-msg');
+  if(m) m.innerHTML = msg ? ('<span style="color:#b71c1c;">'+escH(msg)+'</span>') : '';
+}
+var OP = { email:null, name:null, credits:null, admin:false };
+function renderOpBar(){
+  var who=document.getElementById('opAccountWho'); if(!who) return;
+  var creditTxt;
+  if(OP.admin) creditTxt='<strong>admin · unlimited</strong>';
+  else if(OP.credits===null) creditTxt='<span style="color:#b71c1c;">⚠ no credit account yet — ask the admin to activate your credits before verifying</span>';
+  else creditTxt='⭐ <strong>'+OP.credits+'</strong> credits'+(OP.credits<10?' <span style="color:#e65100;">· need 10 to verify a new site</span>':'');
+  who.innerHTML='👷 <strong>'+escH(OP.name||OP.email)+'</strong> ('+escH(OP.email)+') · '+creditTxt+' — verifications are billed to this account.';
+  // Change-password only works for real operators (Supabase Auth session); admin uses the shared free-account session.
+  var pwBtn=document.getElementById('opPwBtn'); if(pwBtn) pwBtn.style.display = OP.admin ? 'none' : 'inline-block';
+}
+async function opLoadCredits(){
+  OP.admin = (OP.email==='darylabueva@gmail.com');
+  if(OP.admin){ renderOpBar(); return; }
+  try{ var r=await _sb.rpc('get_credits',{p_email:OP.email}); OP.credits = (typeof r.data==='number') ? r.data : null; }
+  catch(e){ OP.credits=null; }
+  renderOpBar();
+}
+function showOpTool(email, opname, defaultClient){
+  var a=document.getElementById('opAuthCard'), s=document.getElementById('opSignupCard'), c=document.getElementById('captureCard'), b=document.getElementById('opAccountBar');
+  if(a) a.style.display='none';
+  if(s) s.style.display='none';
+  if(c) c.style.display='block';
+  OP.email=email; OP.name=opname; OP.credits=null; OP.admin=false; OP.defaultClient=defaultClient||null;
+  if(b){ b.style.display='flex'; renderOpBar(); }
+  var f=document.getElementById('v-operator'); if(f){ f.value=email; f.readOnly=true; }
+  // Pre-fill the client email from the operator's saved default (if the field is empty).
+  var cf=document.getElementById('v-client'); if(cf && !cf.value && OP.defaultClient){ cf.value=OP.defaultClient; }
+  opLoadCredits();
+  if(typeof refreshCreativeDropdown==='function') refreshCreativeDropdown();
+  if(typeof loadFieldCaptures==='function') loadFieldCaptures();
+}
+// ── Incoming field captures (from the no-login field-capture app) ─────────────
+var FIELD_ITEMS=[], USED_IDS=[];
+// Fullscreen preview of a capture before deciding to Use it.
+function openLightbox(encUrl, isVideo){
+  var url=decodeURIComponent(encUrl||''); if(!url) return;
+  var ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:3000;display:flex;align-items:center;justify-content:center;padding:16px;';
+  ov.innerHTML = (isVideo
+    ? '<video src="'+escH(url)+'" controls autoplay playsinline style="max-width:100%;max-height:90vh;border-radius:8px;"></video>'
+    : '<img src="'+escH(url)+'" style="max-width:100%;max-height:90vh;border-radius:8px;">')
+    + '<div style="position:fixed;top:12px;right:18px;color:#fff;font-size:32px;font-weight:700;">×</div>';
+  ov.onclick=function(){ try{ document.body.removeChild(ov); }catch(e){} };
+  var media=ov.firstChild; if(media){ media.onclick=function(e){ e.stopPropagation(); }; }  // don't close when using video controls
+  document.body.appendChild(ov);
+}
+async function deleteFieldCapture(i){
+  var it=FIELD_ITEMS[i]; if(!it) return;
+  if(!confirm('Delete this field capture permanently? Do this once it is saved as proof or no longer needed.')) return;
+  try{
+    await fetch(SUPABASE_URL+'/functions/v1/field-captures',{ method:'POST',
+      headers:{ apikey:SUPABASE_ANON, Authorization:'Bearer '+SUPABASE_ANON, 'Content-Type':'application/json' },
+      body:JSON.stringify({ action:'delete', operator:OP.email, id:it.id }) });
+    loadFieldCaptures();
+  }catch(e){ alert('Could not delete — try again.'); }
+}
+async function loadFieldCaptures(){
+  if(!_sb || !OP.email) return;
+  var box=document.getElementById('v-inbox'), list=document.getElementById('v-inboxList'), cnt=document.getElementById('v-inboxCount');
+  if(!box) return;
+  try{
+    var r=await fetch(SUPABASE_URL+'/functions/v1/field-captures',{ method:'POST',
+      headers:{ apikey:SUPABASE_ANON, Authorization:'Bearer '+SUPABASE_ANON, 'Content-Type':'application/json' },
+      body:JSON.stringify({ action:'list', operator:OP.email }) });
+    var b=await r.json();
+    if(!r.ok || !b.items || !b.items.length){ box.style.display='none'; FIELD_ITEMS=[]; return; }
+    FIELD_ITEMS=b.items; cnt.textContent='('+b.items.length+')';
+    list.innerHTML=b.items.map(function(it,i){
+      var when=it.captured_at_client?new Date(it.captured_at_client).toLocaleString('en-PH'):'';
+      var loc=it.gps?('📍 '+it.gps.lat.toFixed(5)+', '+it.gps.lng.toFixed(5)):'<span style="color:#e65100;">no location</span>';
+      var big = it.photo_url || it.video_url || '';
+      var bigIsVid = !it.photo_url && !!it.video_url;
+      var thumb=it.photo_url
+        ? ('<img src="'+escH(it.photo_url)+'" onclick="openLightbox(\''+encodeURIComponent(big)+'\','+(bigIsVid?'true':'false')+')" style="height:54px;width:72px;object-fit:cover;border-radius:6px;flex:0 0 auto;cursor:pointer;">')
+        : ('<div onclick="openLightbox(\''+encodeURIComponent(big)+'\',true)" style="height:54px;width:72px;border-radius:6px;background:#37474f;color:#fff;display:flex;align-items:center;justify-content:center;flex:0 0 auto;cursor:pointer;">📹</div>');
+      var used = USED_IDS.indexOf(it.id)>=0;
+      return '<div style="display:flex;gap:10px;align-items:center;padding:8px 0;border-top:1px solid #d6e2f7;">'+thumb
+        + '<div style="flex:1;min-width:0;font-size:12.5px;color:#455a64;">'+(it.brand?('<strong>'+escH(it.brand)+'</strong> · '):'')+escH(it.site_note||'')+(used?' <span style="color:#1b5e20;font-weight:700;">✓ used</span>':'')+'<br>'+escH(when)+'<br>'+loc+(it.video_url?' · 🎥 video':'')+'</div>'
+        + '<div style="display:flex;flex-direction:column;gap:4px;flex:0 0 auto;">'
+        +   '<button class="btn-ghost" style="padding:5px 10px;font-size:12px;" onclick="openLightbox(\''+encodeURIComponent(big)+'\','+(bigIsVid?'true':'false')+')">🔍 View</button>'
+        +   '<button class="btn-primary" style="padding:5px 10px;font-size:12px;" onclick="useFieldCapture('+i+')">Use</button>'
+        +   '<button class="btn-ghost" style="padding:5px 10px;font-size:12px;color:#b71c1c;border-color:#f5c6cb;" onclick="deleteFieldCapture('+i+')">🗑 Delete</button>'
+        + '</div></div>';
+    }).join('');
+    box.style.display='block';
+  }catch(e){ box.style.display='none'; }
+}
+// Set the chosen still (and carry the field GPS/time) so the proof can be saved.
+function setFieldFrame(dataURL, gps, time){
+  V.photo=dataURL; V.exifGps=gps||null; V.exifTime=time||null; V.captureSource='upload'; V.capTime=new Date();
+  var pb=document.getElementById('v-photoBox'); if(pb) pb.innerHTML='<img src="'+dataURL+'">';
+  showCapMeta();
+}
+async function useFieldCapture(i){
+  var it=FIELD_ITEMS[i]; if(!it) return;
+  var fgps = it.gps ? {lat:it.gps.lat,lng:it.gps.lng} : null;
+  var ftime = it.captured_at_client ? new Date(it.captured_at_client) : null;
+  try{
+    V.captureSource='upload'; V.gps=null;
+    V.exifGps = fgps; V.exifTime = ftime;
+    if(it.brand) document.getElementById('v-brand').value=it.brand;
+    if(it.site_note) document.getElementById('v-code').value=it.site_note;
+
+    if(it.photo_url){
+      V.photo=await urlToDataURL(it.photo_url);
+      document.getElementById('v-photoBox').innerHTML='<img src="'+V.photo+'">';
+    }
+    if(it.video_url){
+      // Load the clip and let the operator pick the still frame (LED proofs need a photo).
+      var vb=await (await fetch(it.video_url)).blob();
+      V.videoFile=vb; V.videoSource='upload'; V.videoGps=fgps; V.videoTime=ftime; showTrimBtn();
+      var strip=document.getElementById('v-frames'), hint=document.getElementById('v-frameHint');
+      if(strip) strip.innerHTML=''; if(hint) hint.textContent='Pick the frame that shows the creative ↓';
+      extractFrames(vb, 12, function(frames){
+        if(!frames.length){ if(hint) hint.textContent=''; showScrubCapture(vb, strip, function(d){ setFieldFrame(d,fgps,ftime); }); return; }
+        frames.forEach(function(fr,fi){
+          var im=document.createElement('img'); im.src=fr;
+          im.style.cssText='height:70px;border-radius:6px;border:2px solid '+(fi===0?'#1565c0':'transparent')+';cursor:pointer;flex:0 0 auto;';
+          im.onclick=function(){ Array.prototype.forEach.call(strip.children,function(x){x.style.borderColor='transparent';}); im.style.borderColor='#1565c0'; setFieldFrame(fr,fgps,ftime); };
+          strip.appendChild(im);
+        });
+        setFieldFrame(frames[0],fgps,ftime);   // auto-select the first frame so a photo always exists
+      });
+    }
+    showCapMeta();
+    if(USED_IDS.indexOf(it.id)<0) USED_IDS.push(it.id);
+    loadFieldCaptures();   // item stays in the inbox (marked ✓ used) — removed only via 🗑 Delete
+    try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){}
+    alert(it.video_url
+      ? 'Loaded the clip — scroll to the frames and tap the one showing the creative (the first is pre-selected). Then look up the site and “💾 Save this proof”.'
+      : 'Loaded the field capture (photo + location + time). Look up the booked site, confirm the checks, then “💾 Save this proof”. It stays in your inbox (✓ used) until you tap 🗑 Delete.');
+  }catch(e){ alert('Could not load that capture — tap ↻ Refresh and try again.'); }
+}
+// Recognise an operator by profiles.operator_name OR the operator_name saved in
+// the account's metadata at self-signup. Returns {name, client} or null.
+async function opResolveOperator(sess){
+  var meta=(sess.user && sess.user.user_metadata) || {};
+  var name=null, client=null;
+  try{
+    // select('*') so this doesn't error if the profiles table has no client_email column.
+    var prof=(await _sb.from('profiles').select('*').eq('id',sess.user.id).single()).data;
+    if(prof){ name=prof.operator_name||null; client=prof.client_email||null; }
+  }catch(e){}
+  if(!name && meta.operator_name) name=meta.operator_name;
+  if(!client && meta.default_client_email) client=meta.default_client_email;
+  // Best-effort: keep the profile's operator_name in sync for self-signup accounts.
+  if(meta.operator_name){ try{ await _sb.from('profiles').upsert({ id:sess.user.id, operator_name:meta.operator_name }); }catch(e){} }
+  return name ? { name:name, client:client } : null;
+}
+async function opVerifyInit(){
+  // Admin bypass — full access via the shared free-account session (no operator account needed).
+  if(adminSignedIn()){ showOpTool(ADMIN_EMAIL, 'Admin'); return; }
+  if(!_sb){ showOpGate('Login service failed to load — please refresh the page.'); return; }
+  try{
+    var sess=(await _sb.auth.getSession()).data.session;
+    if(!sess){ showOpGate(''); return; }
+    var email=(sess.user.email||'').toLowerCase();
+    if(email===ADMIN_EMAIL){ showOpTool(ADMIN_EMAIL, 'Admin'); return; }
+    var op=await opResolveOperator(sess);
+    if(!op){ showOpGate('You are signed in as '+email+', but this is not an operator account. Please log in with your operator account.'); return; }
+    showOpTool(email, op.name, op.client);
+  }catch(e){ showOpGate(''); }
+}
+async function opVerifyLogin(){
+  if(!_sb){ return; }
+  var email=(document.getElementById('op-email').value||'').trim().toLowerCase();
+  var pass=(document.getElementById('op-pass').value||'').trim();
+  var msg=document.getElementById('op-login-msg');
+  if(!email||!pass){ msg.innerHTML='<span style="color:#b71c1c;">Enter your email and password.</span>'; return; }
+  var btn=document.getElementById('op-login-btn'); btn.disabled=true; msg.textContent='⏳ Signing in…';
+  try{
+    var res=await _sb.auth.signInWithPassword({ email:email, password:pass });
+    if(res.error){ btn.disabled=false; msg.innerHTML='<span style="color:#b71c1c;">Incorrect email or password.</span>'; return; }
+    if((res.data.user.email||'').toLowerCase()===ADMIN_EMAIL){ document.getElementById('op-pass').value=''; btn.disabled=false; showOpTool(ADMIN_EMAIL,'Admin'); return; }
+    var op=await opResolveOperator(res.data.session || (await _sb.auth.getSession()).data.session);
+    if(!op){ await _sb.auth.signOut(); btn.disabled=false; msg.innerHTML='<span style="color:#b71c1c;">This is not an operator account. Please use your operator login.</span>'; return; }
+    document.getElementById('op-pass').value=''; btn.disabled=false;
+    showOpTool((res.data.user.email||'').toLowerCase(), op.name, op.client);
+  }catch(e){ btn.disabled=false; msg.innerHTML='<span style="color:#b71c1c;">Sign-in failed — try again.</span>'; }
+}
+// ── Operator / reseller self-signup ──────────────────────────────────────────
+function opShowSignup(){
+  var a=document.getElementById('opAuthCard'), s=document.getElementById('opSignupCard');
+  if(a) a.style.display='none'; if(s){ s.style.display='block'; s.scrollIntoView({behavior:'smooth',block:'center'}); }
+}
+function opShowLogin(){
+  var a=document.getElementById('opAuthCard'), s=document.getElementById('opSignupCard');
+  if(s) s.style.display='none'; if(a) a.style.display='block';
+}
+async function opCreateAccount(){
+  if(!_sb) return;
+  var name=(document.getElementById('su-name').value||'').trim();
+  var email=(document.getElementById('su-email').value||'').trim().toLowerCase();
+  var pass=(document.getElementById('su-pass').value||'');
+  var client=(document.getElementById('su-client').value||'').trim().toLowerCase();
+  var msg=document.getElementById('su-msg');
+  if(!name){ msg.innerHTML='<span style="color:#b71c1c;">Enter your company / operator name.</span>'; return; }
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ msg.innerHTML='<span style="color:#b71c1c;">Enter a valid email address.</span>'; return; }
+  if(pass.length<8){ msg.innerHTML='<span style="color:#b71c1c;">Password must be at least 8 characters.</span>'; return; }
+  if(client && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(client)){ msg.innerHTML='<span style="color:#b71c1c;">The client email doesn\'t look valid.</span>'; return; }
+  var btn=document.getElementById('su-btn'); btn.disabled=true; msg.textContent='⏳ Creating your account…';
+  try{
+    var res=await _sb.auth.signUp({ email:email, password:pass, options:{ data:{ operator_name:name, default_client_email:client||null } } });
+    if(res.error){ btn.disabled=false; msg.innerHTML='<span style="color:#b71c1c;">'+escH(res.error.message||'Could not create the account.')+'</span>'; return; }
+    // Best-effort: create the profile row now if we already have a session (email confirmation off).
+    if(res.data.session){ try{ await _sb.from('profiles').upsert({ id:res.data.user.id, operator_name:name, client_email:client||null }); }catch(e){} }
+    btn.disabled=false;
+    if(res.data.session){
+      msg.innerHTML='<span style="color:#1b5e20;">✅ Account created! Your verification credits need to be activated by OOH Philippines before you can save proof — email info@oohphilippines.com. Loading your workspace…</span>';
+      setTimeout(function(){ showOpTool(email, name, client||null); }, 1500);
+    } else {
+      msg.innerHTML='<span style="color:#1b5e20;">✅ Account created! Check your inbox to confirm your email, then log in. Your credits must be activated by OOH Philippines (email info@oohphilippines.com) before you can save proof.</span>';
+    }
+  }catch(e){ btn.disabled=false; msg.innerHTML='<span style="color:#b71c1c;">Sign-up failed — please try again.</span>'; }
+}
+async function opVerifyLogout(){
+  OP.email=null; OP.name=null; OP.credits=null; OP.admin=false;
+  var f=document.getElementById('v-operator'); if(f){ f.value=''; f.readOnly=true; }
+  var pc=document.getElementById('opPwCard'); if(pc) pc.style.display='none';
+  try{ if(_sb) await _sb.auth.signOut(); }catch(e){}
+  showOpGate('');
+}
+
+// ── Change password (logged-in operator) ────────────────────────────────────
+function opTogglePwForm(show){
+  var card=document.getElementById('opPwCard'); if(!card) return;
+  var willShow = (show===undefined) ? (card.style.display==='none') : show;
+  card.style.display = willShow ? 'block' : 'none';
+  if(willShow){
+    document.getElementById('op-email-new').value = OP.email || '';
+    document.getElementById('op-newpass').value='';
+    document.getElementById('op-newpass2').value='';
+    document.getElementById('op-pw-msg').innerHTML='';
+    card.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+}
+async function opChangePassword(){
+  if(!_sb) return;
+  var newEmail=(document.getElementById('op-email-new').value||'').trim().toLowerCase();
+  var p1=(document.getElementById('op-newpass').value||'');
+  var p2=(document.getElementById('op-newpass2').value||'');
+  var msg=document.getElementById('op-pw-msg');
+  var emailChanged = newEmail && newEmail!==(OP.email||'').toLowerCase();
+  var wantPw = p1.length>0;
+  if(emailChanged && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(newEmail)){ msg.innerHTML='<span style="color:#b71c1c;">Please enter a valid email address.</span>'; return; }
+  if(wantPw && p1.length<8){ msg.innerHTML='<span style="color:#b71c1c;">Password must be at least 8 characters.</span>'; return; }
+  if(wantPw && p1!==p2){ msg.innerHTML='<span style="color:#b71c1c;">The two passwords don\'t match.</span>'; return; }
+  if(!emailChanged && !wantPw){ msg.innerHTML='<span style="color:#b71c1c;">Enter a new email or a new password to save.</span>'; return; }
+  var payload={}; if(emailChanged) payload.email=newEmail; if(wantPw) payload.password=p1;
+  var btn=document.getElementById('op-pw-btn'); btn.disabled=true; msg.textContent='⏳ Saving…';
+  try{
+    var sess=(await _sb.auth.getSession()).data.session;
+    if(!sess){ btn.disabled=false; msg.innerHTML='<span style="color:#b71c1c;">Your session expired — please log out and log in again, then try.</span>'; return; }
+    var res=await _sb.auth.updateUser(payload);
+    if(res.error){ btn.disabled=false; msg.innerHTML='<span style="color:#b71c1c;">'+escH(res.error.message||'Could not save changes.')+'</span>'; return; }
+    btn.disabled=false;
+    document.getElementById('op-newpass').value=''; document.getElementById('op-newpass2').value='';
+    var parts=[];
+    if(wantPw) parts.push('Password updated — use it next time you log in.');
+    if(emailChanged) parts.push('A confirmation link was sent to <strong>'+escH(newEmail)+'</strong>. Click it to finish changing your email.');
+    msg.innerHTML='<span style="color:#1b5e20;">✅ '+parts.join(' ')+'</span>';
+  }catch(e){ btn.disabled=false; msg.innerHTML='<span style="color:#b71c1c;">Save failed — please try again.</span>'; }
+}
+// ── Forgot password (send reset email from the login gate) ───────────────────
+async function opForgotPassword(){
+  if(!_sb) return;
+  var email=(document.getElementById('op-email').value||'').trim().toLowerCase();
+  var msg=document.getElementById('op-login-msg');
+  if(!email){ msg.innerHTML='<span style="color:#b71c1c;">Type your operator email in the field above first, then tap “Forgot password?”.</span>'; return; }
+  msg.textContent='⏳ Sending reset link…';
+  try{
+    var res=await _sb.auth.resetPasswordForEmail(email, { redirectTo: 'https://oohphilippines.com/reset-password.html' });
+    if(res.error){ msg.innerHTML='<span style="color:#b71c1c;">'+escH(res.error.message||'Could not send the reset email.')+'</span>'; return; }
+    msg.innerHTML='<span style="color:#1b5e20;">✅ If an operator account exists for '+escH(email)+', a password-reset link is on its way. Check your inbox (and spam).</span>';
+  }catch(e){ msg.innerHTML='<span style="color:#b71c1c;">Could not send the reset email — please try again.</span>'; }
+}
+opVerifyInit();
+
+// ── Navigation guard: an operator must log out before leaving the verifier. ──
+(function opNavGuard(){
+  var navWrap=document.querySelector('.nav-wrapper');
+  if(navWrap){
+    navWrap.addEventListener('click', function(e){
+      if(!(typeof OP!=='undefined' && OP.email && !OP.admin)) return;   // only real operators
+      var a=e.target.closest('a'); if(!a) return;
+      var href=a.getAttribute('href')||'';
+      if(href===''||href==='#'||href==='ad-verifier.html') return;      // same page / no-op
+      e.preventDefault(); e.stopPropagation();
+      if(confirm("You're logged in as an operator on the Ad Verifier.\n\nPlease log out before going to another section.\n\nOK = log out and continue · Cancel = stay here.")){
+        try{ opVerifyLogout(); }catch(_){}
+        OP.email=null;   // ensure the unload guard below won't double-prompt
+        window.location.href=href;
+      }
+    }, true);
+  }
+  window.addEventListener('beforeunload', function(e){
+    if(typeof OP!=='undefined' && OP.email && !OP.admin){ e.preventDefault(); e.returnValue=''; }
+  });
+})();
+
+refreshCreativeDropdown();
+
+var V = { site:null, siteCoord:null, photo:null, ref:null, gps:null, capTime:null, ai:null, exifGps:null, exifTime:null, videoFile:null, videoGps:null, videoTime:null, extraPhotos:[], playout:null, captureSource:null, videoSource:null };
+// Clear all uploaded/captured proof media (photos, creative, video, report) so the auditor can start over.
+function resetProof(){
+  if(!confirm('Clear the uploaded photos, video, creative and report for this capture? This cannot be undone.')) return;
+  // reset media state
+  V.photo=null; V.ref=null; V.extraPhotos=[]; V.playout=null;
+  V.videoFile=null; V.videoGps=null; V.videoTime=null; V.videoSource=null; showTrimBtn();
+  V.gps=null; V.exifGps=null; V.exifTime=null; V.capTime=null; V.ai=null; V.captureSource=null;
+  // reset preview boxes
+  var rb=document.getElementById('v-refBox'); if(rb) rb.textContent='Tap to upload the approved artwork';
+  var pb=document.getElementById('v-photoBox'); if(pb) pb.textContent='Tap to take or upload the on-site photo';
+  var ft=document.getElementById('v-frames'); if(ft) ft.innerHTML='';
+  var fh=document.getElementById('v-frameHint'); if(fh) fh.textContent="Record ~10s of the loop, then tap the frame where your creative is on screen. We read GPS & time from the video's own metadata when present.";
+  try{ renderExtraThumbs(); }catch(e){}
+  var pn=document.getElementById('v-playoutName'); if(pn) pn.textContent='';
+  var cm=document.getElementById('v-capMeta'); if(cm) cm.textContent='';
+  var ar=document.getElementById('v-aiResult'); if(ar) ar.textContent='';
+  var vr=document.getElementById('v-result'); if(vr) vr.innerHTML='';
+  // clear the file inputs so re-selecting the same file still fires change
+  ['v-ref','v-photo','v-photoUp','v-photo2','v-video','v-videoUp','v-playout'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  try{ if(typeof updateSiteLocOption==='function') updateSiteLocOption(); }catch(e){}
+}
+function fileToDataURL(file){ return new Promise(function(res,rej){ var fr=new FileReader(); fr.onload=function(){res(fr.result);}; fr.onerror=rej; fr.readAsDataURL(file); }); }
+// Read GPS (QuickTime ©xyz / ISO-6709) and recording time (mvhd) from an mp4/mov, so an LED video
+// recorded on-site still verifies its location + time even when trimmed at the office later.
+function parseVideoMeta(file, cb){
+  var fr=new FileReader();
+  fr.onload=function(){
+    var b=new Uint8Array(fr.result), gps=null, time=null, i, j;
+    for(i=0;i<b.length-8;i++){ // ©xyz  = A9 78 79 7A
+      if(b[i]===0xA9&&b[i+1]===0x78&&b[i+2]===0x79&&b[i+3]===0x7A){
+        var start=i+8, s=''; for(j=start;j<start+40&&j<b.length;j++){ var ch=b[j]; if(ch===0||ch===0x2F)break; s+=String.fromCharCode(ch); }
+        var m=s.match(/([+-]\d+\.\d+)([+-]\d+\.\d+)/); if(m) gps={lat:parseFloat(m[1]),lng:parseFloat(m[2])};
+        break;
+      }
+    }
+    for(i=0;i<b.length-20;i++){ // 'mvhd' = 6D 76 68 64
+      if(b[i]===0x6D&&b[i+1]===0x76&&b[i+2]===0x68&&b[i+3]===0x64){
+        var ver=b[i+4], off=i+8, secs=0;
+        if(ver===1){ off=i+8; secs=(b[off+4]*16777216)+(b[off+5]*65536)+(b[off+6]*256)+b[off+7]; } // low 32 bits of 64
+        else { secs=(b[off]*16777216)+(b[off+1]*65536)+(b[off+2]*256)+b[off+3]; }
+        if(secs>2082844800){ var d=new Date((secs-2082844800)*1000); if(!isNaN(d)) time=d; }
+        break;
+      }
+    }
+    cb(gps,time);
+  };
+  fr.onerror=function(){ cb(null,null); };
+  fr.readAsArrayBuffer(file.slice(0, 20*1024*1024)); // scan first 20 MB
+}
+// Effective location/time prefer the photo's own EXIF (works even when uploaded later from a camera),
+// then fall back to the live device GPS / clock.
+function effectiveGps(){
+  // Prefer the location embedded in the FILE (photo EXIF or video metadata) — this is where
+  // the shot was actually taken, even when the file is uploaded later from the office.
+  if(V.exifGps) return {lat:V.exifGps.lat,lng:V.exifGps.lng,src:'file GPS'};
+  // Live device location only counts for a LIVE camera capture (on-site). For an uploaded
+  // file we never use the device/upload location — it would be the office, not the site.
+  if(V.gps && V.captureSource==='camera') return {lat:V.gps.lat,lng:V.gps.lng,acc:V.gps.acc,src:'device (live)'};
+  // Digital-camera photos have no GPS: if the operator confirms the shot was taken at the
+  // booked site, record that site's coordinates (clearly labelled, not independent GPS).
+  var _cb=document.getElementById('v-useSiteLoc');
+  if(_cb && _cb.checked && V.siteCoord) return {lat:V.siteCoord.lat,lng:V.siteCoord.lng,src:'booked site'};
+  return null;
+}
+// Show the "use booked-site location" option only when it applies: an UPLOADED file with no
+// embedded GPS, and a booked site has been looked up.
+function updateSiteLocOption(){
+  var wrap=document.getElementById('v-useSiteLocWrap'); if(!wrap) return;
+  var show = (V.captureSource==='upload') && !V.exifGps && !!V.siteCoord;
+  wrap.style.display = show ? 'block' : 'none';
+  if(!show){ var cb=document.getElementById('v-useSiteLoc'); if(cb) cb.checked=false; }
+}
+function effectiveTime(){ return V.exifTime || V.capTime || null; }
+function showCapMeta(){
+  updateSiteLocOption();
+  var m=document.getElementById('v-capMeta'); if(!m) return;
+  var parts=[]; var t=effectiveTime(); if(t) parts.push('⏱ '+t.toLocaleString('en-PH')+(V.exifTime?' (photo)':''));
+  var g=effectiveGps(); parts.push(g?('📡 '+g.lat.toFixed(5)+', '+g.lng.toFixed(5)+' ('+g.src+')'):'📡 no location yet');
+  m.innerHTML=parts.join(' · ');
+}
+// Load a script on demand (cached). Lets the capture page start light on old phones; the
+// heavy libs (exifr, jsPDF) only download when actually needed and never block capture.
+var _scriptCache={};
+function loadScript(src){
+  if(_scriptCache[src]) return _scriptCache[src];
+  _scriptCache[src]=new Promise(function(res,rej){
+    var s=document.createElement('script'); s.src=src; s.async=true;
+    s.onload=res; s.onerror=function(){ _scriptCache[src]=null; rej(new Error('load failed')); };
+    document.head.appendChild(s);
+  });
+  return _scriptCache[src];
+}
+var EXIFR_URL='https://cdn.jsdelivr.net/npm/exifr@7.1.3/dist/full.umd.js';
+var JSPDF_URL='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+async function readExif(file){
+  V.exifGps=null; V.exifTime=null;
+  if(!file){ showCapMeta(); return; }
+  if(typeof exifr==='undefined'){ try{ await loadScript(EXIFR_URL); }catch(e){} }   // best-effort; capture still works without it
+  if(typeof exifr==='undefined'){ showCapMeta(); return; }
+  try{ var g=await exifr.gps(file); if(g && isFinite(g.latitude) && isFinite(g.longitude)) V.exifGps={lat:g.latitude,lng:g.longitude}; }catch(e){}
+  try{ var p=await exifr.parse(file,['DateTimeOriginal','CreateDate']); var d=p&&(p.DateTimeOriginal||p.CreateDate); if(d){ var dt=new Date(d); if(!isNaN(dt)) V.exifTime=dt; } }catch(e){}
+  showCapMeta();
+}
+
+// Per-format verification rules. fixed=has a fixed GPS location; vehicle=moving media (no fixed
+// point, needs a vehicle ID); run=a series of units along a route; digital=rotating LED screen.
+var FORMATS = {
+  billboard:   { label:'Billboard (static)',        fixed:true,  radius:150 },
+  led:         { label:'LED / Digital board',       fixed:true,  radius:150, digital:true },
+  lamppost:    { label:'Lamp post banner',          fixed:true,  radius:120, run:true },
+  transit_veh: { label:'Transit — vehicle wrap',    fixed:false, vehicle:true },
+  transit_sta: { label:'Transit — station/terminal',fixed:true,  radius:120 },
+  small:       { label:'Small format / poster',     fixed:true,  radius:80 },
+  other:       { label:'Other',                     fixed:true,  radius:150 }
+};
+function curFormat(){ return FORMATS[document.getElementById('v-format').value] || FORMATS.billboard; }
+
+// Transit vehicle tracking — deployment evidence: count in-service spot-checks over the flight (per vehicle + brand)
+function vehKey(){ return 'oohverify_veh_'+((document.getElementById('v-vehicle').value||'').trim().toLowerCase())+'|'+((document.getElementById('v-brand').value||'').trim().toLowerCase()); }
+function loadVeh(){ try{ var v=JSON.parse(localStorage.getItem(vehKey())||'{}'); v.checks=v.checks||[]; return v; }catch(e){ return {checks:[]}; } }
+function logVehCheck(){ try{ var v=loadVeh(); v.checks.push(new Date().toISOString()); localStorage.setItem(vehKey(), JSON.stringify(v)); }catch(e){} }
+function updateVehStatus(){
+  var el=document.getElementById('v-vehStatus'); if(!el) return;
+  if(!curFormat().vehicle){ el.textContent=''; return; }
+  var v=loadVeh(); var n=v.checks.length;
+  var dates=v.checks.slice(-6).map(function(d){ return new Date(d).toLocaleDateString('en-PH'); });
+  el.innerHTML= n? ('🛣 In-service spot-checks logged: <strong>'+n+'</strong> ('+dates.join(', ')+') — capture on different dates to prove it stayed deployed.')
+                 : 'Log periodic in-service spot-checks over the flight to prove the vehicle stayed on the road.';
+}
+
+// Lamp-post run tracking — a photo per unit; shows how many of N are done (per run + brand, this device)
+function runKey(){ return 'oohverify_run_'+((document.getElementById('v-code').value||'').trim().toLowerCase())+'|'+((document.getElementById('v-brand').value||'').trim().toLowerCase()); }
+function loadRun(){ try{ var r=JSON.parse(localStorage.getItem(runKey())||'{}'); r.units=r.units||{}; return r; }catch(e){ return {units:{}}; } }
+function markUnit(n){ try{ var r=loadRun(); if(n) r.units[String(n)]=true; localStorage.setItem(runKey(), JSON.stringify(r)); }catch(e){} }
+function updateRunStatus(){
+  var el=document.getElementById('v-runStatus'); if(!el) return;
+  if(!curFormat().run){ el.textContent=''; return; }
+  var total=parseInt((document.getElementById('v-units').value||'').trim(),10);
+  var r=loadRun(); var doneList=Object.keys(r.units).map(Number).sort(function(a,b){return a-b;}); var done=doneList.length;
+  var txt='Saved '+done+(total?(' of '+total):'')+' post'+(done===1?'':'s')+(done?' ('+doneList.join(', ')+')':'');
+  if(total){ var miss=[]; for(var i=1;i<=total;i++){ if(!r.units[String(i)]) miss.push(i); } txt+= miss.length? ' · <span style="color:#e65100;">remaining: '+miss.join(', ')+'</span>' : ' · <strong style="color:#1b5e20;">run complete ✓</strong>'; }
+  el.innerHTML='📋 '+txt;
+  if(typeof updateExtraCount==='function') updateExtraCount();
+}
+
+// Day/night shot tracking for illuminated sites (per site + brand, this device)
+function shotKey(){ return 'oohverify_shots_'+((document.getElementById('v-code').value||'').trim().toLowerCase())+'|'+((document.getElementById('v-brand').value||'').trim().toLowerCase()); }
+function loadShots(){ try{ return JSON.parse(localStorage.getItem(shotKey())||'{}'); }catch(e){ return {}; } }
+function markShot(tod){ try{ var sh=loadShots(); sh[tod==='Night'?'night':'day']=true; localStorage.setItem(shotKey(), JSON.stringify(sh)); }catch(e){} }
+function updateShotStatus(){
+  var el=document.getElementById('v-shotStatus'); if(!el) return;
+  if(!document.getElementById('v-illum').checked){ el.textContent=''; return; }
+  var sh=loadShots();
+  var d=sh.day?'<span style="color:#1b5e20;">☀ Day ✓</span>':'<span style="color:#e65100;">☀ Day ✗</span>';
+  var n=sh.night?'<span style="color:#1b5e20;">🌙 Night ✓</span>':'<span style="color:#e65100;">🌙 Night ✗</span>';
+  var both=sh.day&&sh.night;
+  el.innerHTML='Illuminated site — a day <em>or</em> night shot is accepted; both is stronger proof: '+d+' · '+n+(both?' — <strong style="color:#1b5e20;">both captured ✓</strong>':'');
+}
+function onFormatChange(){
+  var f=curFormat();
+  document.getElementById('v-vehWrap').style.display = f.vehicle ? 'block' : 'none';
+  document.getElementById('v-runWrap').style.display = f.run ? 'block' : 'none';
+  document.getElementById('v-codeLabel').textContent = f.vehicle ? 'Route / contract code (optional)' : (f.run ? 'Run / contract code' : 'Site code (booked site)');
+  updateRunStatus(); updateVehStatus(); if(typeof updateExtraCount==='function') updateExtraCount();
+}
+
+// Downscale a data URL to <= max px on the long side (keeps the API payload + storage small).
+function downscale(dataURL, max, q){
+  return new Promise(function(res){
+    var img=new Image();
+    img.onload=function(){ var w=img.naturalWidth,h=img.naturalHeight,s=Math.min(1,max/Math.max(w,h||1));
+      var c=document.createElement('canvas'); c.width=Math.max(1,Math.round(w*s)); c.height=Math.max(1,Math.round(h*s));
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height); res(c.toDataURL('image/jpeg', (typeof q==='number'?q:0.72))); };
+    img.onerror=function(){ res(dataURL); };
+    img.src=dataURL;
+  });
+}
+
+// Re-encode a video to the smallest reasonable evidence clip: cap the long side at
+// `maxPx`, re-encode at a low bitrate via canvas + MediaRecorder. Falls back to the
+// original file if the browser can't do it (older Safari). Returns a Blob.
+function compressVideo(file, maxPx, bitrate){
+  return new Promise(function(res){
+    var done=false, url=null, mr=null;
+    function finish(x){ if(done) return; done=true; try{clearTimeout(guard);}catch(e){} try{if(url)URL.revokeObjectURL(url);}catch(e){} res(x); }
+    var guard=setTimeout(function(){ try{ if(mr && mr.state!=='inactive') mr.stop(); }catch(e){} finish(file); }, 25000);
+    try{
+      if(typeof MediaRecorder==='undefined' || !HTMLCanvasElement.prototype.captureStream){ return finish(file); }
+      var v=document.createElement('video'); v.muted=true; v.playsInline=true; v.preload='auto';
+      url=URL.createObjectURL(file); v.src=url;
+      v.onloadedmetadata=function(){
+        var w=v.videoWidth||640, h=v.videoHeight||360, s=Math.min(1, maxPx/Math.max(w,h));
+        var cw=Math.max(2,Math.round(w*s)), ch=Math.max(2,Math.round(h*s));
+        var c=document.createElement('canvas'); c.width=cw; c.height=ch; var ctx=c.getContext('2d');
+        var stream=c.captureStream(24);
+        var type=(MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported('video/webm;codecs=vp9'))?'video/webm;codecs=vp9'
+                 :((MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported('video/webm;codecs=vp8'))?'video/webm;codecs=vp8'
+                 :((MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported('video/webm'))?'video/webm':''));
+        try{ mr = type ? new MediaRecorder(stream,{ mimeType:type, videoBitsPerSecond:(bitrate||500000) }) : new MediaRecorder(stream); }
+        catch(e){ return finish(file); }
+        var chunks=[];
+        mr.ondataavailable=function(e){ if(e.data&&e.data.size) chunks.push(e.data); };
+        mr.onstop=function(){ var out=new Blob(chunks,{type:'video/webm'}); finish(out.size>0 && out.size<file.size ? out : file); };
+        var draw=function(){ if(done||v.ended||v.paused) return; ctx.drawImage(v,0,0,cw,ch); requestAnimationFrame(draw); };
+        v.onended=function(){ try{ mr.stop(); }catch(e){} };
+        v.onplay=function(){ draw(); };
+        try{ mr.start(); }catch(e){ return finish(file); }
+        v.play().catch(function(){ finish(file); });
+      };
+      v.onerror=function(){ finish(file); };
+    }catch(e){ finish(file); }
+  });
+}
+function blobToDataURL(b){ return new Promise(function(res,rej){ var fr=new FileReader(); fr.onload=function(){res(fr.result);}; fr.onerror=rej; fr.readAsDataURL(b); }); }
+
+// Trim a clip to [startSec,endSec] by replaying just that span onto a canvas and
+// re-recording it (same robust canvas-captureStream path as compressVideo).
+// Returns a trimmed WebM Blob, or null if the browser can't do it. GPS is carried
+// separately in V.videoGps (not in the file), so trimming never loses location.
+function trimVideo(file, startSec, endSec, maxPx, bitrate){
+  return new Promise(function(res){
+    var done=false, url=null, mr=null;
+    function finish(x){ if(done) return; done=true; try{clearTimeout(guard);}catch(e){} try{if(url)URL.revokeObjectURL(url);}catch(e){} res(x); }
+    var guard=setTimeout(function(){ try{ if(mr&&mr.state!=='inactive') mr.stop(); }catch(e){} finish(null); }, 90000);
+    try{
+      if(typeof MediaRecorder==='undefined' || !HTMLCanvasElement.prototype.captureStream){ return finish(null); }
+      var v=document.createElement('video'); v.muted=true; v.playsInline=true; v.preload='auto';
+      url=URL.createObjectURL(file); v.src=url;
+      v.onloadedmetadata=function(){
+        var w=v.videoWidth||640, h=v.videoHeight||360, s=Math.min(1,(maxPx||720)/Math.max(w,h));
+        var cw=Math.max(2,Math.round(w*s)), ch=Math.max(2,Math.round(h*s));
+        var c=document.createElement('canvas'); c.width=cw; c.height=ch; var ctx=c.getContext('2d');
+        var stream=c.captureStream(24);
+        var type=(MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported('video/webm;codecs=vp9'))?'video/webm;codecs=vp9'
+                 :((MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported('video/webm;codecs=vp8'))?'video/webm;codecs=vp8'
+                 :((MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported('video/webm'))?'video/webm':''));
+        try{ mr = type ? new MediaRecorder(stream,{ mimeType:type, videoBitsPerSecond:(bitrate||600000) }) : new MediaRecorder(stream); }
+        catch(e){ return finish(null); }
+        var chunks=[]; var end=Math.min(endSec, v.duration||endSec);
+        mr.ondataavailable=function(e){ if(e.data&&e.data.size) chunks.push(e.data); };
+        mr.onstop=function(){ var out=new Blob(chunks,{type:'video/webm'}); finish(out.size>0 ? out : null); };
+        var draw=function(){ if(done) return; if(v.currentTime>=end || v.ended){ try{mr.stop();}catch(e){} try{v.pause();}catch(e){} return; } ctx.drawImage(v,0,0,cw,ch); requestAnimationFrame(draw); };
+        v.onseeked=function(){ if(done) return; v.onseeked=null; try{ mr.start(); }catch(e){ return finish(null); } v.play().then(function(){ draw(); }).catch(function(){ finish(null); }); };
+        try{ v.currentTime=Math.max(0, startSec); }catch(e){ finish(null); }
+      };
+      v.onerror=function(){ finish(null); };
+    }catch(e){ finish(null); }
+  });
+}
+function showTrimBtn(){ var tb=document.getElementById('v-trimBtn'); if(tb) tb.style.display = V.videoFile ? 'block' : 'none'; }
+function openTrim(){
+  if(!V.videoFile){ alert('Load or capture a clip first, then trim it.'); return; }
+  if(typeof MediaRecorder==='undefined' || !HTMLCanvasElement.prototype.captureStream){ alert('Trimming works on a desktop browser (Chrome, Edge or Firefox). On this device, just pick a frame from the clip instead.'); return; }
+  var ov=document.getElementById('v-trimOverlay'), vid=document.getElementById('v-trimVideo');
+  if(V._trimUrl){ try{URL.revokeObjectURL(V._trimUrl);}catch(e){} }
+  V._trimUrl=URL.createObjectURL(V.videoFile); vid.src=V._trimUrl;
+  document.getElementById('v-trimMsg').textContent='';
+  vid.onloadedmetadata=function(){
+    var dur=Math.max(0.3, vid.duration||0);
+    var sEl=document.getElementById('v-trimStart'), eEl=document.getElementById('v-trimEnd');
+    sEl.max=eEl.max=dur.toFixed(1); sEl.value='0'; eEl.value=dur.toFixed(1); updateTrimLabels();
+  };
+  ov.style.display='flex';
+}
+function closeTrim(){ var ov=document.getElementById('v-trimOverlay'), vid=document.getElementById('v-trimVideo'); try{vid.pause();}catch(e){} if(ov) ov.style.display='none'; if(V._trimUrl){ try{URL.revokeObjectURL(V._trimUrl);}catch(e){} V._trimUrl=null; } }
+function trimSet(which){ var vid=document.getElementById('v-trimVideo'); var t=(vid.currentTime||0); document.getElementById(which==='start'?'v-trimStart':'v-trimEnd').value=t.toFixed(1); updateTrimLabels(); }
+function updateTrimLabels(){
+  var sEl=document.getElementById('v-trimStart'), eEl=document.getElementById('v-trimEnd');
+  var s=parseFloat(sEl.value||'0'), e=parseFloat(eEl.value||'0');
+  if(e<s+0.3){ e=s+0.3; eEl.value=e.toFixed(1); }
+  document.getElementById('v-trimStartLbl').textContent=s.toFixed(1)+'s';
+  document.getElementById('v-trimEndLbl').textContent=e.toFixed(1)+'s';
+}
+async function doTrim(){
+  var s=parseFloat(document.getElementById('v-trimStart').value||'0'), e=parseFloat(document.getElementById('v-trimEnd').value||'0');
+  var msg=document.getElementById('v-trimMsg'), btn=document.getElementById('v-trimGo');
+  if(e<=s){ msg.innerHTML='<span style="color:#b71c1c;">End must be after start.</span>'; return; }
+  btn.disabled=true; msg.textContent='✂️ Trimming… (plays through the selected segment — please wait)';
+  var gps=V.videoGps||V.exifGps||null, time=V.videoTime||V.exifTime||null;
+  var out=await trimVideo(V.videoFile, s, e, 720, 600000);
+  btn.disabled=false;
+  if(!out){ msg.innerHTML='<span style="color:#b71c1c;">Couldn\'t trim on this device — use the full clip and pick a frame instead.</span>'; return; }
+  V.videoFile=out; V.videoSource='upload'; V.videoGps=gps; V.videoTime=time;   // keep location + time
+  var strip=document.getElementById('v-frames'), hint=document.getElementById('v-frameHint');
+  if(strip) strip.innerHTML=''; if(hint) hint.textContent='Trimmed ✓ — pick the frame that shows the creative ↓';
+  extractFrames(out, 12, function(frames){
+    if(!frames.length){ if(hint) hint.textContent='Trimmed ✓'; showScrubCapture(out, strip, function(d){ setFieldFrame(d,gps,time); }); return; }
+    frames.forEach(function(fr,fi){ var im=document.createElement('img'); im.src=fr; im.style.cssText='height:70px;border-radius:6px;border:2px solid '+(fi===0?'#1565c0':'transparent')+';cursor:pointer;flex:0 0 auto;'; im.onclick=function(){ Array.prototype.forEach.call(strip.children,function(x){x.style.borderColor='transparent';}); im.style.borderColor='#1565c0'; setFieldFrame(fr,gps,time); }; strip.appendChild(im); });
+    setFieldFrame(frames[0],gps,time);
+  });
+  closeTrim();
+  try{ document.getElementById('v-frames').scrollIntoView({behavior:'smooth',block:'center'}); }catch(e){}
+  alert('Clip trimmed to '+(e-s).toFixed(1)+'s and attached (location kept). Pick the frame showing the creative, then “💾 Save this proof”.');
+}
+
+// AI creative verification — vision model compares on-site photo vs approved artwork.
+async function aiCreativeCheck(){
+  var out=document.getElementById('v-aiResult');
+  if(curFormat().digital){
+    if(out) out.innerHTML='<span style="color:#e65100;">🤖 The AI creative check isn\'t applicable to LED / digital screens — they rotate creatives and reflect glare, so a still comparison isn\'t reliable. Please confirm the creative manually and tick the box below.</span>';
+    return;
+  }
+  if(!V.ref || !V.photo){ alert('Upload the approved creative and capture the on-site photo first.'); return; }
+  var btn=document.getElementById('v-aiBtn');
+  var label=btn.textContent; btn.disabled=true; btn.textContent='Analyzing…'; out.textContent='';
+  try{
+    var ref=await downscale(V.ref,1024), photo=await downscale(V.photo,1024);
+    var fmt=curFormat();
+    var r=await fetch(SUPABASE_URL+'/functions/v1/verify-creative',{ method:'POST',
+      headers:{ apikey:SUPABASE_ANON, Authorization:'Bearer '+SUPABASE_ANON, 'Content-Type':'application/json' },
+      body:JSON.stringify({ reference:ref, photo:photo, brand:document.getElementById('v-brand').value, format:fmt.label, digital:!!fmt.digital }) });
+    var b=await r.json();
+    if(!r.ok || b.error){ out.innerHTML='<span style="color:#b71c1c;">AI check unavailable — verify manually. ('+(b.error||r.status)+')</span>'; return; }
+    V.ai=b;
+    var mm=b.creative_match, CONF_MIN=60;
+    var strong = (mm==='match' && b.confidence>=CONF_MIN);   // only auto-pass a confident match
+    var col = strong?'#1b5e20':(mm==='mismatch'?'#b71c1c':'#e65100');
+    var lbl = mm==='match' ? (strong?'✔ Creative MATCHES':'⚠ Possible match — LOW confidence')
+            : (mm==='mismatch'?'✖ Creative does NOT match':'— Uncertain');
+    var conds=[]; if(b.damaged)conds.push('damage'); if(b.obstructed)conds.push('obstruction'); if(b.poor_lighting)conds.push('poor lighting');
+    var reviewNote = !strong ? '<div style="color:#e65100;">⚠ Not auto-confirmed — please review manually and tick the box only if it truly matches. Re-shoot closer / straighter if the photo is unclear.</div>' : '';
+    out.innerHTML='<div style="color:'+col+';font-weight:700;">🤖 '+lbl+' — '+b.confidence+'% confidence</div>'
+      + (b.reason?'<div style="color:#607d8b;">'+b.reason+'</div>':'')
+      + reviewNote
+      + (conds.length?'<div style="color:#e65100;">⚠ Condition: '+conds.join(', ')+'</div>':'<div style="color:#1b5e20;">Condition: looks good</div>');
+    document.getElementById('v-creative').checked = strong;   // low-confidence / uncertain / mismatch → left for the auditor
+    document.getElementById('v-cond').checked = !(b.damaged||b.obstructed||b.poor_lighting);
+  }catch(e){ out.innerHTML='<span style="color:#b71c1c;">AI check failed — verify manually.</span>'; }
+  finally{ btn.disabled=false; btn.textContent=label; }
+}
+var LOC_THRESHOLD_M = 150; // acceptable distance from the booked site
+
+function haversine(a1,o1,a2,o2){ var R=6371000,t=function(d){return d*Math.PI/180;}; var dA=t(a2-a1),dO=t(o2-o1); var x=Math.sin(dA/2)**2+Math.cos(t(a1))*Math.cos(t(a2))*Math.sin(dO/2)**2; return Math.round(R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))); }
+function coordsFromMapsUrl(u){ if(!u) return null; var la=(String(u).match(/!1d(-?[0-9.]+)/)||[])[1], lo=(String(u).match(/!2d(-?[0-9.]+)/)||[])[1]; if(!la||!lo){ var at=String(u).match(/@(-?[0-9.]+),(-?[0-9.]+)/); if(at){la=at[1];lo=at[2];} } if(la&&lo) return {lat:parseFloat(la),lng:parseFloat(lo)}; return null; }
+
+function lookupSite(){
+  var code=(document.getElementById('v-code').value||'').trim();
+  var el=document.getElementById('v-siteInfo');
+  if(!code){ el.textContent='Enter a site code or name first.'; return; }
+  el.textContent='Looking up…';
+  // Match on site code (site_name) OR display name, case-insensitive, exact or partial.
+  var q=encodeURIComponent('*'+code+'*');
+  fetch(SUPABASE_URL+'/rest/v1/billboards?select=site_name,display_name,location,tag,type,illumination,maps_url,lat,lng&or=(site_name.ilike.'+q+',display_name.ilike.'+q+')&limit=1',
+    { headers:{ apikey:SUPABASE_ANON, Authorization:'Bearer '+SUPABASE_ANON } })
+  .then(function(r){ return r.ok?r.json():[]; })
+  .then(function(rows){
+    if(!rows || !rows.length){ el.innerHTML='<span style="color:#b71c1c;">No site found for “'+esc(code)+'”. Try the site code or the display name.</span>'; V.site=null; V.siteCoord=null; return; }
+    var b=rows[0]; V.site=b;
+    var c=null; var la=parseFloat(b.lat), lo=parseFloat(b.lng);
+    if(isFinite(la)&&isFinite(lo)&&(la||lo)) c={lat:la,lng:lo}; else c=coordsFromMapsUrl(b.maps_url);
+    V.siteCoord=c;
+    // auto-detect illuminated (LED, or illumination = yes/lit/backlit)
+    var lit=/led|digital|illumin|backlit|\byes\b|lit/.test(String((b.type||'')+' '+(b.illumination||'')).toLowerCase());
+    if(lit){ document.getElementById('v-illum').checked=true; }
+    el.innerHTML='📍 <strong>'+(b.display_name||b.site_name)+'</strong> · '+(b.tag||b.location||'')+(c?(' · coords on file'):(' · <span style="color:#e65100;">no coordinates on file (location check unavailable)</span>'))+(lit?' · <span style="color:#e65100;">illuminated — day or night accepted</span>':'');
+    updateShotStatus();
+    showCapMeta();   // a site now exists — may enable the "use booked-site location" option for no-GPS uploads
+  })
+  .catch(function(){ el.innerHTML='<span style="color:#b71c1c;">Lookup failed — check your connection.</span>'; });
+}
+
+// ── Saved-creative library: cloud (per operator email, any phone) + local cache ──
+var CREATIVE_KEY='oohverify_creatives';
+var CREATIVE_ENTRIES=[];   // [{source:'cloud'|'local', name, dataURL?, url?, id?}]
+function operatorEmail(){ var e=document.getElementById('v-operator'); return e?(e.value||'').trim().toLowerCase():''; }
+function loadLocalLib(){ try{ return JSON.parse(localStorage.getItem(CREATIVE_KEY)||'[]'); }catch(e){ return []; } }
+function saveLocalLib(a){ try{ localStorage.setItem(CREATIVE_KEY, JSON.stringify(a.slice(0,25))); }catch(e){} }
+
+async function cloudList(owner){
+  var r=await fetch(SUPABASE_URL+'/functions/v1/verify-creatives',{ method:'POST',
+    headers:{ apikey:SUPABASE_ANON, Authorization:'Bearer '+SUPABASE_ANON, 'Content-Type':'application/json' },
+    body:JSON.stringify({ action:'list', owner:owner }) });
+  var b=await r.json(); return (r.ok && b.items) ? b.items : [];
+}
+async function cloudSave(owner,name,brand,dataURL){
+  var r=await fetch(SUPABASE_URL+'/functions/v1/verify-creatives',{ method:'POST',
+    headers:{ apikey:SUPABASE_ANON, Authorization:'Bearer '+SUPABASE_ANON, 'Content-Type':'application/json' },
+    body:JSON.stringify({ action:'save', owner:owner, name:name, brand:brand, image:dataURL }) });
+  var b=await r.json(); if(!r.ok || b.error) throw new Error(b.error||r.status); return b;
+}
+function rebuildDropdown(){
+  var sel=document.getElementById('v-savedCreatives'); if(!sel) return;
+  sel.innerHTML='<option value="">— Load a saved creative —</option>'+CREATIVE_ENTRIES.map(function(e,i){ return '<option value="'+i+'">'+e.name+'</option>'; }).join('');
+}
+async function refreshCreativeDropdown(){
+  CREATIVE_ENTRIES=[];
+  loadLocalLib().forEach(function(c){ CREATIVE_ENTRIES.push({ source:'local', name:c.name, dataURL:c.dataURL }); });
+  var owner=operatorEmail();
+  if(owner){ try{ (await cloudList(owner)).forEach(function(c){ CREATIVE_ENTRIES.push({ source:'cloud', name:c.name+' ☁', url:c.url, id:c.id }); }); }catch(e){} }
+  rebuildDropdown();
+}
+function urlToDataURL(url){ return fetch(url).then(function(r){ return r.blob(); }).then(function(bl){ return new Promise(function(res,rej){ var fr=new FileReader(); fr.onload=function(){ res(fr.result); }; fr.onerror=rej; fr.readAsDataURL(bl); }); }); }
+async function pickSavedCreative(){
+  var sel=document.getElementById('v-savedCreatives'); var i=sel.value; if(i==='') return;
+  var e=CREATIVE_ENTRIES[parseInt(i,10)]; if(!e) return;
+  var box=document.getElementById('v-refBox'); box.innerHTML='Loading…';
+  try{ var d=e.dataURL || await urlToDataURL(e.url); V.ref=d; box.innerHTML='<img src="'+d+'">'; }
+  catch(err){ box.innerHTML='Could not load creative'; }
+}
+async function saveCreative(){
+  if(!V.ref){ alert('Upload the approved artwork first, then save it.'); return; }
+  var def=(document.getElementById('v-brand').value||'').trim()||('Creative '+new Date().toLocaleDateString('en-PH'));
+  var name=prompt('Name this creative (e.g. brand + flight):', def); if(name===null) return; name=name.trim();
+  var brand=(document.getElementById('v-brand').value||'').trim();
+  var small=await downscale(V.ref,800);
+  var owner=operatorEmail();
+  if(owner){
+    try{ await cloudSave(owner,name,brand,small); await refreshCreativeDropdown(); alert('Saved "'+name+'" to your cloud library — it\'ll be there on any phone where you enter '+owner+'.'); return; }
+    catch(e){ /* fall through to local */ }
+  }
+  var lib=loadLocalLib(); var ex=lib.findIndex(function(c){ return (c.name||'').toLowerCase()===name.toLowerCase(); });
+  var rec={ name:name, dataURL:small, savedAt:Date.now() }; if(ex>=0) lib[ex]=rec; else lib.unshift(rec); saveLocalLib(lib);
+  await refreshCreativeDropdown();
+  alert(owner?'Cloud save failed — saved to this device instead.':'Saved to this device. Enter your operator email above to sync it across phones.');
+}
+
+function readImg(input,boxId,ondone){
+  var f=input.files&&input.files[0]; if(!f) return;
+  var rd=new FileReader();
+  rd.onload=function(){ document.getElementById(boxId).innerHTML='<img src="'+rd.result+'">'; ondone(rd.result); };
+  rd.readAsDataURL(f);
+}
+document.getElementById('v-ref').addEventListener('change',function(){
+  var f=this.files&&this.files[0]; if(!f) return;
+  var strip=document.getElementById('v-refFrames'); if(strip) strip.innerHTML='';
+  if(f.type && f.type.indexOf('video')===0){
+    // LED approved creative uploaded as a video → pick the frame that matches the creative.
+    var box=document.getElementById('v-refBox'); box.textContent='Reading approved video…';
+    extractFrames(f, 12, function(frames){
+      if(!frames.length){
+        box.innerHTML='<span style="color:#e65100;">Auto-frames unavailable on this device — use the player below: pause on your creative, then tap “Use the frame shown”.</span>';
+        showScrubCapture(f, strip, function(d){ V.ref=d; document.getElementById('v-refBox').innerHTML='<img src="'+d+'">'; });
+        return;
+      }
+      box.textContent='Tap the frame that matches your approved creative ↓';
+      frames.forEach(function(fr){
+        var im=document.createElement('img'); im.src=fr;
+        im.style.cssText='height:60px;border-radius:6px;border:2px solid transparent;cursor:pointer;flex:0 0 auto;';
+        im.onclick=function(){
+          Array.prototype.forEach.call(strip.children,function(x){x.style.borderColor='transparent';});
+          im.style.borderColor='#1565c0';
+          V.ref=fr; document.getElementById('v-refBox').innerHTML='<img src="'+fr+'">';
+        };
+        strip.appendChild(im);
+      });
+    });
+  } else {
+    readImg(this,'v-refBox',function(u){ V.ref=u; });
+  }
+});
+// One handler for both "Take photo" (live camera, source 'camera') and "Upload photo"
+// (from files, source 'upload'). For uploads we read GPS/time from the file's own EXIF and
+// never from the live device location (which would be wherever it's uploaded, e.g. the office).
+function handlePhotoFile(input, source){
+  var file=input.files&&input.files[0]; if(!file) return;
+  V.captureSource=source;
+  if(source!=='camera') V.gps=null;   // discard any stale device fix for uploaded files
+  readImg(input,'v-photoBox',function(u){ V.photo=u; V.capTime=new Date();
+    var h=V.capTime.getHours(); var td=document.getElementById('v-tod'); if(td) td.value=(h>=18||h<6)?'Night':'Day';
+    if(source==='camera') grabGPS();   // live location only for live capture
+    readExif(file);                    // pull the file's own GPS + original timestamp (works for uploads)
+  });
+}
+document.getElementById('v-photo').addEventListener('change',function(){ handlePhotoFile(this,'camera'); });
+document.getElementById('v-photoUp').addEventListener('change',function(){ handlePhotoFile(this,'upload'); });
+// Additional on-site photos (up to 2 more → 3 total). Stored in the certificate gallery.
+// Lamp-post runs: the "of total units" field = number of banners; the operator
+// uploads one photo per banner (all appear on the proof report). Other formats
+// keep the simple "up to 2 extra photos" behaviour.
+// Number of photos expected in one proof: lamp-post run → "of total units";
+// transit vehicle fleet → "number of vehicles". 0 = not a multi-photo format.
+function lampTarget(){
+  var f=curFormat();
+  if(f.run){ var n=parseInt((document.getElementById('v-units').value||'').trim(),10); return (isFinite(n)&&n>0)?n:0; }
+  if(f.vehicle){ var m=parseInt(((document.getElementById('v-vehCount')||{}).value||'').trim(),10); return (isFinite(m)&&m>0)?m:0; }
+  return 0;
+}
+function extraCap(){ var f=curFormat(); if(f.run||f.vehicle){ var n=lampTarget(); return n>1 ? (n-1) : 48; } return 2; }
+document.getElementById('v-photo2').addEventListener('change',function(){
+  var files=this.files?Array.prototype.slice.call(this.files):[]; if(!files.length) return;
+  var cap=extraCap();
+  (function addLoop(idx){
+    if(idx>=files.length){ renderExtraThumbs(); showCapMeta(); return; }
+    var rd=new FileReader();
+    rd.onload=function(){
+      if(!V.photo){
+        // first photo fills the main "Site photo" slot
+        V.photo=rd.result; V.captureSource='upload'; V.capTime=new Date();
+        var pb=document.getElementById('v-photoBox'); if(pb) pb.innerHTML='<img src="'+V.photo+'">';
+      } else if(V.extraPhotos.length<cap){
+        V.extraPhotos.push(rd.result);
+      } else {
+        renderExtraThumbs();
+        alert('That\'s the maximum for this capture ('+(cap+1)+' photos total).');
+        return;
+      }
+      addLoop(idx+1);
+    };
+    rd.readAsDataURL(files[idx]);
+  })(0);
+  this.value='';
+});
+function renderExtraThumbs(){
+  var el=document.getElementById('v-extraThumbs');
+  if(el){ el.innerHTML=V.extraPhotos.map(function(u,i){
+    return '<span style="position:relative;display:inline-block;">'
+      + '<img src="'+u+'" style="height:60px;border-radius:6px;border:1px solid #cfd8dc;">'
+      + '<button type="button" title="Remove" onclick="V.extraPhotos.splice('+i+',1);renderExtraThumbs();" style="position:absolute;top:-6px;right:-6px;background:#b71c1c;color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:11px;cursor:pointer;line-height:1;">×</button>'
+      + '</span>';
+  }).join(''); }
+  updateExtraCount();
+}
+function updateExtraCount(){
+  var btn=document.getElementById('v-extraBtn'), cnt=document.getElementById('v-extraCount'); if(!btn) return;
+  var f=curFormat(), total=(V.photo?1:0)+V.extraPhotos.length;
+  if(f.run || f.vehicle){
+    var n=lampTarget();
+    var noun = f.vehicle ? 'vehicle' : 'lamp post banner';
+    var countField = f.vehicle ? 'number of vehicles' : '“of total units”';
+    btn.textContent='➕ Add '+noun+' photos'+(n?(' — '+total+' of '+n):'');
+    if(cnt) cnt.innerHTML = n
+      ? (total>=n ? '<span style="color:#1b5e20;">✓ all '+n+' '+noun+' photos added — they\'ll all appear on the proof report.</span>'
+                  : ('Upload one photo per '+noun+' (you can select many at once). '+total+' of '+n+' added.'))
+      : ('Enter the '+countField+' above, then upload one photo per '+noun+'.');
+  } else {
+    btn.textContent='➕ Add another on-site photo (up to 2 more)';
+    if(cnt) cnt.textContent='';
+  }
+}
+// Proof-of-play report (CMS export) — optional, for DOOH.
+document.getElementById('v-playout').addEventListener('change',function(){
+  var f=this.files&&this.files[0]; var nm=document.getElementById('v-playoutName');
+  if(!f){ V.playout=null; if(nm) nm.textContent=''; return; }
+  if(f.size>6*1024*1024){ alert('Report is too large — please keep it under 6 MB (export a single-campaign report).'); this.value=''; return; }
+  var rd=new FileReader();
+  rd.onload=function(){ V.playout={ dataURL:rd.result, name:f.name, size:f.size }; if(nm) nm.innerHTML='📄 <strong>'+escH(f.name)+'</strong> attached — will be stored with this proof.'; };
+  rd.readAsDataURL(f);
+});
+
+// ── LED video → frame picker (extract sample frames client-side) ─────────────
+// Extract ~count evenly-spaced frames from a video, client-side.
+// iOS Safari won't render frames from a paused/seeked hidden <video>, so the primary path
+// is to MUTE + play inline and sample frames while playing (iOS allows muted inline autoplay).
+// Falls back to seek-based extraction if playback is blocked (some desktop setups).
+function extractFrames(file, count, cb){
+  var url=URL.createObjectURL(file);
+  var v=document.createElement('video');
+  v.muted=true; v.defaultMuted=true; v.playsInline=true; v.preload='auto';
+  v.setAttribute('muted',''); v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline','');
+  // iOS is happier when the element is in the DOM (kept off-screen/invisible).
+  v.style.cssText='position:fixed;left:-9999px;top:0;width:160px;height:90px;opacity:0.01;pointer-events:none;';
+  document.body.appendChild(v);
+  v.src=url;
+  var frames=[], done=false;
+  var canvas=document.createElement('canvas'), ctx=canvas.getContext('2d');
+  function cleanup(){ try{v.pause();}catch(e){} try{URL.revokeObjectURL(url);}catch(e){} try{document.body.removeChild(v);}catch(e){} }
+  function finish(){ if(done) return; done=true; clearTimeout(guard); cleanup(); cb(frames); }
+  var guard=setTimeout(finish, 15000);
+  function snap(){
+    try{
+      var w=v.videoWidth||640, h=v.videoHeight||360, s=Math.min(1,640/Math.max(w,h));
+      canvas.width=Math.max(2,Math.round(w*s)); canvas.height=Math.max(2,Math.round(h*s));
+      ctx.drawImage(v,0,0,canvas.width,canvas.height);
+      var d=canvas.toDataURL('image/jpeg',0.8);
+      if(d && d.length>2000) frames.push(d);   // skip blank/black frames
+    }catch(e){}
+  }
+  var started=false;
+  v.onloadeddata=function(){
+    if(started) return; started=true;
+    var dur=isFinite(v.duration)&&v.duration>0?v.duration:5;
+    var interval=dur/count, next=0, grabbed=0;
+    // Primary: play muted inline and sample across the loop.
+    var p=v.play();
+    if(p && p.then){
+      p.then(function(){
+        (function tick(){
+          if(done) return;
+          if(v.currentTime>=next-0.02){ snap(); grabbed++; next+=interval; }
+          if(grabbed>=count || v.ended || (dur&&v.currentTime>=dur-0.05)){ finish(); return; }
+          requestAnimationFrame(tick);
+        })();
+      }).catch(function(){ seekBased(dur); });
+    } else {
+      seekBased(dur);
+    }
+  };
+  function seekBased(dur){
+    var times=[]; for(var i=0;i<count;i++) times.push(Math.max(0.05, dur*(i+0.5)/count)); var idx=0;
+    v.onseeked=function(){ snap(); idx++; if(idx>=times.length){ finish(); } else { try{ v.currentTime=times[idx]; }catch(e){ finish(); } } };
+    try{ v.currentTime=times[0]; }catch(e){ finish(); }
+  }
+  v.onerror=function(){ finish(); };
+}
+
+// Fallback for devices (esp. iOS Safari) where auto frame extraction fails: show the actual
+// video with native controls so the operator scrubs to the right frame and taps to capture it.
+// Capturing a VISIBLE, user-controlled video on a tap is reliable on iOS.
+function showScrubCapture(file, container, onFrame){
+  if(!container) return;
+  var url=URL.createObjectURL(file);
+  container.innerHTML='';
+  var tip=document.createElement('div'); tip.className='muted'; tip.style.cssText='margin:6px 0;';
+  tip.textContent='Play the clip, pause on the frame showing your creative, then tap “Use the frame shown”.';
+  var v=document.createElement('video');
+  v.src=url; v.controls=true; v.muted=true; v.playsInline=true;
+  v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline','');
+  v.style.cssText='width:100%;max-height:260px;border-radius:8px;background:#000;display:block;';
+  var btn=document.createElement('button'); btn.type='button'; btn.className='btn-primary';
+  btn.style.cssText='margin-top:8px;width:100%;'; btn.textContent='📸 Use the frame shown';
+  btn.onclick=function(){
+    try{
+      var w=v.videoWidth||640, h=v.videoHeight||360, s=Math.min(1,900/Math.max(w,h));
+      var c=document.createElement('canvas'); c.width=Math.max(2,Math.round(w*s)); c.height=Math.max(2,Math.round(h*s));
+      c.getContext('2d').drawImage(v,0,0,c.width,c.height);
+      var d=c.toDataURL('image/jpeg',0.82);
+      if(!d || d.length<2000){ alert('Couldn\'t grab that frame — let it play for a second, pause on the frame, then tap again.'); return; }
+      onFrame(d);
+    }catch(e){ alert('This device blocked frame capture. Take a screenshot of the frame and use “🖼️ Upload photo” instead.'); }
+  };
+  container.appendChild(tip); container.appendChild(v); container.appendChild(btn);
+}
+// One handler for "Take video" (live, source 'camera') and "Upload clip" (from files, source
+// 'upload'). GPS/time come from the video's own metadata (survives a straight upload); for an
+// uploaded clip we never use the live device location.
+function handleVideoFile(input, source){
+  var f=input.files&&input.files[0]; if(!f) return;
+  var strip=document.getElementById('v-frames'), hint=document.getElementById('v-frameHint');
+  strip.innerHTML=''; hint.textContent='Reading video…';
+  V.videoFile=f; V.videoGps=null; V.videoTime=null; V.videoSource=source; showTrimBtn();
+  parseVideoMeta(f, function(gps,time){
+    V.videoGps=gps; V.videoTime=time;
+    var meta=document.getElementById('v-capMeta');
+    if((gps||time) && meta){ var bits=[]; if(time) bits.push('🎥 recorded '+time.toLocaleString('en-PH')); if(gps) bits.push('📍 '+gps.lat.toFixed(5)+', '+gps.lng.toFixed(5)); meta.innerHTML=bits.join(' · ')+' <span style="color:#607d8b;">(from the video — verifies even when uploaded later)</span>'; }
+  });
+  hint.textContent='Extracting frames…';
+  extractFrames(f, 12, function(frames){
+    if(!frames.length){
+      hint.innerHTML='<span style="color:#e65100;">Auto-frames unavailable on this device — use the player below: pause on your frame, then tap “Use the frame shown”.</span>';
+      showScrubCapture(f, strip, function(d){
+        V.photo=d; V.capTime=new Date(); V.exifGps=V.videoGps||null; V.exifTime=V.videoTime||null; V.captureSource=source;
+        if(source==='camera') grabGPS(); else { V.gps=null; showCapMeta(); }
+        var hh=V.capTime.getHours(); var td=document.getElementById('v-tod'); if(td) td.value=(hh>=18||hh<6)?'Night':'Day';
+        document.getElementById('v-photoBox').innerHTML='<img src="'+d+'">';
+        hint.innerHTML='<span style="color:#1b5e20;">✓ Frame captured from the clip.</span>';
+      });
+      return;
+    }
+    hint.textContent='Tap the frame where your creative is on screen:';
+    frames.forEach(function(fr){
+      var im=document.createElement('img'); im.src=fr;
+      im.style.cssText='height:70px;border-radius:6px;border:2px solid transparent;cursor:pointer;flex:0 0 auto;';
+      im.onclick=function(){
+        Array.prototype.forEach.call(strip.children,function(x){x.style.borderColor='transparent';});
+        im.style.borderColor='#1565c0';
+        V.photo=fr; V.capTime=new Date(); V.exifGps=V.videoGps||null; V.exifTime=V.videoTime||null;   // frame inherits the video's GPS/time
+        V.captureSource=source;
+        if(source==='camera') grabGPS(); else { V.gps=null; showCapMeta(); }   // uploaded clip: never use the upload location
+        var h=V.capTime.getHours(); var td=document.getElementById('v-tod'); if(td) td.value=(h>=18||h<6)?'Night':'Day';
+        document.getElementById('v-photoBox').innerHTML='<img src="'+fr+'">';
+      };
+      strip.appendChild(im);
+    });
+  });
+}
+document.getElementById('v-video').addEventListener('change', function(){ handleVideoFile(this,'camera'); });
+document.getElementById('v-videoUp').addEventListener('change', function(){ handleVideoFile(this,'upload'); });
+
+function grabGPS(){
+  showCapMeta();
+  if(!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(function(pos){
+    V.gps={lat:pos.coords.latitude,lng:pos.coords.longitude,acc:Math.round(pos.coords.accuracy)}; showCapMeta();
+  },function(){ V.gps=null; showCapMeta(); },{enableHighAccuracy:true,timeout:10000});
+}
+
+function runVerify(){
+  if(!V.photo){ alert('Capture the on-site photo first.'); return; }
+  var checks=[], anyFail=false;
+  var fmt=curFormat();
+  var loc=effectiveGps();
+  var reason=(document.getElementById('v-distNote').value||'').trim();
+  // 1) Site / location — depends on format, graded (allows a vantage-point band for road restrictions)
+  if(fmt.vehicle){
+    var veh=(document.getElementById('v-vehicle').value||'').trim();
+    var ctype=document.getElementById('v-captype').value;
+    checks.push({label:'Vehicle — '+(veh?('identified: '+veh):'no vehicle ID entered')+' · '+ctype, ok: veh?true:null});
+    if(loc) checks.push({label:'Seen at '+loc.lat.toFixed(4)+', '+loc.lng.toFixed(4)+' — moving media, no fixed point ['+loc.src+']', ok:null});
+  } else if(fmt.run){
+    var ru=(document.getElementById('v-unit').value||'').trim(), rn=(document.getElementById('v-units').value||'').trim();
+    checks.push({label:'Lamp-post run — unit '+(ru||'?')+' of '+(rn||'?'), ok: ru?true:null});
+    if(loc) checks.push({label:'Captured at '+loc.lat.toFixed(4)+', '+loc.lng.toFixed(4)+' along the route ['+loc.src+']', ok:null});
+    else checks.push({label:'Location not captured — allow GPS at the post', ok:null});
+  } else if(V.siteCoord && loc && loc.src==='booked site'){
+    checks.push({label:'Location — recorded as the booked site (operator-confirmed; photo had no GPS)', ok:true});
+  } else if(V.siteCoord && loc){
+    var dist=haversine(loc.lat,loc.lng,V.siteCoord.lat,V.siteCoord.lng);
+    var atR=fmt.radius, vant=Math.max(fmt.radius*4, 600);   // vantage band for restricted-access sites
+    if(dist<=atR){
+      checks.push({label:'Right site — '+dist+' m from booked location ['+loc.src+']', ok:true});
+    } else if(dist<=vant){
+      checks.push({label:'Near site — '+dist+' m (vantage point'+(reason?': '+reason:'')+') ['+loc.src+']', ok:true});
+    } else {
+      checks.push({label:'Too far — '+dist+' m from site'+(reason?' ('+reason+')':'')+' — needs review ['+loc.src+']', ok:false}); anyFail=true;
+    }
+    if(fmt.run){ var u=(document.getElementById('v-unit').value||'').trim(), un=(document.getElementById('v-units').value||'').trim(); if(u||un) checks.push({label:'Unit '+(u||'?')+' of '+(un||'?')+' in the run', ok:null}); }
+  } else {
+    var why = !V.siteCoord ? 'no site coordinates on file'
+      : (V.captureSource==='upload' ? 'the uploaded file has no embedded GPS (editing may have removed it) — recorded against the booked site'
+         : 'no GPS in the photo and no live device location');
+    checks.push({label:'Right site — could not auto-check ('+why+')', ok:null});
+  }
+  // 2) Time window (uses the photo's own timestamp when available)
+  var s=document.getElementById('v-start').value, e=document.getElementById('v-end').value, ct=effectiveTime();
+  if(s&&e&&ct){
+    var inWin=(ct>=new Date(s)&&ct<=new Date(e+'T23:59:59'));
+    checks.push({label:'Right time — '+(inWin?'within':'OUTSIDE')+' flight dates ['+(V.exifTime?'photo time':'device time')+']', ok:inWin});
+    if(!inWin) anyFail=true;
+  } else {
+    checks.push({label:'Right time — enter flight dates to check', ok:null});
+  }
+  // 3) Creative
+  var cr=document.getElementById('v-creative').checked;
+  var crLbl = V.ai ? ('Right creative — AI: '+V.ai.creative_match+' ('+V.ai.confidence+'%)'+(cr?'':' — unconfirmed'))
+                   : ('Right creative — '+(cr?'auditor confirmed match':'NOT confirmed'));
+  checks.push({label:crLbl, ok:cr}); if(!cr) anyFail=true;
+  // 4) Condition
+  var cd=document.getElementById('v-cond').checked;
+  checks.push({label:'Right condition — '+(cd?'good':'flagged issue'), ok:cd}); if(!cd) anyFail=true;
+
+  var status = anyFail ? 'ISSUES FOUND' : 'VERIFIED';
+  var cls = anyFail ? 'warn' : 'ok';
+  var html='<div class="result '+cls+'">'
+    + '<div style="margin-bottom:10px;"><span class="status '+cls+'">'+(anyFail?'⚠ ':'✔ ')+status+'</span></div>';
+  checks.forEach(function(c){
+    var icon = c.ok===true?'✔':(c.ok===false?'✖':'—');
+    var col = c.ok===true?'#1b5e20':(c.ok===false?'#b71c1c':'#78909c');
+    html+='<div class="rline" style="color:'+col+';"><strong>'+icon+'</strong> '+c.label+'</div>';
+  });
+  html+='<div style="text-align:center;margin-top:14px;">'
+      + '<button class="btn-primary" style="margin:0 6px 6px;" onclick="submitProof(\''+status+'\')">💾 Save this proof</button>'
+      + '<button class="btn-ghost" style="margin:0 6px 6px;" onclick="downloadProof(\''+status+'\')">📄 Download PDF</button>'
+      + '</div>';
+  html+='<div id="v-saved" class="muted" style="margin-top:8px;text-align:center;"></div>';
+  html+='</div>';
+  document.getElementById('v-result').innerHTML=html;
+  document.getElementById('v-result').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// Phase 1 — persist the verification as a permanent, server-timestamped record.
+async function submitProof(status){
+  if(!V.photo){ alert('Capture the on-site photo first.'); return; }
+  var saved=document.getElementById('v-saved');
+  // Multi-photo formats (lamp-post run / vehicle fleet): expect one photo per unit. Warn if short, but allow it.
+  var _lampN=(typeof lampTarget==='function')?lampTarget():0;
+  if(_lampN>0){ var _have=1+V.extraPhotos.length; var _noun=curFormat().vehicle?'vehicle':'banner'; if(_have<_lampN && !confirm('You\'ve added '+_have+' of '+_lampN+' '+_noun+' photos. Save with '+_have+' photo'+(_have===1?'':'s')+' anyway?')) return; }
+  if(!operatorEmail()){ if(saved) saved.innerHTML='<span style="color:#b71c1c;">Enter your operator email above — verifications use your credits (10 per new site).</span>'; else alert('Enter your operator email above to verify.'); return; }
+  if(saved) saved.innerHTML='💾 Saving…';
+  try{
+    var _ld=document.getElementById('v-lowdata'); var low=!!(_ld && _ld.checked);   // weak-signal mode
+    var pMax=low?800:1000, pQ=low?0.5:0.6;
+    var photo=await downscale(V.photo,pMax,pQ), ref=V.ref?await downscale(V.ref,pMax,low?0.5:0.62):null;
+    var extraDown=[]; for(var ep=0; ep<V.extraPhotos.length; ep++){ extraDown.push(await downscale(V.extraPhotos[ep],pMax,pQ)); }
+    // Safety net: if a photo couldn't be decoded/compressed (e.g. an iPhone HEIC via "Upload photo"),
+    // downscale returns the raw image — block it rather than storing a large file.
+    var _duBytes=function(d){ return d ? (d.length*3)/4 : 0; };
+    if(_duBytes(photo) > 2*1024*1024 || _duBytes(ref) > 2*1024*1024 || extraDown.some(function(d){ return _duBytes(d) > 2*1024*1024; })){
+      if(saved) saved.innerHTML='<span style="color:#b71c1c;">A photo couldn\'t be compressed (often an iPhone HEIC). Please retake with the camera, or upload it as a JPG or PNG.</span>';
+      return;
+    }
+    var fmt=curFormat();
+    var loc=effectiveGps();
+    var dist=(V.siteCoord&&loc)?haversine(loc.lat,loc.lng,V.siteCoord.lat,V.siteCoord.lng):null;
+    var payload={
+      reference:ref, photo:photo, extra_photos:extraDown,
+      playout_report: (V.playout&&V.playout.dataURL)||null,
+      site_code:(document.getElementById('v-code').value||'').trim(),
+      format:fmt.label, brand:(document.getElementById('v-brand').value||'').trim(),
+      client_email:(document.getElementById('v-client').value||'').trim().toLowerCase()||null,
+      gps:loc?{lat:loc.lat,lng:loc.lng,acc:loc.acc}:null, site:V.siteCoord, distance_m:dist,
+      location_source:loc?loc.src:null, distance_reason:(document.getElementById('v-distNote').value||'').trim()||null,
+      vehicle_id:(document.getElementById('v-vehicle').value||'').trim(),
+      unit_no:(document.getElementById('v-unit').value||'').trim(),
+      units_total:(document.getElementById('v-units').value||'').trim(),
+      ai:V.ai,
+      auditor:{ creative_ok:document.getElementById('v-creative').checked, condition_ok:document.getElementById('v-cond').checked },
+      status:status,
+      capture_type: curFormat().vehicle ? (document.getElementById('v-captype').value||'') : null,
+      time_of_day:(document.getElementById('v-tod').value||''),
+      captured_by:operatorEmail()||null,
+      captured_at_client:effectiveTime()?effectiveTime().toISOString():null,
+      flight_start:(document.getElementById('v-start').value||'')||null,
+      contract_end:(document.getElementById('v-end').value||'')||null
+    };
+    // attach the trimmed video clip as evidence (advertisers who require photo + video together).
+    // Re-encode to a small evidence clip first (≤720px, low bitrate) to keep storage tiny.
+    if(V.videoFile && !low){
+      if(saved) saved.innerHTML='💾 Compressing video…';
+      var vclip=await compressVideo(V.videoFile, 640, 350000);
+      if(vclip.size <= 12*1024*1024){ payload.video = await blobToDataURL(vclip); }
+      else if(saved){ saved.innerHTML='⚠ Video still too large after compression — trim to just your ad segment (a few seconds). Saving the photo proof only…'; }
+    }
+    // In low-data mode the video is skipped to keep the upload small on weak signal — the photo
+    // (+ its picked frame for LED) and GPS/timestamp still make a complete proof.
+    // Weak-signal resilience: generous per-attempt timeout + one auto-retry on a dropped
+    // connection. We stop as soon as ANY server response arrives (so a server-side error isn't
+    // retried), and the billing logic won't re-charge a repeat of the same site+brand.
+    var body=JSON.stringify(payload);
+    var r=null, b=null;
+    for(var attempt=1; attempt<=2 && !r; attempt++){
+      if(saved) saved.innerHTML = attempt===1
+        ? '💾 Saving… keep this page open (uploads can be slow on a weak signal).'
+        : '🔁 Connection dropped — retrying ('+attempt+'/2). Keep this page open…';
+      try{
+        var opts={ method:'POST', headers:{ apikey:SUPABASE_ANON, Authorization:'Bearer '+SUPABASE_ANON, 'Content-Type':'application/json' }, body:body };
+        var _to=null, _ctrl=null;
+        if(typeof AbortController!=='undefined'){ _ctrl=new AbortController(); opts.signal=_ctrl.signal; _to=setTimeout(function(){ try{_ctrl.abort();}catch(e){} }, 90000); }
+        r=await fetch(SUPABASE_URL+'/functions/v1/verify-submit', opts);
+        if(_to) clearTimeout(_to);
+        try{ b=await r.json(); }catch(e){ b={}; }
+      }catch(e){ r=null; b=null; }   // network error / timeout → loop retries once
+    }
+    if(!r){
+      // Offline / unreachable → save the capture on the phone and auto-upload when signal returns.
+      try{
+        await queueAdd(payload);
+        try{ V.extraPhotos=[]; renderExtraThumbs(); V.playout=null; var _pn2=document.getElementById('v-playoutName'); if(_pn2)_pn2.textContent=''; var _pv2=document.getElementById('v-playout'); if(_pv2)_pv2.value=''; }catch(e){}
+        await updatePendingBadge();
+        if(saved) saved.innerHTML='<span style="color:#1b5e20;">📥 Saved on this phone — it will upload automatically when you have signal (see the banner at the top). You can keep capturing.</span>';
+      }catch(e){ if(saved) saved.innerHTML='<span style="color:#b71c1c;">Couldn\'t reach the server and couldn\'t save on this device. Please try again on better signal.</span>'; }
+      return;
+    }
+    if(!r.ok || b.error){
+      if(b.error==='insufficient_credits'){ if(saved) saved.innerHTML='<span style="color:#b71c1c;">Not enough credits — verifying a new site costs '+b.cost+' credits, you have '+b.balance+'. <a href="pricing.html" target="_blank">Buy credits →</a></span>'; }
+      else if(b.error==='no_account'){ if(saved) saved.innerHTML='<span style="color:#b71c1c;">No OOH Philippines credit account for that email. Use your registered operator email.</span>'; }
+      else if(b.error==='account_required'){ if(saved) saved.innerHTML='<span style="color:#b71c1c;">Enter your operator email above to verify.</span>'; }
+      else if(saved){ saved.innerHTML='<span style="color:#b71c1c;">Save failed — '+(b.error||r.status)+'</span>'; }
+      return;
+    }
+    markShot(payload.time_of_day); updateShotStatus();
+    // Clear the extra photos + report so the next capture starts clean.
+    V.extraPhotos=[]; renderExtraThumbs();
+    V.playout=null; var _pn=document.getElementById('v-playoutName'); if(_pn) _pn.textContent=''; var _pv=document.getElementById('v-playout'); if(_pv) _pv.value='';
+    if (window.gtag) gtag('event', 'ad_verifier_submit', { format: payload.format, status: payload.status });
+    var extra='';
+    if(curFormat().run){
+      var un=(document.getElementById('v-unit').value||'').trim(); markUnit(un);
+      var nx=parseInt(un,10); if(!isNaN(nx)) document.getElementById('v-unit').value=String(nx+1);
+      V.photo=null; V.exifGps=null; V.exifTime=null; document.getElementById('v-photoBox').innerHTML='Tap to take / upload the on-site photo';
+      updateRunStatus(); extra=' · ready for the next post';
+    }
+    if(curFormat().vehicle && document.getElementById('v-captype').value==='In-service spot-check'){ logVehCheck(); updateVehStatus(); extra=' · spot-check logged'; }
+    if(typeof OP!=='undefined' && b.balance!=null && !OP.admin){ OP.credits=b.balance; if(typeof renderOpBar==='function') renderOpBar(); }
+    var costNote = b.charged ? (' · '+b.charged+' credits used (balance '+b.balance+')') : ' · no charge (same site)';
+    var certLink = b.cert_token ? (' · <a href="verify-cert.html?token='+encodeURIComponent(b.cert_token)+'" target="_blank"><strong>View certificate →</strong></a>') : '';
+    var notifyBtn='';
+    if(b.cert_token){
+      var cQ = payload.client_email ? '\''+payload.client_email+'\'' : 'null';
+      notifyBtn = '<div style="margin-top:12px;">'
+        + '<button class="btn-primary" style="padding:8px 16px;margin:0 6px 6px;" onclick="opNotifyClient(\''+b.cert_token+'\','+cQ+',\''+encodeURIComponent(payload.brand||'')+'\')">📧 Email this proof to client</button>'
+        + (payload.client_email ? '' : '<div class="muted" style="font-size:12px;margin-top:4px;">Tip: fill in the Client email field above to pre-address the message.</div>')
+        + '</div>';
+    }
+    if(saved) saved.innerHTML='✅ Saved · record <strong>'+String(b.id).slice(0,8)+'</strong> ('+payload.time_of_day+')'+extra+costNote+' · server-timestamped '+(b.captured_at?new Date(b.captured_at).toLocaleString('en-PH'):'')+certLink+notifyBtn;
+  }catch(e){ if(saved) saved.innerHTML='<span style="color:#b71c1c;">Save failed — check your connection.</span>'; }
+}
+
+// Email the saved proof to the client — opens the operator's own mail app,
+// pre-addressed to the client with the certificate link (they hit send).
+function opNotifyClient(token, client, brandEnc){
+  var brand=decodeURIComponent(brandEnc||'');
+  var certUrl='https://oohphilippines.com/verify-cert.html?token='+encodeURIComponent(token);
+  var dashUrl='https://oohphilippines.com/verify-dashboard.html';
+  var to = client || '';
+  if(!to){
+    var typed=document.getElementById('v-client'); to=(typed&&typed.value?typed.value.trim():'');
+    if(!to){ to=prompt('Client email to send this proof to:')||''; if(!to) return; }
+  }
+  var subject='Proof of posting'+(brand?(' — '+brand):'')+' · OOHPhilippines.com';
+  var body='Hi,\n\nHere is the verified proof of posting'+(brand?(' for '+brand):'')+', captured and time-stamped through OOHPhilippines.com.\n\n'
+    + 'View the certificate: '+certUrl+'\n\n'
+    + 'You can also review all proofs for your campaigns in the Ad Verifier dashboard (log in with this email address): '+dashUrl+'\n\n'
+    + 'Thank you,\n'+(OP.name||'')+'\nvia OOHPhilippines.com';
+  window.location.href='mailto:'+to+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+}
+async function downloadProof(status){
+  if(!(window.jspdf&&window.jspdf.jsPDF)){ try{ await loadScript(JSPDF_URL); }catch(e){} }
+  if(!window.jspdf||!window.jspdf.jsPDF){ alert('PDF tool could not load — check your connection and try again.'); return; }
+  var doc=new window.jspdf.jsPDF({unit:'pt',format:'a4'}); var W=doc.internal.pageSize.getWidth(),x=40,y;
+  doc.setFillColor(21,101,192); doc.rect(0,0,W,60,'F'); doc.setTextColor(255,255,255);
+  doc.setFont('helvetica','bold'); doc.setFontSize(17); doc.text('OOHPhilippines.com — Proof of Posting', x, 30);
+  doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.text('OOH Verify', x, 47);
+  y=90; doc.setTextColor(32,33,36);
+  var isOk=status==='VERIFIED';
+  doc.setFillColor(isOk?232:255,isOk?245:243,isOk?233:224); doc.roundedRect(x,y,W-2*x,34,6,6,'F');
+  doc.setTextColor(isOk?27:230,isOk?94:81,isOk?32:0); doc.setFont('helvetica','bold'); doc.setFontSize(14);
+  doc.text((isOk?'VERIFIED':'ISSUES FOUND'), x+14, y+22); y+=52;
+  doc.setTextColor(32,33,36); doc.setFont('helvetica','normal'); doc.setFontSize(11);
+  function row(k,v){ doc.setTextColor(95,99,104); doc.text(k,x,y); doc.setTextColor(32,33,36); doc.text(String(v||'—'),x+150,y); y+=18; }
+  row('Operator', (OP.name||'') + (OP.email ? ((OP.name?' · ':'')+OP.email) : ''));
+  row('Brand', document.getElementById('v-brand').value);
+  row('Format', curFormat().label);
+  row('Time of day', document.getElementById('v-tod').value);
+  if(curFormat().vehicle){ var vv=document.getElementById('v-vehicle').value; if(vv) row('Vehicle', vv); }
+  row('Site', V.site?((V.site.display_name||V.site.site_name)+' ('+(V.site.tag||V.site.location||'')+')'):(document.getElementById('v-code').value||'—'));
+  var _t=effectiveTime(); row('Captured', _t?(_t.toLocaleString('en-PH')+(V.exifTime?' (photo time)':'')):'—');
+  var _g=effectiveGps(); row('GPS', _g?(_g.lat.toFixed(5)+', '+_g.lng.toFixed(5)+' ('+_g.src+')'):'—');
+  if(V.siteCoord&&_g){ var _dn=(document.getElementById('v-distNote').value||'').trim(); row('Distance from site', haversine(_g.lat,_g.lng,V.siteCoord.lat,V.siteCoord.lng)+' m'+(_dn?' — '+_dn:'')); }
+  if(V.ai) row('AI creative check', V.ai.creative_match+' ('+V.ai.confidence+'%)');
+  y+=6;
+  if(V.photo){ try{ doc.addImage(V.photo,'JPEG',x,y,240,180);}catch(e){} }
+  if(V.ref){ try{ doc.addImage(V.ref,'JPEG',x+260,y,180,135);}catch(e){}
+    doc.setFontSize(8); doc.setTextColor(150,150,150); doc.text('approved creative', x+260, y+148); }
+  doc.setFontSize(8); doc.setTextColor(150,150,150); doc.text('on-site photo', x, y+192);
+  y+=210;
+  // Gallery of all additional photos (e.g. one per lamp post banner) so the report shows every one.
+  if(V.extraPhotos && V.extraPhotos.length){
+    doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(32,33,36);
+    doc.text('All posting photos ('+(1+V.extraPhotos.length)+')', x, y); y+=14;
+    doc.setFont('helvetica','normal');
+    var pw=160, ph=120, gap=12, perRow=3, col=0, pageH=doc.internal.pageSize.getHeight();
+    for(var gi=0; gi<V.extraPhotos.length; gi++){
+      if(y+ph > pageH-50){ doc.addPage(); y=40; col=0; }
+      var cx=x + col*(pw+gap);
+      try{ doc.addImage(V.extraPhotos[gi],'JPEG',cx,y,pw,ph); }catch(e){}
+      col++; if(col>=perRow){ col=0; y+=ph+gap; }
+    }
+    if(col>0) y+=ph+gap;
+    y+=6;
+  }
+  if(y > doc.internal.pageSize.getHeight()-50){ doc.addPage(); y=40; }
+  doc.setFontSize(8); doc.setTextColor(150,150,150);
+  doc.text('Field-captured proof of posting. Demo record — not a tamper-evident certificate. Generated at oohphilippines.com/ad-verifier', x, y);
+  var fname='proof-of-posting-'+(document.getElementById('v-code').value||'site')+'.pdf';
+  // iOS/Android Safari block jsPDF's download (doc.save). Open the PDF as a blob so mobile
+  // can view it and Share → Save to Files/Photos; desktop keeps the normal download.
+  try{
+    if(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent||'')){
+      var url=URL.createObjectURL(doc.output('blob'));
+      var w=window.open(url,'_blank'); if(!w) window.location.href=url;
+    } else {
+      doc.save(fname);
+    }
+  }catch(e){ try{ doc.save(fname); }catch(_){ } }
+}
+
+// ==================== PWA: offline capture queue + service worker ====================
+// Captures that can't upload (no/weak signal) are stored on the phone (IndexedDB) and sent
+// automatically when the connection returns, or when the operator taps "Upload now".
+var IDB_NAME='oohverify', IDB_STORE='queue';
+function _idb(){ return new Promise(function(res,rej){ try{ var r=indexedDB.open(IDB_NAME,1);
+  r.onupgradeneeded=function(){ try{ r.result.createObjectStore(IDB_STORE,{keyPath:'id'}); }catch(e){} };
+  r.onsuccess=function(){ res(r.result); }; r.onerror=function(){ rej(r.error); }; }catch(e){ rej(e); } }); }
+async function queueAdd(payload){ var db=await _idb(); return new Promise(function(res,rej){ var tx=db.transaction(IDB_STORE,'readwrite');
+  tx.objectStore(IDB_STORE).put({ id:Date.now()+'-'+Math.random().toString(36).slice(2), payload:payload, ts:Date.now() });
+  tx.oncomplete=function(){ res(); }; tx.onerror=function(){ rej(tx.error); }; }); }
+async function queueAll(){ try{ var db=await _idb(); return await new Promise(function(res){ var tx=db.transaction(IDB_STORE,'readonly'); var rq=tx.objectStore(IDB_STORE).getAll(); rq.onsuccess=function(){ res(rq.result||[]); }; rq.onerror=function(){ res([]); }; }); }catch(e){ return []; } }
+async function queueDel(id){ try{ var db=await _idb(); return await new Promise(function(res){ var tx=db.transaction(IDB_STORE,'readwrite'); tx.objectStore(IDB_STORE).delete(id); tx.oncomplete=function(){ res(); }; tx.onerror=function(){ res(); }; }); }catch(e){} }
+async function updatePendingBadge(){
+  try{ var n=(await queueAll()).length; var el=document.getElementById('v-pending'); if(!el) return;
+    el.style.display = n ? 'block' : 'none';
+    el.innerHTML = n ? ('⏳ <strong>'+n+'</strong> proof'+(n>1?'s':'')+' saved on this phone, waiting to upload. '
+      + '<button class="btn-ghost" style="padding:4px 10px;font-size:12px;margin-left:6px;" onclick="flushQueue(true)">Upload now</button>') : '';
+  }catch(e){}
+}
+var _flushing=false;
+async function flushQueue(manual){
+  if(_flushing) return;
+  if(!navigator.onLine && !manual){ return; }
+  _flushing=true;
+  try{
+    var items=await queueAll();
+    for(var i=0;i<items.length;i++){
+      var it=items[i];
+      try{
+        var r=await fetch(SUPABASE_URL+'/functions/v1/verify-submit',{ method:'POST',
+          headers:{ apikey:SUPABASE_ANON, Authorization:'Bearer '+SUPABASE_ANON, 'Content-Type':'application/json' },
+          body:JSON.stringify(it.payload) });
+        var b=null; try{ b=await r.json(); }catch(e){ b={}; }
+        if(r.ok && !b.error){ await queueDel(it.id); }
+        else { break; }   // server/credit error → keep it, stop; operator resolves then taps Upload now
+      }catch(e){ break; }   // network dropped again → keep the rest, try later
+    }
+  } finally { _flushing=false; updatePendingBadge(); }
+}
+window.addEventListener('online', function(){ flushQueue(); });
+try{ updatePendingBadge(); if(navigator.onLine) setTimeout(function(){ flushQueue(); }, 1500); }catch(e){}
+
+// Register the service worker (enables install + offline).
+if('serviceWorker' in navigator){ window.addEventListener('load', function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); }); }
+</script>
+</body>
+</html>
