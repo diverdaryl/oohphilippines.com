@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>AI Assistant Admin — OOHPhilippines.com</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:linear-gradient(135deg,#e3f2fd,#bbdefb);min-height:100vh;color:#202124;padding:24px;}
+.wrap{max-width:860px;margin:0 auto;}
+h1{color:#1565c0;font-size:26px;margin-bottom:4px;}
+.sub{color:#5f6368;font-size:14px;margin-bottom:20px;}
+.card{background:#fff;border-radius:14px;padding:22px;box-shadow:0 4px 15px rgba(0,0,0,0.1);margin-bottom:20px;}
+.card h2{color:#1565c0;font-size:18px;margin-bottom:14px;}
+label{display:block;font-size:13px;font-weight:600;color:#455a64;margin:10px 0 4px;}
+input,textarea{width:100%;padding:10px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;}
+textarea{min-height:80px;resize:vertical;}
+input:focus,textarea:focus{border-color:#1565c0;}
+button{background:#1565c0;color:#fff;border:none;padding:10px 18px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:12px;}
+button:hover{background:#0d47a1;}
+button.ghost{background:#eef3f9;color:#1565c0;padding:6px 12px;font-size:12px;margin-top:0;}
+button.del{background:#fdecea;color:#c62828;padding:6px 12px;font-size:12px;margin-top:0;}
+.msg{margin-top:10px;font-size:13px;}
+.kb-item,.log-item{border:1px solid #e8eaed;border-radius:10px;padding:12px;margin-top:10px;}
+.kb-item h3{font-size:14px;color:#263238;margin-bottom:4px;}
+.kb-item p,.log-item p{font-size:13px;color:#546e7a;line-height:1.5;margin:2px 0;}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;}
+.on{background:#e8f5e9;color:#2e7d32;} .off{background:#fdecea;color:#c62828;}
+.up{color:#2e7d32;font-weight:700;} .down{color:#c62828;font-weight:700;}
+.muted{color:#90a4ae;font-size:12px;}
+.gate{max-width:420px;margin:60px auto;}
+.rowbtns{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>AI Assistant Admin</h1>
+  <div class="sub">Teach the assistant (knowledge base) and review what people ask. Admin only.</div>
+
+  <div class="card gate" id="gate">
+    <h2>🔐 Admin access</h2>
+    <label>Admin key</label>
+    <input type="password" id="adminKey" placeholder="Enter the admin key" onkeydown="if(event.key==='Enter')unlock()">
+    <button onclick="unlock()">Continue</button>
+    <div class="msg" id="gateMsg"></div>
+  </div>
+
+  <div id="panel" style="display:none;">
+    <div class="card">
+      <h2 id="kbFormTitle">➕ Add knowledge</h2>
+      <p class="muted">Facts/FAQ the assistant should know (how credits work, services, policies, corrections). It uses these on every answer.</p>
+      <input type="hidden" id="kb-id">
+      <label>Title / question</label>
+      <input id="kb-title" placeholder="e.g. How do credits work?">
+      <label>Answer / fact</label>
+      <textarea id="kb-content" placeholder="e.g. Every account runs on credits. You can buy more anytime from Pricing…"></textarea>
+      <label>Keywords (optional, comma-separated)</label>
+      <input id="kb-keywords" placeholder="credits, pricing, buy">
+      <label style="display:flex;align-items:center;gap:8px;margin-top:12px;"><input type="checkbox" id="kb-active" checked style="width:16px;height:16px;flex:0 0 auto;"> Active</label>
+      <div class="rowbtns">
+        <button onclick="saveKb()">Save</button>
+        <button class="ghost" onclick="resetKbForm()">Clear</button>
+      </div>
+      <div class="msg" id="kb-msg"></div>
+    </div>
+
+    <div class="card">
+      <h2>📚 Knowledge base <button class="ghost" onclick="loadKb()" style="margin-left:8px;">↻ Refresh</button></h2>
+      <div id="kbList"><p class="muted">Loading…</p></div>
+    </div>
+
+    <div class="card">
+      <h2>💬 Recent chats <button class="ghost" onclick="loadLogs('')" style="margin-left:8px;">↻ All</button> <button class="ghost" onclick="loadLogs('up')">👍 Liked</button> <button class="ghost" onclick="loadLogs('rated')">👍👎 Rated</button></h2>
+      <p class="muted">Review what people ask. Use "➕ Add to knowledge" to turn a good/corrected answer into a knowledge entry.</p>
+      <div id="logList"><p class="muted">Tap refresh to load.</p></div>
+    </div>
+  </div>
+</div>
+
+<script>
+var SUPABASE_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlY3hma3V6ZXhzaGFmd3V1aXpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTk1MTIsImV4cCI6MjA5MTMzNTUxMn0.sZrRmesCDn0DsuldUD8zIhi1gX1ajIKX0aULqNBX_To';
+var FN='https://xecxfkuzexshafwuuizf.supabase.co/functions/v1/ai-admin';
+var KEY='';
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+async function call(payload){
+  var r=await fetch(FN,{method:'POST',headers:{apikey:SUPABASE_ANON,Authorization:'Bearer '+SUPABASE_ANON,'Content-Type':'application/json'},body:JSON.stringify(Object.assign({key:KEY},payload))});
+  var b=await r.json().catch(function(){return null;}); return {ok:r.ok,b:b};
+}
+async function unlock(){
+  KEY=(document.getElementById('adminKey').value||'').trim();
+  var m=document.getElementById('gateMsg'); if(!KEY){ m.innerHTML='<span style="color:#b71c1c;">Enter the admin key.</span>'; return; }
+  m.textContent='⏳ Checking…';
+  var res=await call({action:'kb_list'});
+  if(res.ok && res.b && res.b.ok){ document.getElementById('gate').style.display='none'; document.getElementById('panel').style.display='block'; renderKb(res.b.items); loadLogs(''); }
+  else { m.innerHTML='<span style="color:#b71c1c;">'+esc((res.b&&res.b.error)==='unauthorized'?'Wrong admin key.':'Could not verify — try again.')+'</span>'; }
+}
+function resetKbForm(){ document.getElementById('kb-id').value=''; document.getElementById('kb-title').value=''; document.getElementById('kb-content').value=''; document.getElementById('kb-keywords').value=''; document.getElementById('kb-active').checked=true; document.getElementById('kbFormTitle').textContent='➕ Add knowledge'; document.getElementById('kb-msg').textContent=''; }
+async function saveKb(){
+  var m=document.getElementById('kb-msg'); m.textContent='⏳ Saving…';
+  var res=await call({action:'kb_save', id:document.getElementById('kb-id').value||undefined, title:document.getElementById('kb-title').value, content:document.getElementById('kb-content').value, keywords:document.getElementById('kb-keywords').value, active:document.getElementById('kb-active').checked});
+  if(res.ok&&res.b&&res.b.ok){ m.innerHTML='<span style="color:#1b5e20;">✅ Saved.</span>'; resetKbForm(); loadKb(); }
+  else { m.innerHTML='<span style="color:#b71c1c;">'+esc((res.b&&res.b.message)||(res.b&&res.b.error)||'Save failed.')+'</span>'; }
+}
+async function loadKb(){ var res=await call({action:'kb_list'}); if(res.ok&&res.b&&res.b.ok) renderKb(res.b.items); }
+var KB=[];
+function renderKb(items){ KB=items||[]; var el=document.getElementById('kbList');
+  if(!KB.length){ el.innerHTML='<p class="muted">No knowledge entries yet. Add the first one above.</p>'; return; }
+  el.innerHTML=KB.map(function(k,i){ return '<div class="kb-item"><h3>'+esc(k.title)+' <span class="badge '+(k.active?'on':'off')+'">'+(k.active?'active':'off')+'</span></h3><p>'+esc(k.content)+'</p>'+(k.keywords?'<p class="muted">keywords: '+esc(k.keywords)+'</p>':'')+'<div class="rowbtns"><button class="ghost" onclick="editKb('+i+')">✏️ Edit</button><button class="del" onclick="delKb('+k.id+')">🗑 Delete</button></div></div>'; }).join('');
+}
+function editKb(i){ var k=KB[i]; if(!k) return; document.getElementById('kb-id').value=k.id; document.getElementById('kb-title').value=k.title||''; document.getElementById('kb-content').value=k.content||''; document.getElementById('kb-keywords').value=k.keywords||''; document.getElementById('kb-active').checked=k.active!==false; document.getElementById('kbFormTitle').textContent='✏️ Edit knowledge'; window.scrollTo({top:0,behavior:'smooth'}); }
+async function delKb(id){ if(!confirm('Delete this knowledge entry?')) return; var res=await call({action:'kb_delete', id:id}); if(res.ok&&res.b&&res.b.ok) loadKb(); }
+var LOGS=[];
+async function loadLogs(filter){ var el=document.getElementById('logList'); el.innerHTML='<p class="muted">⏳ Loading…</p>'; var res=await call({action:'logs_list', only_rated:filter==='rated', only_up:filter==='up', limit:120});
+  if(!(res.ok&&res.b&&res.b.ok)){ el.innerHTML='<p class="muted" style="color:#b71c1c;">Could not load.</p>'; return; }
+  LOGS=res.b.logs||[];
+  if(!LOGS.length){ el.innerHTML='<p class="muted">No '+(filter==='up'?'liked ':filter==='rated'?'rated ':'')+'chats yet.</p>'; return; }
+  el.innerHTML=LOGS.map(function(l,i){ var r=l.rating>0?'<span class="up">👍</span>':(l.rating<0?'<span class="down">👎</span>':''); return '<div class="log-item"><p class="muted">'+esc(new Date(l.created_at).toLocaleString('en-PH'))+' · '+esc(l.email||'')+' '+r+'</p><p><strong>Q:</strong> '+esc(l.question||'')+'</p><p><strong>A:</strong> '+esc(l.answer||'')+'</p><div class="rowbtns"><button class="ghost" onclick="promote('+i+')">➕ Add to knowledge</button></div></div>'; }).join('');
+}
+function promote(i){ var l=LOGS[i]; if(!l) return; document.getElementById('kb-id').value=''; document.getElementById('kb-title').value=l.question||''; document.getElementById('kb-content').value=l.answer||''; document.getElementById('kb-keywords').value=''; document.getElementById('kb-active').checked=true; document.getElementById('kbFormTitle').textContent='➕ Add knowledge (from a chat)'; window.scrollTo({top:0,behavior:'smooth'}); document.getElementById('kb-content').focus(); }
+</script>
+</body>
+</html>
