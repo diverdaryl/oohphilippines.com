@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Operator Admin — OOHPhilippines.com</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:linear-gradient(135deg,#e3f2fd,#bbdefb);min-height:100vh;color:#202124;padding:24px;}
+.wrap{max-width:760px;margin:0 auto;}
+h1{color:#1565c0;font-size:26px;margin-bottom:4px;}
+.sub{color:#5f6368;font-size:14px;margin-bottom:20px;}
+.card{background:#fff;border-radius:14px;padding:22px;box-shadow:0 4px 15px rgba(0,0,0,0.1);margin-bottom:20px;}
+.card h2{color:#1565c0;font-size:18px;margin-bottom:14px;}
+label{display:block;font-size:13px;font-weight:600;color:#455a64;margin:10px 0 4px;}
+input{width:100%;padding:10px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;}
+input:focus{border-color:#1565c0;}
+.row{display:flex;gap:12px;flex-wrap:wrap;}
+.row>div{flex:1;min-width:140px;}
+button{background:#1565c0;color:#fff;border:none;padding:11px 20px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:14px;}
+button:hover{background:#0d47a1;}
+button.ghost{background:#eef3f9;color:#1565c0;padding:8px 14px;font-size:13px;margin-top:0;}
+.msg{margin-top:12px;font-size:13px;}
+.cardout{background:#f1f8e9;border:1px solid #c5e1a5;border-radius:10px;padding:16px;margin-top:14px;font-size:14px;line-height:1.7;display:none;}
+.cardout strong{color:#33691e;}
+.muted{color:#78909c;font-size:12px;}
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px;}
+th{background:#1565c0;color:#fff;padding:8px 10px;text-align:left;}
+td{padding:8px 10px;border-bottom:1px solid #e3f2fd;}
+.gate{max-width:420px;margin:60px auto;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Operator Admin</h1>
+  <div class="sub">Create and manage billboard operator accounts. Admin only.</div>
+
+  <!-- Admin key gate -->
+  <div class="card gate" id="gate">
+    <h2>🔐 Admin access</h2>
+    <label>Admin key</label>
+    <input type="password" id="adminKey" placeholder="Enter the admin key" onkeydown="if(event.key==='Enter')unlock()">
+    <button onclick="unlock()">Continue</button>
+    <div class="msg" id="gateMsg"></div>
+  </div>
+
+  <div id="panel" style="display:none;">
+    <!-- Create operator -->
+    <div class="card">
+      <h2>➕ Create operator</h2>
+      <p class="muted">Creates the login (auto-confirmed), operator profile and credits row in one step. The operator logs in with the <strong>username</strong> below — no real email needed.</p>
+      <label>Company / operator name</label>
+      <input id="c-company" placeholder="e.g. HD Digital Signs Corporation">
+      <div class="row">
+        <div>
+          <label>Login username</label>
+          <input id="c-username" placeholder="e.g. hddigital" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9._-]/g,'')">
+          <div class="muted">Letters/numbers only. Or type a full email if they have one.</div>
+        </div>
+        <div>
+          <label>Starting credits</label>
+          <input id="c-credits" type="number" value="0" min="0">
+        </div>
+      </div>
+      <label>Temporary password</label>
+      <div class="row">
+        <div><input id="c-pass" placeholder="At least 8 characters"></div>
+        <div style="flex:0 0 auto;"><button class="ghost" onclick="genPass()" style="margin-top:0;">🎲 Generate</button></div>
+      </div>
+      <button onclick="createOp()">Create operator</button>
+      <div class="msg" id="c-msg"></div>
+      <div class="cardout" id="c-card"></div>
+    </div>
+
+    <!-- Reset password -->
+    <div class="card">
+      <h2>🔑 Reset an operator's password</h2>
+      <label>Username or email</label>
+      <input id="r-username" placeholder="e.g. hddigital">
+      <label>New password</label>
+      <div class="row">
+        <div><input id="r-pass" placeholder="At least 8 characters"></div>
+        <div style="flex:0 0 auto;"><button class="ghost" onclick="genPass('r')" style="margin-top:0;">🎲 Generate</button></div>
+      </div>
+      <button onclick="resetOp()">Reset password</button>
+      <div class="msg" id="r-msg"></div>
+    </div>
+
+    <!-- Assign sites -->
+    <div class="card">
+      <h2>📍 Assign uploaded sites to an operator</h2>
+      <p class="muted">Find sites by a keyword in the company name (e.g. <strong>Tronco</strong>), then claim them — this sets those sites' company to the operator's exact name so they show in that operator's dashboard.</p>
+      <label>Keyword in company name</label>
+      <div class="row">
+        <div><input id="a-kw" placeholder="e.g. Tronco"></div>
+        <div style="flex:0 0 auto;"><button class="ghost" onclick="findSites()" style="margin-top:0;">🔍 Find sites</button></div>
+      </div>
+      <div id="a-found" style="margin-top:10px;"></div>
+      <label>Assign to operator</label>
+      <select id="a-op" style="width:100%;padding:10px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;"></select>
+      <div class="muted">The matching sites will be set to this operator's company name.</div>
+      <button onclick="assignSites()">Assign sites to this operator</button>
+      <div class="msg" id="a-msg"></div>
+    </div>
+
+    <!-- List -->
+    <div class="card">
+      <h2>📋 Operators <button class="ghost" onclick="loadList()" style="margin-top:0;margin-left:8px;">↻ Refresh</button></h2>
+      <div id="listBox"><p class="muted">Tap refresh to load.</p></div>
+    </div>
+  </div>
+</div>
+
+<script>
+var SUPABASE_URL='https://xecxfkuzexshafwuuizf.supabase.co';
+var SUPABASE_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlY3hma3V6ZXhzaGFmd3V1aXpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTk1MTIsImV4cCI6MjA5MTMzNTUxMn0.sZrRmesCDn0DsuldUD8zIhi1gX1ajIKX0aULqNBX_To';
+var FN=SUPABASE_URL+'/functions/v1/create-operator';
+var KEY='';
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function genPass(which){ var p=Math.random().toString(36).slice(2,6)+'-'+Math.random().toString(36).slice(2,6); document.getElementById(which==='r'?'r-pass':'c-pass').value=p; }
+async function call(payload){
+  var r=await fetch(FN,{method:'POST',headers:{apikey:SUPABASE_ANON,Authorization:'Bearer '+SUPABASE_ANON,'Content-Type':'application/json'},body:JSON.stringify(Object.assign({key:KEY},payload))});
+  var b=await r.json().catch(function(){return null;}); return {ok:r.ok,b:b};
+}
+async function unlock(){
+  KEY=(document.getElementById('adminKey').value||'').trim();
+  var m=document.getElementById('gateMsg'); if(!KEY){ m.innerHTML='<span style="color:#b71c1c;">Enter the admin key.</span>'; return; }
+  m.textContent='⏳ Checking…';
+  var res=await call({action:'list'});
+  if(res.ok && res.b && res.b.ok){ document.getElementById('gate').style.display='none'; document.getElementById('panel').style.display='block'; renderList(res.b.operators); }
+  else { m.innerHTML='<span style="color:#b71c1c;">'+esc((res.b&&res.b.error)==='unauthorized'?'Wrong admin key.':'Could not verify — try again.')+'</span>'; }
+}
+async function createOp(){
+  var m=document.getElementById('c-msg'), out=document.getElementById('c-card'); out.style.display='none'; m.textContent='⏳ Creating…';
+  var res=await call({action:'create', company:document.getElementById('c-company').value, username:document.getElementById('c-username').value, password:document.getElementById('c-pass').value, credits:document.getElementById('c-credits').value});
+  if(res.ok && res.b && res.b.ok){
+    m.innerHTML='<span style="color:#1b5e20;">✅ Operator created.</span>';
+    var L=res.b.login;
+    out.style.display='block';
+    out.innerHTML='<strong>Login card — hand this to the operator</strong><br>'+
+      'Go to <strong>oohphilippines.com</strong> → <strong>Operator Dashboard</strong><br>'+
+      'Username: <strong>'+esc(L.username)+'</strong><br>'+
+      'Password: <strong>'+esc(L.password)+'</strong><br>'+
+      'Starting credits: <strong>'+esc(L.credits)+'</strong><br>'+
+      '<span class="muted">They can change their password anytime in Account settings. Reset it here if they forget.</span>';
+    loadList();
+  } else { m.innerHTML='<span style="color:#b71c1c;">'+esc((res.b&&res.b.message)||(res.b&&res.b.error)||'Create failed.')+'</span>'; }
+}
+async function resetOp(){
+  var m=document.getElementById('r-msg'); m.textContent='⏳ Resetting…';
+  var res=await call({action:'reset', username:document.getElementById('r-username').value, password:document.getElementById('r-pass').value});
+  if(res.ok && res.b && res.b.ok){ m.innerHTML='<span style="color:#1b5e20;">✅ Password reset. Give the operator the new password.</span>'; }
+  else { m.innerHTML='<span style="color:#b71c1c;">'+esc((res.b&&res.b.message)||(res.b&&res.b.error)||'Reset failed.')+'</span>'; }
+}
+async function loadList(){ var res=await call({action:'list'}); if(res.ok&&res.b&&res.b.ok) renderList(res.b.operators); }
+function renderList(ops){
+  ops=ops||[];
+  // fill the assign dropdown
+  var sel=document.getElementById('a-op');
+  if(sel) sel.innerHTML = ops.length ? ops.map(function(o){ return '<option value="'+esc(o.company)+'">'+esc(o.company)+'</option>'; }).join('') : '<option value="">(no operators yet — create one first)</option>';
+  var el=document.getElementById('listBox');
+  if(!ops.length){ el.innerHTML='<p class="muted">No operators yet.</p>'; return; }
+  el.innerHTML='<table><tr><th>Company</th><th>Login (username/email)</th><th>Credits</th></tr>'+
+    ops.map(function(o){ var u=(o.email||'').indexOf('@operators.oohphilippines.com')>-1?(o.email.split('@')[0]):o.email; return '<tr><td>'+esc(o.company)+'</td><td>'+esc(u)+'</td><td>'+esc(o.credits)+'</td></tr>'; }).join('')+'</table>';
+}
+async function findSites(){
+  var m=document.getElementById('a-found'); m.innerHTML='⏳ Searching…';
+  var res=await call({action:'find_sites', keyword:document.getElementById('a-kw').value});
+  if(!(res.ok&&res.b&&res.b.ok)){ m.innerHTML='<span style="color:#b71c1c;">'+esc((res.b&&res.b.message)||'Search failed.')+'</span>'; return; }
+  var g=res.b.groups||[];
+  if(!g.length){ m.innerHTML='<span class="muted">No sites match that keyword.</span>'; return; }
+  var total=g.reduce(function(s,x){return s+Number(x.sites||0);},0);
+  m.innerHTML='<table><tr><th>Company on the site</th><th>Sites</th><th>Status</th></tr>'+
+    g.map(function(x){ return '<tr><td>'+esc(x.company)+'</td><td>'+esc(x.sites)+'</td><td>'+esc(x.statuses)+'</td></tr>'; }).join('')+
+    '</table><div class="muted" style="margin-top:6px;">'+total+' site(s) match "'+esc(document.getElementById('a-kw').value)+'". Assigning will set all of them to the chosen operator\'s company.</div>';
+}
+async function assignSites(){
+  var m=document.getElementById('a-msg'); var kw=document.getElementById('a-kw').value, op=document.getElementById('a-op').value;
+  if(!kw||!op){ m.innerHTML='<span style="color:#b71c1c;">Enter a keyword and pick an operator.</span>'; return; }
+  if(!confirm('Set every site whose company contains "'+kw+'" to company "'+op+'"? This reassigns ownership of those sites.')) return;
+  m.textContent='⏳ Assigning…';
+  var res=await call({action:'assign_sites', keyword:kw, company:op});
+  if(res.ok&&res.b&&res.b.ok){ m.innerHTML='<span style="color:#1b5e20;">✅ Assigned '+esc(res.b.assigned)+' site(s) to '+esc(op)+'. They\'ll appear in that operator\'s dashboard.</span>'; }
+  else { m.innerHTML='<span style="color:#b71c1c;">'+esc((res.b&&res.b.message)||'Assign failed.')+'</span>'; }
+}
+</script>
+</body>
+</html>
