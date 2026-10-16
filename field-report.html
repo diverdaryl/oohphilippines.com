@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Campaign Map Report — OOHPhilippines.com</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:#eef3f9;color:#202124;height:100vh;overflow:hidden;}
+.gate{max-width:420px;margin:70px auto;background:#fff;border-radius:14px;padding:24px;box-shadow:0 6px 20px rgba(0,0,0,0.1);}
+.gate h1{color:#1565c0;font-size:22px;margin-bottom:4px;}
+.gate p{color:#5f6368;font-size:13px;margin-bottom:14px;}
+input,select{width:100%;padding:10px 12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;outline:none;}
+input:focus,select:focus{border-color:#1565c0;}
+button{background:#1565c0;color:#fff;border:none;padding:10px 16px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;}
+button:hover{background:#0d47a1;}
+.msg{margin-top:10px;font-size:13px;}
+.err{color:#b71c1c;} .ok{color:#1b5e20;} .muted{color:#90a4ae;}
+
+#app{display:none;height:100vh;grid-template-rows:auto 1fr;}
+.topbar{background:#fff;border-bottom:1px solid #d6e2f7;padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.topbar h1{color:#1565c0;font-size:18px;flex:0 0 auto;}
+.topbar .grow{flex:1;}
+.topbar label{font-size:12px;color:#5f6368;font-weight:600;margin-right:4px;}
+.topbar input[type=month]{width:auto;padding:7px 10px;}
+.topbar button{padding:7px 14px;}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:12px;background:#e3f2fd;color:#1565c0;}
+.legend{font-size:12px;color:#5f6368;display:flex;gap:12px;align-items:center;}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:middle;}
+.dot.proof{background:#2e7d32;} .dot.field{background:#1565c0;}
+
+.main{display:grid;grid-template-columns:260px 1fr;height:100%;min-height:0;}
+.side{background:#fff;border-right:1px solid #d6e2f7;overflow:auto;padding:10px;}
+.side h2{font-size:13px;color:#455a64;text-transform:uppercase;letter-spacing:.04em;margin:6px 4px 8px;}
+.tabs{display:flex;gap:6px;margin-bottom:8px;}
+.tab{flex:1;background:#eef3f9;color:#455a64;padding:7px 6px;font-size:12.5px;border-radius:8px;}
+.tab.active{background:#1565c0;color:#fff;}
+.cityrow{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:13.5px;color:#263238;}
+.cityrow:hover{background:#f1f6fd;}
+.cityrow.sel{background:#e3f2fd;}
+.cityrow .c{background:#eceff1;color:#455a64;font-size:12px;font-weight:700;border-radius:10px;padding:1px 8px;flex:0 0 auto;}
+.cityrow .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cityrow .rk{flex:0 0 auto;color:#90a4ae;font-weight:700;font-size:12px;width:20px;}
+.sub{font-size:11.5px;color:#78909c;padding:2px 10px 8px 34px;}
+#filterBar{background:#fff3e0;border:1px solid #ffe0b2;border-radius:8px;padding:7px 10px;margin-bottom:8px;font-size:12.5px;color:#e65100;display:flex;justify-content:space-between;align-items:center;gap:8px;}
+#filterBar button{background:#e65100;padding:3px 9px;font-size:11px;}
+#map{height:100%;width:100%;}
+.pop img{width:200px;max-width:60vw;border-radius:6px;display:block;margin-bottom:6px;background:#eee;}
+.pop .b{font-weight:700;color:#0d3b66;font-size:14px;}
+.pop .r{font-size:12px;color:#546e7a;margin-top:2px;}
+.pop .src{display:inline-block;font-size:10px;font-weight:700;padding:1px 7px;border-radius:9px;margin-top:4px;}
+.pop .src.proof{background:#e8f5e9;color:#2e7d32;} .pop .src.field{background:#e3f2fd;color:#1565c0;}
+.empty{padding:20px;color:#90a4ae;font-size:13px;text-align:center;}
+</style>
+</head>
+<body>
+
+<div class="gate" id="gate">
+  <h1>📍 Campaign Map Report</h1>
+  <p>Monthly map of every geo-tagged capture — saved proofs + field captures. Admin only.</p>
+  <label style="font-size:13px;font-weight:600;color:#455a64;">Admin key</label>
+  <input type="password" id="adminKey" placeholder="Enter the admin key" onkeydown="if(event.key==='Enter')unlock()" style="margin-top:4px;">
+  <button onclick="unlock()" style="margin-top:12px;">Continue</button>
+  <div class="msg" id="gateMsg"></div>
+</div>
+
+<div id="app">
+  <div class="topbar">
+    <h1>📍 Campaign Map</h1>
+    <label>Month</label><input type="month" id="month">
+    <button onclick="load()">Load</button>
+    <button onclick="exportCsv()" style="background:#2e7d32;">⬇ CSV</button>
+    <span class="pill" id="count">—</span>
+    <span class="grow"></span>
+    <span class="legend"><span><span class="dot proof"></span>Saved proof</span><span><span class="dot field"></span>Field capture</span></span>
+  </div>
+  <div class="main">
+    <div class="side">
+      <div class="tabs">
+        <button class="tab active" id="tab-adv" onclick="switchTab('adv')">🏢 Advertisers</button>
+        <button class="tab" id="tab-city" onclick="switchTab('city')">📍 Cities</button>
+      </div>
+      <div id="filterBar" style="display:none;"></div>
+      <div id="panel"><div class="empty">Pick a month and tap Load.</div></div>
+    </div>
+    <div id="map"></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+var FN='https://xecxfkuzexshafwuuizf.supabase.co/functions/v1/field-report';
+var ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlY3hma3V6ZXhzaGFmd3V1aXpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3NTk1MTIsImV4cCI6MjA5MTMzNTUxMn0.sZrRmesCDn0DsuldUD8zIhi1gX1ajIKX0aULqNBX_To';
+var KEY='';
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+
+// PH city centroids for grouping (nearest within ~30 km; else "Other").
+var CITIES=[
+ ['Manila',14.5995,120.9842],['Quezon City',14.6760,121.0437],['Makati',14.5547,121.0244],
+ ['Pasig',14.5764,121.0851],['Mandaluyong',14.5794,121.0359],['San Juan',14.6019,121.0355],
+ ['Taguig / BGC',14.5176,121.0509],['Pasay',14.5378,121.0014],['Parañaque',14.4793,121.0198],
+ ['Las Piñas',14.4499,120.9833],['Muntinlupa',14.3810,121.0490],['Marikina',14.6507,121.1029],
+ ['Caloocan',14.6570,120.9830],['Malabon',14.6625,120.9567],['Navotas',14.6667,120.9417],
+ ['Valenzuela',14.7000,120.9830],['Pateros',14.5417,121.0689],['Antipolo',14.5842,121.1763],
+ ['Bacoor',14.4590,120.9430],['Imus',14.4297,120.9367],['Dasmariñas',14.3294,120.9367],
+ ['Sta. Rosa',14.3122,121.1114],['Calamba',14.2117,121.1653],['San Fernando (Pampanga)',15.0286,120.6898],
+ ['Angeles / Clark',15.1450,120.5887],['Tagaytay',14.0953,120.9620],['Lipa',13.9411,121.1624],
+ ['Batangas City',13.7565,121.0583],['Lucena',13.9373,121.6170],['Naga City',13.6218,123.1948],
+ ['Bacolod',10.6765,122.9509],['Iloilo City',10.7202,122.5621],['Cebu City',10.3157,123.8854],
+ ['Cagayan de Oro',8.4822,124.6472],['Davao City',7.1907,125.4553],['General Santos',6.1164,125.1716],
+ ['Zamboanga City',6.9214,122.0790],['Baguio',16.4023,120.5960]
+];
+function haversine(a,b,c,d){var R=6371,toR=function(x){return x*Math.PI/180;};var dLat=toR(c-a),dLng=toR(d-b);var s=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(toR(a))*Math.cos(toR(c))*Math.sin(dLng/2)*Math.sin(dLng/2);return R*2*Math.atan2(Math.sqrt(s),Math.sqrt(1-s));}
+function cityOf(lat,lng){
+  if(lat==null||lng==null) return 'No location';
+  var best=null,bd=1e9;
+  for(var i=0;i<CITIES.length;i++){ var d=haversine(lat,lng,CITIES[i][1],CITIES[i][2]); if(d<bd){bd=d;best=CITIES[i][0];} }
+  return (bd<=30)?best:'Other';
+}
+
+var map=null, layer=null;
+async function call(month){
+  var r=await fetch(FN,{method:'POST',headers:{apikey:ANON,Authorization:'Bearer '+ANON,'Content-Type':'application/json'},body:JSON.stringify({key:KEY,month:month})});
+  var b=await r.json().catch(function(){return null;}); return {ok:r.ok,b:b};
+}
+async function unlock(){
+  KEY=(document.getElementById('adminKey').value||'').trim();
+  var m=document.getElementById('gateMsg'); if(!KEY){ m.innerHTML='<span class="err">Enter the admin key.</span>'; return; }
+  m.textContent='⏳ Checking…';
+  var now=new Date(); var mm=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  var res=await call(mm);
+  if(res.ok && res.b && res.b.ok){
+    document.getElementById('gate').style.display='none';
+    document.getElementById('app').style.display='grid';
+    document.getElementById('month').value=mm;
+    initMap(); render(res.b);
+  } else {
+    m.innerHTML='<span class="err">'+esc((res.b&&res.b.error)==='unauthorized'?'Wrong admin key.':'Could not verify — try again.')+'</span>';
+  }
+}
+function initMap(){
+  if(map) return;
+  map=L.map('map').setView([14.5995,120.9842],11);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
+  layer=L.layerGroup().addTo(map);
+}
+async function load(){
+  var mm=document.getElementById('month').value; if(!mm) return;
+  document.getElementById('count').textContent='⏳ loading…';
+  var res=await call(mm);
+  if(res.ok&&res.b&&res.b.ok){ render(res.b); }
+  else { document.getElementById('count').textContent='error'; }
+}
+// Export the advertiser × city landscape as a CSV report.
+function exportCsv(){
+  if(!ITEMS.length){ alert('Load a month with captures first.'); return; }
+  var rows=[['Advertiser','City','Placements','Formats','Operators']];
+  var by={};
+  ITEMS.forEach(function(it){ var k=it._brand+'||'+it._city; (by[k]=by[k]||[]).push(it); });
+  Object.keys(by).sort().forEach(function(k){
+    var list=by[k]; var parts=k.split('||');
+    var fmts={}, ops={}; list.forEach(function(it){ if(it.format)fmts[it.format]=1; if(it.operator)ops[it.operator]=1; });
+    rows.push([parts[0], parts[1], list.length, Object.keys(fmts).join('; '), Object.keys(ops).join('; ')]);
+  });
+  var csv=rows.map(function(r){ return r.map(function(c){ var s=String(c==null?'':c); return /[",\n]/.test(s)?('"'+s.replace(/"/g,'""')+'"'):s; }).join(','); }).join('\n');
+  var mm=document.getElementById('month').value||'month';
+  var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='ooh-landscape-'+mm+'.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+function pinColor(src){ return src==='proof' ? '#2e7d32' : '#1565c0'; }
+function marker(it){
+  var c=pinColor(it.source);
+  return L.circleMarker([it.lat,it.lng],{radius:7,color:'#fff',weight:2,fillColor:c,fillOpacity:0.95});
+}
+function popupHtml(it){
+  var when=it.when?new Date(it.when).toLocaleString('en-PH'):'—';
+  var img=it.photo_url?('<img src="'+esc(it.photo_url)+'" alt="site photo" onerror="this.style.display=\'none\'">'):'';
+  return '<div class="pop">'+img
+    +'<div class="b">'+(esc(it.brand)||'(no brand)')+'</div>'
+    +'<div class="r">📍 '+it.lat.toFixed(5)+', '+it.lng.toFixed(5)+' · <a href="https://www.google.com/maps?q='+it.lat+','+it.lng+'" target="_blank">Maps</a></div>'
+    +(it.site?('<div class="r">🏷️ '+esc(it.site)+(it.format?(' · '+esc(it.format)):'')+'</div>'):'')
+    +'<div class="r">🕑 '+esc(when)+(it.time_of_day?(' · '+esc(it.time_of_day)):'')+'</div>'
+    +(it.operator?('<div class="r">👤 '+esc(it.operator)+'</div>'):'')
+    +'<span class="src '+it.source+'">'+(it.source==='proof'?'✅ saved proof':'📤 field capture')+'</span>'
+    +'</div>';
+}
+var ITEMS=[], TAB='adv', FILTER=null;   // FILTER = {type:'adv'|'city', value:name} or null
+function brandOf(it){ return (it.brand||'').trim() || '(no brand)'; }
+function render(data){
+  ITEMS=(data.items||[]).filter(function(it){ return it.lat!=null && it.lng!=null; });
+  ITEMS.forEach(function(it){ it._city=cityOf(it.lat,it.lng); it._brand=brandOf(it); });
+  var advs={}; ITEMS.forEach(function(it){ advs[it._brand]=(advs[it._brand]||0)+1; });
+  var nAdv=Object.keys(advs).length;
+  document.getElementById('count').textContent=ITEMS.length+' placements · '+nAdv+' advertiser'+(nAdv===1?'':'s');
+  FILTER=null; renderFilterBar(); drawMarkers(); renderPanel();
+}
+// Draw only the markers that match the current FILTER (or all).
+function drawMarkers(){
+  layer.clearLayers(); var bounds=[];
+  ITEMS.forEach(function(it){
+    if(FILTER){
+      if(FILTER.type==='adv' && it._brand!==FILTER.value) return;
+      if(FILTER.type==='city' && it._city!==FILTER.value) return;
+    }
+    marker(it).bindPopup(popupHtml(it)).addTo(layer);
+    bounds.push([it.lat,it.lng]);
+  });
+  if(bounds.length){ try{ map.fitBounds(bounds,{padding:[30,30],maxZoom:FILTER?15:13}); }catch(e){} }
+}
+function switchTab(t){ TAB=t; document.getElementById('tab-adv').className='tab'+(t==='adv'?' active':''); document.getElementById('tab-city').className='tab'+(t==='city'?' active':''); renderPanel(); }
+function setFilter(type,value){ FILTER=(FILTER&&FILTER.type===type&&FILTER.value===value)?null:{type:type,value:value}; renderFilterBar(); drawMarkers(); renderPanel(); }
+function clearFilter(){ FILTER=null; renderFilterBar(); drawMarkers(); renderPanel(); }
+function renderFilterBar(){
+  var fb=document.getElementById('filterBar');
+  if(!FILTER){ fb.style.display='none'; return; }
+  fb.style.display='flex';
+  fb.innerHTML='<span>Showing: <strong>'+esc(FILTER.value)+'</strong></span><button onclick="clearFilter()">Show all</button>';
+}
+function renderPanel(){
+  var el=document.getElementById('panel');
+  if(!ITEMS.length){ el.innerHTML='<div class="empty">No geo-tagged captures this month.</div>'; return; }
+  if(TAB==='adv') el.innerHTML=advPanel(); else el.innerHTML=cityPanel();
+}
+// Advertisers ranked by placements, each with its top cities.
+function advPanel(){
+  var by={}; ITEMS.forEach(function(it){ (by[it._brand]=by[it._brand]||[]).push(it); });
+  var names=Object.keys(by).sort(function(a,b){ return by[b].length-by[a].length; });
+  return names.map(function(n,i){
+    var list=by[n]; var cities={}; list.forEach(function(it){ cities[it._city]=(cities[it._city]||0)+1; });
+    var topCities=Object.keys(cities).sort(function(a,b){return cities[b]-cities[a];}).slice(0,4)
+      .map(function(c){ return esc(c)+' ('+cities[c]+')'; }).join(', ');
+    var sel=(FILTER&&FILTER.type==='adv'&&FILTER.value===n)?' sel':'';
+    return '<div class="cityrow'+sel+'" onclick="setFilter(\'adv\','+JSON.stringify(n).replace(/"/g,'&quot;')+')">'
+      + '<span class="rk">'+(i+1)+'</span><span class="nm">'+esc(n)+'</span><span class="c">'+list.length+'</span></div>'
+      + '<div class="sub">'+topCities+'</div>';
+  }).join('');
+}
+// Cities ranked by placements, each with its top advertisers.
+function cityPanel(){
+  var by={}; ITEMS.forEach(function(it){ (by[it._city]=by[it._city]||[]).push(it); });
+  var names=Object.keys(by).sort(function(a,b){ return by[b].length-by[a].length; });
+  return names.map(function(n){
+    var list=by[n]; var brands={}; list.forEach(function(it){ brands[it._brand]=(brands[it._brand]||0)+1; });
+    var topB=Object.keys(brands).sort(function(a,b){return brands[b]-brands[a];}).slice(0,4)
+      .map(function(b){ return esc(b)+' ('+brands[b]+')'; }).join(', ');
+    var sel=(FILTER&&FILTER.type==='city'&&FILTER.value===n)?' sel':'';
+    return '<div class="cityrow'+sel+'" onclick="setFilter(\'city\','+JSON.stringify(n).replace(/"/g,'&quot;')+')">'
+      + '<span class="nm">'+esc(n)+'</span><span class="c">'+list.length+'</span></div>'
+      + '<div class="sub">'+topB+'</div>';
+  }).join('');
+}
+</script>
+</body>
+</html>
