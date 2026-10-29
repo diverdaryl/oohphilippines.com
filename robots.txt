@@ -1,0 +1,45 @@
+# oohphilippines.com — crawlers and AI assistants are welcome.
+# Goal: let search engines AND AI answer-engines (ChatGPT, Gemini, Perplexity, Claude)
+# read and cite our content, while keeping admin/staff tools out of indexes.
+
+User-agent: *
+Allow: /
+
+# ── AI assistants / answer engines (explicitly allowed) ──
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# ── Keep private/admin + staff tools out of search & AI indexes ──
+Disallow: /ai-admin.html
+Disallow: /operator-admin.html
+Disallow: /field-report.html
+Disallow: /field-capture.html
+Disallow: /ooh-survey.html
+Disallow: /reset-password.html
+Disallow: /verify-dashboard.html
+
+Sitemap: https://oohphilippines.com/sitemap.xml
